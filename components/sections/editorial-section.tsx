@@ -1,10 +1,10 @@
 "use client";
 
 const specs = [
-  { label: "All-Up Weight", value: "1.2 kg" },
-  { label: "Top Speed", value: "122 km/h" },
-  { label: "Wingspan", value: "800 mm" },
-  { label: "Cruise Speed", value: "68 km/h" },
+  { label: "All-Up Weight", number: "1.2", unit: "kg" },
+  { label: "Top Speed", number: "122", unit: "km/h" },
+  { label: "Wingspan", number: "800", unit: "mm" },
+  { label: "Cruise Speed", number: "68", unit: "km/h" },
 ];
 
 export function EditorialSection() {
@@ -27,8 +27,11 @@ export function EditorialSection() {
               className="px-4 py-8 md:px-8 md:py-10"
               style={{ background: "var(--background)" }}
             >
-              <p className="text-4xl font-semibold tracking-tight text-foreground md:text-6xl lg:text-7xl whitespace-nowrap">
-                {spec.value}
+              <p className="text-4xl font-semibold tracking-tight text-foreground md:text-6xl lg:text-7xl">
+                {spec.number}
+              </p>
+              <p className="text-xl font-semibold tracking-tight text-muted-foreground md:text-2xl lg:text-3xl">
+                {spec.unit}
               </p>
               <p className="mt-3 text-sm text-muted-foreground">
                 {spec.label}
