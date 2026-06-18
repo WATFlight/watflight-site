@@ -25,10 +25,10 @@ const teamMembers = [
     email: "h457xu@uwaterloo.ca",
   },
   {
-    name: "Manya",
+    name: "Molly",
     title: "Software Lead",
-    linkedIn: "https://www.linkedin.com/in/manyasingla/",
-    email: "m337sing@uwaterloo.ca",
+    linkedIn: "https://www.linkedin.com/in/molly-xie-uw",
+    email: "z95xie@uwaterloo.ca",
   },
 ];
 

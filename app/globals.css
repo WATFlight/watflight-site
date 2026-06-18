@@ -149,10 +149,6 @@
     background-color: white;
     border-radius: 9999px;
   }
-  
-  html {
-    scroll-behavior: smooth;
-  }
 }
 
 @keyframes slideUp {

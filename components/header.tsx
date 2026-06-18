@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
+import { navigateToSection } from "@/lib/smooth-scroll";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +14,15 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+    // Let modifier / non-left clicks behave natively (open in new tab, etc.)
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    setIsMenuOpen(false);
+    navigateToSection(id);
+    history.replaceState(null, "", id ? `#${id}` : "#");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +42,7 @@ export function Header() {
     >
       <div className="flex items-center justify-between transition-all duration-300 px-2 pl-5 py-2">
         {/* Logo */}
-        <Link href="#" className="flex items-center gap-2">
+        <Link href="#" onClick={(e) => handleNavClick(e, "")} className="flex items-center gap-2">
           <Image
             src="/images/watflight-logo.png"
             alt="WATFlight"
@@ -49,30 +59,35 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-6 lg:gap-10">
           <Link
             href="#products"
+            onClick={(e) => handleNavClick(e, "products")}
             className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
           >
             Projects
           </Link>
           <Link
-            href="#team"
-            className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
-          >
-            Team
-          </Link>
-          <Link
             href="#competitions"
+            onClick={(e) => handleNavClick(e, "competitions")}
             className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
           >
             Competitions
           </Link>
           <Link
             href="#sponsors"
+            onClick={(e) => handleNavClick(e, "sponsors")}
             className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
           >
             Sponsors
           </Link>
           <Link
+            href="#team"
+            onClick={(e) => handleNavClick(e, "team")}
+            className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
+          >
+            Team
+          </Link>
+          <Link
             href="#join"
+            onClick={(e) => handleNavClick(e, "join")}
             className={`text-sm transition-colors px-4 py-1.5 rounded-full border ${isScrolled ? "border-foreground/20 text-foreground hover:bg-foreground hover:text-background" : "border-white/30 text-white hover:bg-white hover:text-black"}`}
           >
             Join
@@ -113,12 +128,12 @@ export function Header() {
       {isMenuOpen && (
         <div className="border-t border-border bg-background px-6 py-8 md:hidden rounded-b-2xl">
           <nav className="flex flex-col gap-6">
-            <Link href="#hero" className="text-lg text-foreground" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link href="#products" className="text-lg text-foreground" onClick={() => setIsMenuOpen(false)}>Projects</Link>
-            <Link href="#team" className="text-lg text-foreground" onClick={() => setIsMenuOpen(false)}>Team</Link>
-            <Link href="#competitions" className="text-lg text-foreground" onClick={() => setIsMenuOpen(false)}>Competitions</Link>
-            <Link href="#sponsors" className="text-lg text-foreground" onClick={() => setIsMenuOpen(false)}>Sponsors</Link>
-            <Link href="#join" className="text-lg text-foreground" onClick={() => setIsMenuOpen(false)}>Join</Link>
+            <Link href="#hero" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "hero")}>Home</Link>
+            <Link href="#products" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "products")}>Projects</Link>
+            <Link href="#competitions" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "competitions")}>Competitions</Link>
+            <Link href="#sponsors" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "sponsors")}>Sponsors</Link>
+            <Link href="#team" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "team")}>Team</Link>
+            <Link href="#join" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "join")}>Join</Link>
           </nav>
         </div>
       )}

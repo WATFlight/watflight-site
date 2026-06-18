@@ -94,37 +94,45 @@ export function TechnologySection() {
   const descriptionText = "From airframes to autonomous flight control, every system on MiniFlight EVTOL was designed, built, and tested by University of Waterloo students.";
 
   useEffect(() => {
-    const handleScroll = () => {
+    let rafId: number | null = null;
+
+    const update = () => {
+      rafId = null;
       if (!sectionRef.current) return;
-      
+
       const rect = sectionRef.current.getBoundingClientRect();
       const scrollableHeight = window.innerHeight * 2;
       const scrolled = -rect.top;
       const progress = Math.max(0, Math.min(1, scrolled / scrollableHeight));
-      
+
       setScrollProgress(progress);
 
       // Text scroll progress
       if (textSectionRef.current) {
         const textRect = textSectionRef.current.getBoundingClientRect();
         const windowHeight = window.innerHeight;
-        
+
         const startOffset = windowHeight * 0.9;
         const endOffset = windowHeight * 0.1;
-        
+
         const totalDistance = startOffset - endOffset;
         const currentPosition = startOffset - textRect.top;
-        
+
         const newTextProgress = Math.max(0, Math.min(1, currentPosition / totalDistance));
         setTextProgress(newTextProgress);
       }
     };
 
+    const handleScroll = () => {
+      if (rafId === null) rafId = requestAnimationFrame(update);
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    
+    update();
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
     };
   }, []);
 

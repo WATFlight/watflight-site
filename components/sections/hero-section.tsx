@@ -41,22 +41,30 @@ export function HeroSection() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let rafId: number | null = null;
+
+    const update = () => {
+      rafId = null;
       if (!sectionRef.current) return;
-      
+
       const rect = sectionRef.current.getBoundingClientRect();
       const scrollableHeight = window.innerHeight * 2;
       const scrolled = -rect.top;
       const progress = Math.max(0, Math.min(1, scrolled / scrollableHeight));
-      
+
       setScrollProgress(progress);
     };
 
+    const handleScroll = () => {
+      if (rafId === null) rafId = requestAnimationFrame(update);
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    
+    update();
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
     };
   }, []);
 

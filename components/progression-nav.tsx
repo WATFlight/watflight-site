@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { navigateToSection } from "@/lib/smooth-scroll";
 
 const sections = [
   { id: "hero", label: "Home" },
@@ -16,7 +17,10 @@ export function ProgressionNav() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let rafId: number | null = null;
+
+    const update = () => {
+      rafId = null;
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollProgress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
@@ -40,16 +44,20 @@ export function ProgressionNav() {
       }
     };
 
+    const handleScroll = () => {
+      if (rafId === null) rafId = requestAnimationFrame(update);
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial check
-    return () => window.removeEventListener("scroll", handleScroll);
+    update(); // Initial check
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    navigateToSection(id);
   };
 
   // Calculate which dot should be filled based on progress
