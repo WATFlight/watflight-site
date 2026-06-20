@@ -7,32 +7,36 @@ const word = "WATFLIGHT";
 
 const sideImages = [
   {
-    src: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1200&q=80",
-    alt: "Quadcopter drone in flight",
+    src: "/images/saf-green-flight.webp",
+    alt: "Aircraft powered by sustainable aviation fuel",
+    position: "left",
+    span: 1,
+    objectPosition: "100% 42%",
+    fit: "cover",
+  },
+  {
+    src: "/images/pillar-environmental.avif",
+    alt: "Environmental sustainability in aviation",
     position: "left",
     span: 1,
     objectPosition: "center",
+    fit: "cover",
   },
   {
-    src: "https://images.unsplash.com/photo-1629731102977-e970387c8464?w=1200&q=80",
-    alt: "Hands wiring a drone",
-    position: "left",
-    span: 1,
-    objectPosition: "center",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1731579884331-95c1da04e988?w=1200&q=80",
-    alt: "Fixed-wing UAV in flight",
+    src: "/images/pillar-economic.avif",
+    alt: "Economic sustainability in aviation",
     position: "right",
     span: 1,
     objectPosition: "center",
+    fit: "cover",
   },
   {
-    src: "https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?w=1200&q=80",
-    alt: "Aerial drone over landscape",
+    src: "/images/pillar-social.avif",
+    alt: "Social sustainability in aviation",
     position: "right",
     span: 1,
     objectPosition: "center",
+    fit: "cover",
   },
 ];
 
@@ -125,7 +129,8 @@ export function HeroSection() {
                     src={img.src || "/placeholder.svg"}
                     alt={img.alt}
                     fill
-                    className="object-cover"
+                    className={img.fit === "contain" ? "object-contain" : "object-cover"}
+                    style={{ objectPosition: img.objectPosition }}
                   />
                 </div>
               ))}
@@ -195,7 +200,7 @@ export function HeroSection() {
                     src={img.src || "/placeholder.svg"}
                     alt={img.alt}
                     fill
-                    className="object-cover"
+                    className={img.fit === "contain" ? "object-contain" : "object-cover"}
                     style={{ objectPosition: img.objectPosition }}
                   />
                 </div>

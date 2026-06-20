@@ -3,17 +3,12 @@
 import { useState, useEffect, type MouseEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Sun, Moon } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Menu, X } from "lucide-react";
 import { navigateToSection } from "@/lib/smooth-scroll";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
     // Let modifier / non-left clicks behave natively (open in new tab, etc.)
@@ -94,24 +89,7 @@ export function Header() {
           </Link>
         </nav>
 
-        {/* Theme Toggle */}
         <div className="flex items-center gap-2">
-          {mounted && (
-            <button
-              type="button"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono transition-all border ${
-                isScrolled
-                  ? "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
-                  : "border-white/20 text-white/70 hover:text-white hover:border-white/40"
-              }`}
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? <Sun size={13} /> : <Moon size={13} />}
-              {theme === "dark" ? "LIGHT" : "DARK"}
-            </button>
-          )}
-
           {/* Mobile Menu Button */}
           <button
             type="button"
