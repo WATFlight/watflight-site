@@ -45,26 +45,12 @@ const tiers = [
   },
 ];
 
-// Current sponsors per tier. A sponsor with a `logo` renders as a logo tile;
-// otherwise it renders as a dashed "Join Us" placeholder.
-const sponsorGroups: { tier: string; sponsors: { name: string; logo?: string; url?: string }[] }[] = [
+// Current sponsors. If a sponsor has a `logo`, it renders as a logo tile.
+const sponsors: { name: string; logo: string; url?: string }[] = [
   {
-    tier: "Captain",
-    sponsors: [{ name: "Join Us" }],
-  },
-  {
-    tier: "First Officer",
-    sponsors: [
-      {
-        name: "Waterloo Institute for Sustainable Aeronautics",
-        logo: "/images/wisa-logo.png",
-        url: "https://uwaterloo.ca/sustainable-aeronautics/",
-      },
-    ],
-  },
-  {
-    tier: "Second Officer",
-    sponsors: [{ name: "Join Us" }, { name: "Join Us" }, { name: "Join Us" }],
+    name: "Waterloo Institute for Sustainable Aeronautics",
+    logo: "/images/wisa-logo.png",
+    url: "https://uwaterloo.ca/sustainable-aeronautics/",
   },
 ];
 
@@ -148,67 +134,39 @@ export function SponsorshipSection() {
             Our Sponsors
           </p>
 
-          {sponsorGroups.map((group) => (
-            <div key={group.tier} className="mb-12">
-              <p className="text-xs font-mono text-muted-foreground mb-6 uppercase tracking-widest">
-                {group.tier} Tier
-              </p>
-              <div
-                className={`flex flex-row flex-wrap gap-4 ${
-                  group.sponsors.some((s) => s.logo) ? "justify-center" : ""
-                }`}
-              >
-                {group.sponsors.map((sponsor, i) => {
-                  const sizeStyle = {
-                    minWidth: group.tier === "Captain" ? "240px" : group.tier === "First Officer" ? "180px" : "140px",
-                    minHeight: group.tier === "Captain" ? "80px" : "60px",
-                  };
+          <div className="flex flex-wrap items-center justify-center gap-6 max-w-5xl mx-auto">
+            {sponsors.map((sponsor, i) => {
+              const tile = (
+                <div
+                  className="flex w-full max-w-[560px] items-center justify-center rounded-xl border border-border px-8 py-8 md:px-12 md:py-10"
+                  style={{ background: "oklch(0.14 0.01 250)" }}
+                >
+                  <Image
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    width={560}
+                    height={118}
+                    className="h-12 w-auto max-w-full object-contain md:h-24"
+                  />
+                </div>
+              );
 
-                  if (sponsor.logo) {
-                    const tile = (
-                      <div
-                        className="flex w-full max-w-[560px] items-center justify-center rounded-xl border border-border px-8 py-8 md:px-12 md:py-10"
-                        style={{ background: "oklch(0.14 0.01 250)" }}
-                      >
-                        <Image
-                          src={sponsor.logo}
-                          alt={sponsor.name}
-                          width={560}
-                          height={118}
-                          className="h-12 w-auto max-w-full object-contain md:h-24"
-                        />
-                      </div>
-                    );
-
-                    return sponsor.url ? (
-                      <Link
-                        key={i}
-                        href={sponsor.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={sponsor.name}
-                        className="transition-opacity hover:opacity-80"
-                      >
-                        {tile}
-                      </Link>
-                    ) : (
-                      <div key={i}>{tile}</div>
-                    );
-                  }
-
-                  return (
-                    <div
-                      key={i}
-                      className="flex items-center justify-center rounded-xl border border-dashed border-border px-10 py-6 text-sm text-muted-foreground font-mono"
-                      style={sizeStyle}
-                    >
-                      {sponsor.name}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+              return sponsor.url ? (
+                <Link
+                  key={i}
+                  href={sponsor.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={sponsor.name}
+                  className="transition-opacity hover:opacity-80"
+                >
+                  {tile}
+                </Link>
+              ) : (
+                <div key={i}>{tile}</div>
+              );
+            })}
+          </div>
         </div>
 
         {/* CTA */}
