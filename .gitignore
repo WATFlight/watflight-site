@@ -24,4 +24,11 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts.DS_Store
+next-env.d.ts
+
+# OS files
+.DS_Store
+**/.DS_Store
+
+# AI tools
+.claude/
