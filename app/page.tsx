@@ -1,6 +1,5 @@
 import { HeroSection } from "@/components/sections/hero-section";
 import { PhilosophySection } from "@/components/sections/philosophy-section";
-import { TechnologySection } from "@/components/sections/technology-section";
 import { EditorialSection } from "@/components/sections/editorial-section";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { TeamSection } from "@/components/sections/team-section";
@@ -14,7 +13,6 @@ export default function Home() {
       <ProgressionNav />
       <HeroSection />
       <PhilosophySection />
-      <TechnologySection />
       <EditorialSection />
       <TestimonialsSection />
       <CompetitionsSection />

@@ -6,7 +6,6 @@ import { navigateToSection } from "@/lib/smooth-scroll";
 const sections = [
   { id: "hero", label: "Home" },
   { id: "products", label: "MiniFlight EVTOL" },
-  { id: "technology", label: "Technology" },
   { id: "editorial", label: "Specs" },
   { id: "testimonials", label: "Vision" },
   { id: "team", label: "Team" },
