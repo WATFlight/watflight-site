@@ -82,7 +82,7 @@ export function Header() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:hidden">
           {/* Mobile Menu Button */}
           <button
             type="button"
