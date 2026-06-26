@@ -6,12 +6,17 @@ import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { navigateToSection } from "@/lib/smooth-scroll";
 
+const navLinks = [
+  { href: "#competitions", id: "competitions", label: "Competitions" },
+  { href: "#sponsors", id: "sponsors", label: "Sponsors" },
+  { href: "#team", id: "team", label: "Team" },
+];
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
-    // Let modifier / non-left clicks behave natively (open in new tab, etc.)
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault();
     setIsMenuOpen(false);
@@ -20,90 +25,102 @@ export function Header() {
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <header 
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-3xl transition-all duration-300 ${isScrolled ? "bg-background/80 backdrop-blur-md rounded-full" : "bg-transparent"}`}
-      style={{
-        boxShadow: isScrolled ? "rgba(14, 63, 126, 0.04) 0px 0px 0px 1px, rgba(42, 51, 69, 0.04) 0px 1px 1px -0.5px, rgba(42, 51, 70, 0.04) 0px 3px 3px -1.5px, rgba(42, 51, 70, 0.04) 0px 6px 6px -3px, rgba(14, 63, 126, 0.04) 0px 12px 12px -6px, rgba(14, 63, 126, 0.04) 0px 24px 24px -12px" : "none"
-      }}
-    >
-      <div className="relative flex items-center transition-all duration-300 px-2 pl-5 py-2">
+    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-5xl">
+      {/* Main pill */}
+      <div
+        className={`relative flex items-center justify-between px-4 py-2.5 rounded-full border transition-all duration-500 ${
+          isScrolled
+            ? "bg-background/90 backdrop-blur-xl border-border/60 shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+            : "bg-white/5 backdrop-blur-sm border-white/10"
+        }`}
+      >
         {/* Logo */}
-        <Link href="#" onClick={(e) => handleNavClick(e, "")} className="flex items-center gap-2">
+        <Link href="#" onClick={(e) => handleNavClick(e, "")} className="flex items-center gap-2.5 z-10">
           <Image
             src="/images/watflight-logo.png"
             alt="WATFlight"
-            width={32}
-            height={32}
-            className="transition-all duration-300"
+            width={26}
+            height={26}
           />
-          <span className={`text-lg font-medium tracking-tight transition-colors duration-300 ${isScrolled ? "text-foreground" : "text-white"}`}>
+          <span className={`text-sm font-semibold tracking-widest uppercase transition-colors duration-300 ${isScrolled ? "text-foreground" : "text-white"}`}>
             WATFLIGHT
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8">
-          <Link
-            href="#competitions"
-            onClick={(e) => handleNavClick(e, "competitions")}
-            className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
-          >
-            Competitions
-          </Link>
-          <Link
-            href="#sponsors"
-            onClick={(e) => handleNavClick(e, "sponsors")}
-            className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
-          >
-            Sponsors
-          </Link>
-          <Link
-            href="#team"
-            onClick={(e) => handleNavClick(e, "team")}
-            className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
-          >
-            Team
-          </Link>
+        {/* Desktop nav — absolutely centered */}
+        <nav className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-0.5">
+          {navLinks.map(({ href, id, label }) => (
+            <Link
+              key={id}
+              href={href}
+              onClick={(e) => handleNavClick(e, id)}
+              className={`text-sm px-3.5 py-1.5 rounded-full transition-all duration-200 ${
+                isScrolled
+                  ? "text-muted-foreground hover:text-foreground hover:bg-foreground/6"
+                  : "text-white/65 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right: Join CTA + mobile toggle */}
+        <div className="flex items-center gap-2 z-10">
           <Link
             href="#join"
             onClick={(e) => handleNavClick(e, "join")}
-            className={`text-sm transition-colors px-4 py-1.5 rounded-full border ${isScrolled ? "border-foreground/20 text-foreground hover:bg-foreground hover:text-background" : "border-white/30 text-white hover:bg-white hover:text-black"}`}
+            className={`hidden md:inline-flex items-center text-sm font-medium px-4 py-1.5 rounded-full border transition-all duration-200 ${
+              isScrolled
+                ? "border-foreground/20 text-foreground hover:bg-foreground hover:text-background"
+                : "border-white/30 text-white hover:bg-white hover:text-black"
+            }`}
           >
             Join
           </Link>
-        </nav>
-
-        <div className="flex items-center gap-2 ml-auto md:hidden">
-          {/* Mobile Menu Button */}
           <button
             type="button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`transition-colors flex md:hidden ${isScrolled ? "text-foreground" : "text-white"}`}
+            className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200 md:hidden ${
+              isScrolled
+                ? "text-foreground hover:bg-foreground/10"
+                : "text-white hover:bg-white/10"
+            }`}
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu — separate card below pill */}
       {isMenuOpen && (
-        <div className="border-t border-border bg-background px-6 py-8 md:hidden rounded-b-2xl">
-          <nav className="flex flex-col gap-6">
-            <Link href="#hero" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "hero")}>Home</Link>
-            <Link href="#competitions" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "competitions")}>Competitions</Link>
-            <Link href="#sponsors" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "sponsors")}>Sponsors</Link>
-            <Link href="#team" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "team")}>Team</Link>
-            <Link href="#join" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "join")}>Join</Link>
+        <div className={`mt-2 rounded-2xl border overflow-hidden transition-all duration-200 ${
+          isScrolled
+            ? "bg-background/95 backdrop-blur-xl border-border/60"
+            : "bg-black/80 backdrop-blur-xl border-white/10"
+        }`}>
+          <nav className="flex flex-col p-2">
+            {[{ href: "#hero", id: "hero", label: "Home" }, ...navLinks, { href: "#join", id: "join", label: "Join" }].map(({ href, id, label }) => (
+              <Link
+                key={id}
+                href={href}
+                onClick={(e) => handleNavClick(e, id)}
+                className={`text-sm px-4 py-3 rounded-xl transition-colors ${
+                  isScrolled
+                    ? "text-foreground hover:bg-foreground/6"
+                    : "text-white/80 hover:text-white hover:bg-white/8"
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
           </nav>
         </div>
       )}
