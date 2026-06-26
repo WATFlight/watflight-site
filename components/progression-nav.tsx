@@ -5,8 +5,6 @@ import { navigateToSection } from "@/lib/smooth-scroll";
 
 const sections = [
   { id: "hero", label: "Home" },
-  { id: "products", label: "MiniFlight EVTOL" },
-  { id: "editorial", label: "Specs" },
   { id: "testimonials", label: "Vision" },
   { id: "team", label: "Team" },
 ];
@@ -74,12 +72,12 @@ export function ProgressionNav() {
       {/* Container for the vertical line and dots */}
       <div className="relative flex flex-col items-center gap-6 py-4">
         {/* Progress bar background */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-px" style={{ background: "oklch(0.78 0.14 75 / 0.2)" }} />
+        <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-px" style={{ background: "oklch(1 0 0 / 0.15)" }} />
 
-        {/* Progress bar fill — amber */}
+        {/* Progress bar fill — white */}
         <div
           className="absolute left-1/2 -translate-x-1/2 top-4 w-px transition-all duration-150 origin-top"
-          style={{ height: `${progress}%`, maxHeight: 'calc(100% - 32px)', background: "oklch(0.78 0.14 75)" }}
+          style={{ height: `${progress}%`, maxHeight: 'calc(100% - 32px)', background: "oklch(1 0 0 / 0.9)" }}
         />
 
         {/* Section buttons */}
@@ -96,10 +94,10 @@ export function ProgressionNav() {
               className="relative w-2.5 h-2.5 rounded-full border-2 transition-all duration-300"
               style={
                 activeSection === section.id
-                  ? { background: "oklch(0.78 0.14 75)", borderColor: "oklch(0.78 0.14 75)", transform: "scale(1.2)" }
+                  ? { background: "oklch(1 0 0)", borderColor: "oklch(1 0 0)", transform: "scale(1.2)" }
                   : getProgressForDot(index)
-                  ? { background: "oklch(0.78 0.14 75 / 0.5)", borderColor: "oklch(0.78 0.14 75 / 0.5)" }
-                  : { background: "transparent", borderColor: "oklch(0.78 0.14 75 / 0.25)" }
+                  ? { background: "oklch(1 0 0 / 0.4)", borderColor: "oklch(1 0 0 / 0.4)" }
+                  : { background: "transparent", borderColor: "oklch(1 0 0 / 0.2)" }
               }
             />
 

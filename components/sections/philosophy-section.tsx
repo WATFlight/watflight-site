@@ -96,21 +96,6 @@ export function PhilosophySection() {
         </div>
       </div>
 
-      {/* Description */}
-      <div className="px-6 py-20 md:px-12 md:py-28 lg:px-20 lg:py-36 lg:pb-14">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-xs uppercase tracking-[0.25em] font-mono text-muted-foreground mb-6">
-            Our First Aircraft
-          </p>
-          <h3 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl mb-8">
-            Nowhere to go<br />but up.
-          </h3>
-          <p className="text-lg leading-relaxed text-muted-foreground max-w-2xl">
-            MiniFlight EVTOL is WATFlight&apos;s first autonomous aircraft — vertical take-off,
-            electric propulsion, and student-engineered from the ground up at the University of Waterloo.
-          </p>
-        </div>
-      </div>
     </section>
   );
 }

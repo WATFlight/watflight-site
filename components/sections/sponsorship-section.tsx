@@ -6,7 +6,7 @@ import Image from "next/image";
 const tiers = [
   {
     rank: "Captain",
-    price: "$2,000+",
+    price: "$2,500+",
     badge: "★",
     color: "oklch(0.78 0.14 75)",
     borderColor: "oklch(0.78 0.14 75 / 0.5)",
@@ -20,7 +20,7 @@ const tiers = [
   },
   {
     rank: "First Officer",
-    price: "$750+",
+    price: "$1,000+",
     badge: "01",
     color: "oklch(0.78 0.10 220)",
     borderColor: "oklch(0.78 0.10 220 / 0.4)",
@@ -33,7 +33,7 @@ const tiers = [
   },
   {
     rank: "Second Officer",
-    price: "$300+",
+    price: "$500+",
     badge: "02",
     color: "oklch(0.65 0.05 220)",
     borderColor: "oklch(0.65 0.05 220 / 0.3)",
@@ -46,11 +46,17 @@ const tiers = [
 ];
 
 // Current sponsors. If a sponsor has a `logo`, it renders as a logo tile.
-const sponsors: { name: string; logo: string; url?: string }[] = [
+const sponsors: { name: string; logo: string; url?: string; imageClassName?: string }[] = [
   {
     name: "Waterloo Institute for Sustainable Aeronautics",
     logo: "/images/wisa-logo.png",
     url: "https://uwaterloo.ca/sustainable-aeronautics/",
+  },
+  {
+    name: "Microchip Technology",
+    logo: "/images/microchip-logo.png",
+    url: "https://www.microchip.com/",
+    imageClassName: "w-full h-auto object-contain",
   },
 ];
 
@@ -68,7 +74,7 @@ export function SponsorshipSection() {
             Help us build the future of flight.
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            WATFlight is a University of Waterloo student design team building autonomous aerial vehicles. Your sponsorship directly funds aircraft development, competition entries, and hands-on engineering education.
+            WATFlight is a University of Waterloo student design team dedicated to advancing sustainable aviation. Your sponsorship directly funds the development of cleaner, more efficient aircraft and helps us prove that the future of flight can be both autonomous and environmentally responsible.
           </p>
         </div>
 
@@ -134,19 +140,19 @@ export function SponsorshipSection() {
             Our Sponsors
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {sponsors.map((sponsor, i) => {
               const tile = (
                 <div
-                  className="flex w-full max-w-[560px] items-center justify-center rounded-xl border border-border px-8 py-8 md:px-12 md:py-10"
+                  className="flex h-full items-center justify-center rounded-xl border border-border px-8 py-8 md:px-12 md:py-10"
                   style={{ background: "oklch(0.14 0.01 250)" }}
                 >
                   <Image
                     src={sponsor.logo}
                     alt={sponsor.name}
                     width={560}
-                    height={118}
-                    className="h-12 w-auto max-w-full object-contain md:h-24"
+                    height={200}
+                    className="h-12 w-auto max-w-full object-contain md:h-20"
                   />
                 </div>
               );
@@ -158,7 +164,7 @@ export function SponsorshipSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={sponsor.name}
-                  className="transition-opacity hover:opacity-80"
+                  className="block transition-opacity hover:opacity-80"
                 >
                   {tile}
                 </Link>

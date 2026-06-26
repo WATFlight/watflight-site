@@ -53,13 +53,6 @@ export function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-10">
           <Link
-            href="#products"
-            onClick={(e) => handleNavClick(e, "products")}
-            className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
-          >
-            Projects
-          </Link>
-          <Link
             href="#competitions"
             onClick={(e) => handleNavClick(e, "competitions")}
             className={`text-sm transition-colors ${isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
@@ -107,7 +100,6 @@ export function Header() {
         <div className="border-t border-border bg-background px-6 py-8 md:hidden rounded-b-2xl">
           <nav className="flex flex-col gap-6">
             <Link href="#hero" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "hero")}>Home</Link>
-            <Link href="#products" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "products")}>Projects</Link>
             <Link href="#competitions" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "competitions")}>Competitions</Link>
             <Link href="#sponsors" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "sponsors")}>Sponsors</Link>
             <Link href="#team" className="text-lg text-foreground" onClick={(e) => handleNavClick(e, "team")}>Team</Link>

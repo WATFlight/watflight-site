@@ -29,7 +29,7 @@ const competitions = [
 
 export function CompetitionsSection() {
   return (
-    <section id="competitions" className="bg-background px-6 py-20 md:px-12 md:py-28 lg:px-20 lg:py-36">
+    <section id="competitions" className="bg-background px-6 pt-0 pb-20 md:px-12 md:pt-0 md:pb-28 lg:px-20 lg:pt-0 lg:pb-36">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-16">
