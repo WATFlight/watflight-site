@@ -35,7 +35,7 @@ export function Header() {
         boxShadow: isScrolled ? "rgba(14, 63, 126, 0.04) 0px 0px 0px 1px, rgba(42, 51, 69, 0.04) 0px 1px 1px -0.5px, rgba(42, 51, 70, 0.04) 0px 3px 3px -1.5px, rgba(42, 51, 70, 0.04) 0px 6px 6px -3px, rgba(14, 63, 126, 0.04) 0px 12px 12px -6px, rgba(14, 63, 126, 0.04) 0px 24px 24px -12px" : "none"
       }}
     >
-      <div className="flex items-center justify-between transition-all duration-300 px-2 pl-5 py-2">
+      <div className="relative flex items-center transition-all duration-300 px-2 pl-5 py-2">
         {/* Logo */}
         <Link href="#" onClick={(e) => handleNavClick(e, "")} className="flex items-center gap-2">
           <Image
@@ -51,7 +51,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6 lg:gap-10">
+        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8">
           <Link
             href="#competitions"
             onClick={(e) => handleNavClick(e, "competitions")}
@@ -82,7 +82,7 @@ export function Header() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 ml-auto md:hidden">
           {/* Mobile Menu Button */}
           <button
             type="button"
