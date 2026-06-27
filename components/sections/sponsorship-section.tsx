@@ -117,7 +117,7 @@ export function SponsorshipSection() {
         </div>
 
         {/* CTA */}
-        <div className="mt-16 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-t border-border pt-16">
+        <div className="mt-16 flex flex-col items-start md:flex-row md:items-center md:justify-between gap-4 border-t border-border pt-16">
           <div>
             <h4 className="text-xl font-semibold text-foreground mb-2">Interested in sponsoring?</h4>
             <p className="text-sm text-muted-foreground">Reach out to our team to discuss partnership opportunities.</p>

@@ -177,7 +177,7 @@ export function HeroSection() {
               />
 
               <div
-                className="absolute inset-0 flex items-end overflow-hidden"
+                className="absolute inset-0 flex items-end pb-4 md:pb-6 lg:pb-8 overflow-hidden"
                 style={{ opacity: "var(--hero-text-opacity)" }}
               >
                 <h1 className="w-full whitespace-nowrap text-center text-[16vw] font-medium leading-[0.8] tracking-tighter text-white lg:text-[13vw]">
