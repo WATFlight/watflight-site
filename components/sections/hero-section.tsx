@@ -172,7 +172,7 @@ export function HeroSection() {
                 alt="WATFlight logo"
                 fill
                 sizes="100vw"
-                className="object-contain p-16 md:p-24 lg:p-32"
+                className="object-contain p-6 sm:p-12 md:p-24 lg:p-32"
                 priority
               />
 
