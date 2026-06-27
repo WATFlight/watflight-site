@@ -54,7 +54,7 @@ export function HeroSection() {
       const rect = sectionRef.current.getBoundingClientRect();
       const scrollableHeight = window.innerHeight * 2;
       const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / scrollableHeight));
+      const progress = scrollableHeight > 0 ? Math.max(0, Math.min(1, scrolled / scrollableHeight)) : 0;
 
       setScrollProgress(progress);
     };

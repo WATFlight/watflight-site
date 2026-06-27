@@ -2,8 +2,6 @@
 
 import Image from "next/image";
 import { Linkedin, Mail, Instagram, Github } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 
 const teamMembers = [
   {
@@ -47,11 +45,6 @@ function DiscordIcon({ className }: { className?: string }) {
 }
 
 export function TeamSection() {
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  const isDark = !mounted || resolvedTheme === "dark";
-
   return (
     <section id="team" className="bg-background py-24 md:py-32 lg:py-40">
       <div className="px-6 md:px-12 lg:px-20">
@@ -59,7 +52,7 @@ export function TeamSection() {
         <div className="text-center mb-16 md:mb-20">
           <div className="flex justify-center mb-8">
             <Image
-              src={isDark ? "/images/uw-engineering-logo-white.png" : "/images/uw-engineering-logo.png"}
+              src="/images/uw-engineering-logo-white.png"
               alt="University of Waterloo Faculty of Engineering"
               width={320}
               height={88}
