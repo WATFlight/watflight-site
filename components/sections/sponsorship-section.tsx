@@ -152,7 +152,7 @@ export function SponsorshipSection() {
                     alt={sponsor.name}
                     width={560}
                     height={200}
-                    className="h-12 w-auto max-w-full object-contain md:h-20"
+                    className={sponsor.imageClassName ?? "h-12 w-auto max-w-full object-contain md:h-20"}
                   />
                 </div>
               );
