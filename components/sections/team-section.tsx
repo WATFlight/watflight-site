@@ -46,7 +46,7 @@ function DiscordIcon({ className }: { className?: string }) {
 
 export function TeamSection() {
   return (
-    <section id="team" className="bg-background py-24 md:py-32 lg:py-40">
+    <section id="team" className="bg-background pt-24 pb-14 md:py-32 lg:py-40">
       <div className="px-6 md:px-12 lg:px-20">
         {/* Section Header */}
         <div className="text-center mb-16 md:mb-20">
@@ -155,16 +155,16 @@ export function TeamSection() {
         </div>
 
         {/* Team Social Links */}
-        <div className="mt-16 flex flex-col items-center">
+        <div className="mt-12 flex flex-col items-center md:mt-16">
           <p className="text-sm text-muted-foreground mb-4">
             Connect with the team
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="grid w-full max-w-sm grid-cols-2 gap-3 sm:max-w-xl sm:grid-cols-4">
             <a
               href="https://linkedin.com/company/watflight"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-muted px-3 py-2 transition-colors hover:bg-muted/80 sm:min-h-10"
             >
               <Linkedin className="w-4 h-4 text-foreground" />
               <span className="text-sm font-medium text-foreground">LinkedIn</span>
@@ -173,7 +173,7 @@ export function TeamSection() {
               href="https://instagram.com/watflight"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-muted px-3 py-2 transition-colors hover:bg-muted/80 sm:min-h-10"
             >
               <Instagram className="w-4 h-4 text-foreground" />
               <span className="text-sm font-medium text-foreground">Instagram</span>
@@ -182,7 +182,7 @@ export function TeamSection() {
               href="https://discord.gg/dhVNt6fkwj"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-muted px-3 py-2 transition-colors hover:bg-muted/80 sm:min-h-10"
             >
               <DiscordIcon className="w-4 h-4 text-foreground" />
               <span className="text-sm font-medium text-foreground">Discord</span>
@@ -191,7 +191,7 @@ export function TeamSection() {
               href="https://github.com/WATFlight"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-muted px-3 py-2 transition-colors hover:bg-muted/80 sm:min-h-10"
             >
               <Github className="w-4 h-4 text-foreground" />
               <span className="text-sm font-medium text-foreground">GitHub</span>

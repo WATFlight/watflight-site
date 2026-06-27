@@ -92,9 +92,6 @@ export function HeroSection() {
   const borderRadius = imageProgress * 24; // 0px to 24px
   const gap = imageProgress * 16; // 0px to 16px
   
-  // Vertical offset for side columns to move them up on mobile
-  const sideTranslateY = -(imageProgress * 15); // Move up by 15% when fully expanded
-
   return (
     <section id="hero" ref={sectionRef} className="relative bg-black">
       {/* Sticky container for scroll animation */}
@@ -103,7 +100,13 @@ export function HeroSection() {
           {/* Bento Grid Container */}
           <div 
             className="relative flex h-full w-full items-stretch justify-center"
-            style={{ gap: `${gap}px`, padding: `${imageProgress * 16}px`, paddingBottom: `${60 + (imageProgress * 40)}px` }}
+            style={{
+              gap: `${gap}px`,
+              paddingTop: `${imageProgress * 96}px`,
+              paddingRight: `${imageProgress * 16}px`,
+              paddingBottom: `${60 + (imageProgress * 40)}px`,
+              paddingLeft: `${imageProgress * 16}px`,
+            }}
           >
             
             {/* Left Column */}
@@ -112,7 +115,7 @@ export function HeroSection() {
               style={{
                 width: `${sideWidth}%`,
                 gap: `${gap}px`,
-                transform: `translateX(${sideTranslateLeft}%) translateY(${sideTranslateY}%)`,
+                transform: `translateX(${sideTranslateLeft}%)`,
                 opacity: sideOpacity,
               }}
             >
@@ -183,7 +186,7 @@ export function HeroSection() {
               style={{
                 width: `${sideWidth}%`,
                 gap: `${gap}px`,
-                transform: `translateX(${sideTranslateRight}%) translateY(${sideTranslateY}%)`,
+                transform: `translateX(${sideTranslateRight}%)`,
                 opacity: sideOpacity,
               }}
             >
@@ -224,8 +227,8 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll space to enable animation */}
-      <div className="h-[200vh]" />
+      {/* Animation completes over 200vh, then the finished composition holds for 35vh. */}
+      <div className="h-[235vh]" />
     </section>
   );
 }

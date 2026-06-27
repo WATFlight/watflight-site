@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { Star } from "lucide-react";
 
 const tiers = [
   {
@@ -62,7 +63,7 @@ const sponsors: { name: string; logo: string; url?: string; imageClassName?: str
 
 export function SponsorshipSection() {
   return (
-    <section id="sponsors" className="bg-background px-6 py-20 md:px-12 md:py-28 lg:px-20 lg:py-36">
+    <section id="sponsors" className="bg-background px-6 pt-0 pb-20 md:px-12 md:pt-0 md:pb-28 lg:px-20 lg:pt-0 lg:pb-36">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
@@ -88,28 +89,32 @@ export function SponsorshipSection() {
                 border: `1px solid ${tier.borderColor}`,
               }}
             >
-              {/* Badge */}
-              <div
-                className="text-xs font-mono mb-6 w-8 h-8 flex items-center justify-center rounded-full"
-                style={{
-                  background: `${tier.color}22`,
-                  color: tier.color,
-                  border: `1px solid ${tier.borderColor}`,
-                }}
-              >
-                {tier.badge}
+              {/* Tier heading + badge */}
+              <div className="mb-6 flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="mb-1 text-2xl font-semibold text-foreground">
+                    {tier.rank}
+                  </h3>
+                  <p className="font-mono text-sm" style={{ color: tier.color }}>
+                    {tier.price}
+                  </p>
+                </div>
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-mono"
+                  style={{
+                    background: `${tier.color}22`,
+                    color: tier.color,
+                    border: `1px solid ${tier.borderColor}`,
+                  }}
+                  aria-hidden="true"
+                >
+                  {tier.badge === "★" ? (
+                    <Star className="h-4 w-4 fill-current" strokeWidth={1.5} />
+                  ) : (
+                    <span className="text-[13px] tabular-nums">{tier.badge}</span>
+                  )}
+                </div>
               </div>
-
-              {/* Tier name + price */}
-              <h3 className="text-2xl font-semibold text-foreground mb-1">
-                {tier.rank}
-              </h3>
-              <p
-                className="text-sm font-mono mb-8"
-                style={{ color: tier.color }}
-              >
-                {tier.price}
-              </p>
 
               {/* Divider */}
               <div className="border-t border-border mb-8" />
