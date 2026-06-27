@@ -46,7 +46,7 @@ function DiscordIcon({ className }: { className?: string }) {
 
 export function TeamSection() {
   return (
-    <section id="team" className="bg-background pt-24 pb-14 md:py-32 lg:py-40">
+    <section id="team" className="bg-background pt-0 pb-14 md:pt-0 md:pb-32 lg:pt-0 lg:pb-40">
       <div className="px-6 md:px-12 lg:px-20">
         {/* Section Header */}
         <div className="text-center mb-16 md:mb-20">
@@ -113,12 +113,12 @@ export function TeamSection() {
         </div>
 
         {/* Join the Team */}
-        <div id="join" className="mt-24 border-t pt-20" style={{ borderColor: "var(--border)" }}>
+        <div id="join" className="mx-auto mt-24 max-w-6xl border-t pt-20" style={{ borderColor: "var(--border)" }}>
           <p className="text-xs uppercase tracking-[0.25em] font-mono text-muted-foreground mb-6">
             Get Involved
           </p>
-          <h2 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl mb-6">
-            Want to join<br />WATFlight?
+          <h2 className="mb-6 max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+            Want to join WATFlight?
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mb-12">
             We&apos;re always looking for passionate engineers, designers, and builders. Here&apos;s how to get started:

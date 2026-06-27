@@ -71,7 +71,7 @@ export function SponsorshipSection() {
           <p className="text-xs uppercase tracking-[0.25em] font-mono text-muted-foreground mb-6">
             Partner With Us
           </p>
-          <h2 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl max-w-3xl mb-6">
+          <h2 className="mb-6 max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl">
             Help us build the future of flight.
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">

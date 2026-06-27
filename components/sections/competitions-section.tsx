@@ -29,14 +29,14 @@ const competitions = [
 
 export function CompetitionsSection() {
   return (
-    <section id="competitions" className="bg-background px-6 pt-0 pb-20 md:px-12 md:pt-0 md:pb-28 lg:px-20 lg:pt-0 lg:pb-36">
+    <section id="competitions" className="bg-background px-6 pt-0 pb-20 md:px-12 md:pt-0 lg:px-20 lg:pt-0">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-16">
           <p className="text-xs uppercase tracking-[0.25em] font-mono text-muted-foreground mb-6">
             Where We Compete
           </p>
-          <h2 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl max-w-2xl">
+          <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl">
             Competing on the world stage.
           </h2>
         </div>
