@@ -1,7 +1,9 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { subscribeToScroll } from "@/lib/scroll-store";
 
 const word = "WATFLIGHT";
 
@@ -10,168 +12,180 @@ const sideImages = [
     src: "/images/saf-green-flight.webp",
     alt: "Aircraft powered by sustainable aviation fuel",
     position: "left",
-    span: 1,
     objectPosition: "100% 42%",
-    fit: "cover",
   },
   {
     src: "/images/pillar-environmental.avif",
     alt: "Environmental sustainability in aviation",
     position: "left",
-    span: 1,
     objectPosition: "center",
-    fit: "cover",
   },
   {
     src: "/images/pillar-economic.avif",
     alt: "Economic sustainability in aviation",
     position: "right",
-    span: 1,
     objectPosition: "center",
-    fit: "cover",
   },
   {
     src: "/images/pillar-social.avif",
     alt: "Social sustainability in aviation",
     position: "right",
-    span: 1,
     objectPosition: "center",
-    fit: "cover",
   },
-];
+] as const;
+
+const leftImages = sideImages.filter((image) => image.position === "left");
+const rightImages = sideImages.filter((image) => image.position === "right");
+type SideImage = (typeof sideImages)[number];
+
+const initialHeroStyle = {
+  "--hero-gap": "0px",
+  "--hero-padding-top": "0px",
+  "--hero-padding-side": "0px",
+  "--hero-padding-bottom": "60px",
+  "--hero-side-width": "0%",
+  "--hero-side-opacity": "0",
+  "--hero-left-x": "-100%",
+  "--hero-right-x": "100%",
+  "--hero-center-width": "100%",
+  "--hero-center-height": "100%",
+  "--hero-radius": "0px",
+  "--hero-text-opacity": "1",
+  "--hero-tagline-opacity": "0",
+  "--hero-tagline-y": "30px",
+} as CSSProperties;
+
+function applyHeroProgress(section: HTMLElement, scrollProgress: number) {
+  const textOpacity = Math.max(0, 1 - scrollProgress / 0.2);
+  const imageProgress = Math.max(0, Math.min(1, (scrollProgress - 0.2) / 0.8));
+  const taglineOpacity = Math.max(0, Math.min(1, (imageProgress - 0.75) / 0.25));
+
+  section.style.setProperty("--hero-gap", `${imageProgress * 16}px`);
+  section.style.setProperty("--hero-padding-top", `${imageProgress * 96}px`);
+  section.style.setProperty("--hero-padding-side", `${imageProgress * 16}px`);
+  section.style.setProperty("--hero-padding-bottom", `${60 + imageProgress * 40}px`);
+  section.style.setProperty("--hero-side-width", `${imageProgress * 22}%`);
+  section.style.setProperty("--hero-side-opacity", `${imageProgress}`);
+  section.style.setProperty("--hero-left-x", `${-100 + imageProgress * 100}%`);
+  section.style.setProperty("--hero-right-x", `${100 - imageProgress * 100}%`);
+  section.style.setProperty("--hero-center-width", `${100 - imageProgress * 58}%`);
+  section.style.setProperty("--hero-center-height", `${100 - imageProgress * 30}%`);
+  section.style.setProperty("--hero-radius", `${imageProgress * 24}px`);
+  section.style.setProperty("--hero-text-opacity", `${textOpacity}`);
+  section.style.setProperty("--hero-tagline-opacity", `${taglineOpacity}`);
+  section.style.setProperty("--hero-tagline-y", `${(1 - taglineOpacity) * 30}px`);
+}
+
+function SideColumn({ images, side }: { images: readonly SideImage[]; side: "left" | "right" }) {
+  return (
+    <div
+      className="flex flex-col will-change-transform"
+      style={{
+        width: "var(--hero-side-width)",
+        gap: "var(--hero-gap)",
+        opacity: "var(--hero-side-opacity)",
+        transform: `translateX(var(--hero-${side}-x))`,
+      }}
+    >
+      {images.map((image) => (
+        <div
+          key={image.src}
+          className="relative flex-1 overflow-hidden"
+          style={{ borderRadius: "var(--hero-radius)" }}
+        >
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            sizes="22vw"
+            className="object-cover"
+            style={{ objectPosition: image.objectPosition }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    let rafId: number | null = null;
+    const section = sectionRef.current;
+    if (!section) return;
 
-    const update = () => {
-      rafId = null;
-      if (!sectionRef.current) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let sectionTop = section.offsetTop;
+    let lastViewportHeight = 0;
 
-      const rect = sectionRef.current.getBoundingClientRect();
-      const scrollableHeight = window.innerHeight * 2;
-      const scrolled = -rect.top;
-      const progress = scrollableHeight > 0 ? Math.max(0, Math.min(1, scrolled / scrollableHeight)) : 0;
+    return subscribeToScroll(({ scrollY, viewportHeight }) => {
+      if (lastViewportHeight !== viewportHeight) {
+        lastViewportHeight = viewportHeight;
+        sectionTop = section.offsetTop;
+      }
 
-      setScrollProgress(progress);
-    };
+      if (reducedMotion.matches) {
+        applyHeroProgress(section, 1);
+        return;
+      }
 
-    const handleScroll = () => {
-      if (rafId === null) rafId = requestAnimationFrame(update);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    update();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (rafId !== null) cancelAnimationFrame(rafId);
-    };
+      const scrollableHeight = viewportHeight * 2;
+      const scrolled = scrollY - sectionTop;
+      const progress = scrollableHeight > 0
+        ? Math.max(0, Math.min(1, scrolled / scrollableHeight))
+        : 0;
+      applyHeroProgress(section, progress);
+    });
   }, []);
 
-  // Text fades out first (0 to 0.2)
-  const textOpacity = Math.max(0, 1 - (scrollProgress / 0.2));
-
-  // Image transforms start after text fades (0.2 to 1)
-  const imageProgress = Math.max(0, Math.min(1, (scrollProgress - 0.2) / 0.8));
-
-  // Tagline fades in as grid fully forms (0.75 to 1)
-  const taglineOpacity = Math.max(0, Math.min(1, (imageProgress - 0.75) / 0.25));
-  const taglineY = (1 - taglineOpacity) * 30; // slides up from below
-  
-  // Smooth interpolations
-  const centerWidth = 100 - (imageProgress * 58); // 100% to 42%
-  const centerHeight = 100 - (imageProgress * 30); // 100% to 70%
-  const sideWidth = imageProgress * 22; // 0% to 22%
-  const sideOpacity = imageProgress;
-  const sideTranslateLeft = -100 + (imageProgress * 100); // -100% to 0%
-  const sideTranslateRight = 100 - (imageProgress * 100); // 100% to 0%
-  const borderRadius = imageProgress * 24; // 0px to 24px
-  const gap = imageProgress * 16; // 0px to 16px
-  
   return (
-    <section id="hero" ref={sectionRef} className="relative bg-black">
-      {/* Sticky container for scroll animation */}
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <section
+      id="hero"
+      ref={sectionRef}
+      className="hero-section relative bg-black"
+      style={initialHeroStyle}
+    >
+      <div className="hero-sticky sticky top-0 h-screen overflow-hidden">
         <div className="flex h-full w-full items-center justify-center">
-          {/* Bento Grid Container */}
-          <div 
+          <div
             className="relative flex h-full w-full items-stretch justify-center"
             style={{
-              gap: `${gap}px`,
-              paddingTop: `${imageProgress * 96}px`,
-              paddingRight: `${imageProgress * 16}px`,
-              paddingBottom: `${60 + (imageProgress * 40)}px`,
-              paddingLeft: `${imageProgress * 16}px`,
+              gap: "var(--hero-gap)",
+              paddingTop: "var(--hero-padding-top)",
+              paddingRight: "var(--hero-padding-side)",
+              paddingBottom: "var(--hero-padding-bottom)",
+              paddingLeft: "var(--hero-padding-side)",
             }}
           >
-            
-            {/* Left Column */}
-            <div
-              className="flex flex-col will-change-transform"
-              style={{
-                width: `${sideWidth}%`,
-                gap: `${gap}px`,
-                transform: `translateX(${sideTranslateLeft}%)`,
-                opacity: sideOpacity,
-              }}
-            >
-              {sideImages.filter(img => img.position === "left").map((img, idx) => (
-                <div 
-                  key={idx} 
-                  className="relative overflow-hidden will-change-transform"
-                  style={{
-                    flex: img.span,
-                    borderRadius: `${borderRadius}px`,
-                  }}
-                >
-                  <Image
-                    src={img.src || "/placeholder.svg"}
-                    alt={img.alt}
-                    fill
-                    className={img.fit === "contain" ? "object-contain" : "object-cover"}
-                    style={{ objectPosition: img.objectPosition }}
-                  />
-                </div>
-              ))}
-            </div>
+            <SideColumn images={leftImages} side="left" />
 
-            {/* Main Hero Image - Center */}
             <div
-              className="relative overflow-hidden will-change-transform bg-black"
+              className="relative flex-none overflow-hidden bg-black"
               style={{
-                width: `${centerWidth}%`,
-                height: `${centerHeight}%`,
-                flex: "0 0 auto",
-                borderRadius: `${borderRadius}px`,
+                width: "var(--hero-center-width)",
+                height: "var(--hero-center-height)",
+                borderRadius: "var(--hero-radius)",
               }}
             >
               <Image
                 src="/images/watflight-logo.png"
                 alt="WATFlight logo"
                 fill
+                sizes="100vw"
                 className="object-contain p-16 md:p-24 lg:p-32"
                 priority
               />
-              
-              {/* Overlay Text - Fades out first */}
-              <div 
+
+              <div
                 className="absolute inset-0 flex items-end overflow-hidden"
-                style={{ opacity: textOpacity }}
+                style={{ opacity: "var(--hero-text-opacity)" }}
               >
                 <h1 className="w-full whitespace-nowrap text-center text-[16vw] font-medium leading-[0.8] tracking-tighter text-white lg:text-[13vw]">
                   {word.split("").map((letter, index) => (
                     <span
-                      key={index}
-                      className="inline-block animate-[slideUp_0.8s_ease-out_forwards] opacity-0"
-                      style={{
-                        animationDelay: `${index * 0.08}s`,
-                        transition: 'all 1.5s',
-                        transitionTimingFunction: 'cubic-bezier(0.86, 0, 0.07, 1)',
-                      }}
+                      key={`${letter}-${index}`}
+                      className="hero-letter inline-block animate-[slideUp_0.8s_ease-out_forwards] opacity-0"
+                      style={{ animationDelay: `${index * 0.08}s` }}
                     >
                       {letter}
                     </span>
@@ -180,42 +194,15 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* Right Column */}
-            <div
-              className="flex flex-col will-change-transform"
-              style={{
-                width: `${sideWidth}%`,
-                gap: `${gap}px`,
-                transform: `translateX(${sideTranslateRight}%)`,
-                opacity: sideOpacity,
-              }}
-            >
-              {sideImages.filter(img => img.position === "right").map((img, idx) => (
-                <div 
-                  key={idx} 
-                  className="relative overflow-hidden will-change-transform"
-                  style={{
-                    flex: img.span,
-                    borderRadius: `${borderRadius}px`,
-                  }}
-                >
-                  <Image
-                    src={img.src || "/placeholder.svg"}
-                    alt={img.alt}
-                    fill
-                    className={img.fit === "contain" ? "object-contain" : "object-cover"}
-                    style={{ objectPosition: img.objectPosition }}
-                  />
-                </div>
-              ))}
-            </div>
-
+            <SideColumn images={rightImages} side="right" />
           </div>
 
-          {/* Tagline — fades in as bento grid forms */}
           <div
-            className="absolute bottom-8 left-0 w-full text-center pointer-events-none"
-            style={{ opacity: taglineOpacity, transform: `translateY(${taglineY}px)` }}
+            className="pointer-events-none absolute bottom-8 left-0 w-full text-center"
+            style={{
+              opacity: "var(--hero-tagline-opacity)",
+              transform: "translateY(var(--hero-tagline-y))",
+            }}
           >
             <h2 className="text-[9vw] font-semibold leading-none tracking-tight text-white md:text-[7vw]">
               Built by students.
@@ -227,8 +214,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Animation completes over 200vh, then the finished composition holds for 35vh. */}
-      <div className="h-[235vh]" />
+      <div className="hero-scroll-space h-[235vh]" />
     </section>
   );
 }

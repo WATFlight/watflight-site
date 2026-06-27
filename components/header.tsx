@@ -4,13 +4,8 @@ import { useState, type MouseEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import { headerNavLinks } from "@/content/site-content";
 import { navigateToSection } from "@/lib/smooth-scroll";
-
-const navLinks = [
-  { href: "#competitions", id: "competitions", label: "Competitions" },
-  { href: "#sponsors", id: "sponsors", label: "Sponsors" },
-  { href: "#team", id: "team", label: "Team" },
-];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,7 +39,7 @@ export function Header() {
 
         {/* Desktop nav — absolutely centered */}
         <nav className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-0.5">
-          {navLinks.map(({ href, id, label }) => (
+          {headerNavLinks.map(({ href, id, label }) => (
             <Link
               key={id}
               href={href}
@@ -80,7 +75,7 @@ export function Header() {
       {isMenuOpen && (
         <div className="mt-2 overflow-hidden rounded-2xl border border-border/60 bg-background/95 backdrop-blur-xl transition-all duration-200">
           <nav className="flex flex-col p-2">
-            {[{ href: "#hero", id: "hero", label: "Home" }, ...navLinks, { href: "#join", id: "join", label: "Join" }].map(({ href, id, label }) => (
+            {[{ href: "#hero", id: "hero", label: "Home" }, ...headerNavLinks, { href: "#join", id: "join", label: "Join" }].map(({ href, id, label }) => (
               <Link
                 key={id}
                 href={href}

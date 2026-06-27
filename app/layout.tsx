@@ -1,8 +1,7 @@
-import React from "react"
+import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { ThemeProvider } from '@/components/theme-provider'
 import { Header } from '@/components/header'
 import './globals.css'
 
@@ -25,15 +24,13 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
-          <Header />
-          {children}
-        </ThemeProvider>
+        <Header />
+        {children}
         <Analytics />
       </body>
     </html>

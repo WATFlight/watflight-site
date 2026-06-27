@@ -1,87 +1,24 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { Star } from "lucide-react";
-
-const tiers = [
-  {
-    rank: "Captain",
-    price: "$2,500+",
-    badge: "★",
-    color: "oklch(0.78 0.14 75)",
-    borderColor: "oklch(0.78 0.14 75 / 0.5)",
-    perks: [
-      "Large logo on ALL aircraft made by WATFlight",
-      "Logo on the wall of our workshop",
-      "Logo featured on our website in the Captain Tier",
-      "Priority access to internal recruitment and networking events",
-      "DIY team logo mechanism (3D-printed), designed by the WATFlight Engineering Team",
-    ],
-  },
-  {
-    rank: "First Officer",
-    price: "$1,000+",
-    badge: "01",
-    color: "oklch(0.78 0.10 220)",
-    borderColor: "oklch(0.78 0.10 220 / 0.4)",
-    perks: [
-      "Large logo on competition aircraft made by WATFlight",
-      "Logo featured on our website in the First Officer Tier",
-      "Access to internal recruitment events",
-      "3D-printed WATFlight Logo with white LED lighting, designed by the Engineering Team",
-    ],
-  },
-  {
-    rank: "Second Officer",
-    price: "$500+",
-    badge: "02",
-    color: "oklch(0.65 0.05 220)",
-    borderColor: "oklch(0.65 0.05 220 / 0.3)",
-    perks: [
-      "Small logo on competition aircraft made by WATFlight",
-      "Logo featured on our website in the Second Officer Tier",
-      "3D-printed WATFlight Logo gifted by the Engineering Team",
-    ],
-  },
-];
-
-// Current sponsors. If a sponsor has a `logo`, it renders as a logo tile.
-const sponsors: { name: string; logo: string; url?: string; imageClassName?: string }[] = [
-  {
-    name: "Waterloo Institute for Sustainable Aeronautics",
-    logo: "/images/wisa-logo.png",
-    url: "https://uwaterloo.ca/sustainable-aeronautics/",
-  },
-  {
-    name: "Microchip Technology",
-    logo: "/images/microchip-logo.png",
-    url: "https://www.microchip.com/",
-    imageClassName: "w-full h-auto object-contain",
-  },
-];
+import { SectionHeading } from "@/components/section-heading";
+import { sponsors, sponsorshipTiers } from "@/content/site-content";
 
 export function SponsorshipSection() {
   return (
     <section id="sponsors" className="bg-background px-6 pt-0 pb-20 md:px-12 md:pt-0 md:pb-28 lg:px-20 lg:pt-0 lg:pb-36">
       <div className="max-w-6xl mx-auto">
 
-        {/* Header */}
-        <div className="mb-20">
-          <p className="text-xs uppercase tracking-[0.25em] font-mono text-muted-foreground mb-6">
-            Partner With Us
-          </p>
-          <h2 className="mb-6 max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-            Help us build the future of flight.
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            WATFlight is a University of Waterloo student design team dedicated to advancing sustainable aviation. Your sponsorship directly funds the development of cleaner, more efficient aircraft and helps us prove that the future of flight can be both autonomous and environmentally responsible.
-          </p>
-        </div>
+        <SectionHeading
+          eyebrow="Partner With Us"
+          title="Help us build the future of flight."
+          description="WATFlight is a University of Waterloo student design team dedicated to advancing sustainable aviation. Your sponsorship directly funds the development of cleaner, more efficient aircraft and helps us prove that the future of flight can be both autonomous and environmentally responsible."
+          className="mb-20"
+        />
 
         {/* Tier Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
-          {tiers.map((tier) => (
+          {sponsorshipTiers.map((tier) => (
             <div
               key={tier.rank}
               className="relative rounded-2xl p-8 flex flex-col bg-muted/40"
@@ -108,7 +45,7 @@ export function SponsorshipSection() {
                   }}
                   aria-hidden="true"
                 >
-                  {tier.badge === "★" ? (
+                  {tier.badge === "star" ? (
                     <Star className="h-4 w-4 fill-current" strokeWidth={1.5} />
                   ) : (
                     <span className="text-[13px] tabular-nums">{tier.badge}</span>
@@ -121,8 +58,8 @@ export function SponsorshipSection() {
 
               {/* Perks */}
               <ul className="space-y-4 flex-1">
-                {tier.perks.map((perk, i) => (
-                  <li key={i} className="flex items-start gap-3">
+                {tier.perks.map((perk) => (
+                  <li key={perk} className="flex items-start gap-3">
                     <span
                       className="mt-1 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px]"
                       style={{ background: `${tier.color}22`, color: tier.color }}
@@ -146,7 +83,7 @@ export function SponsorshipSection() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {sponsors.map((sponsor, i) => {
+            {sponsors.map((sponsor) => {
               const tile = (
                 <div
                   className="flex h-full items-center justify-center rounded-xl border border-border px-8 py-8 md:px-12 md:py-10"
@@ -157,14 +94,15 @@ export function SponsorshipSection() {
                     alt={sponsor.name}
                     width={560}
                     height={200}
-                    className={sponsor.imageClassName ?? "h-12 w-auto max-w-full object-contain md:h-20"}
+                    sizes="(max-width: 640px) calc(100vw - 112px), 336px"
+                    className={"imageClassName" in sponsor ? sponsor.imageClassName : "h-12 w-auto max-w-full object-contain md:h-20"}
                   />
                 </div>
               );
 
-              return sponsor.url ? (
+              return (
                 <Link
-                  key={i}
+                  key={sponsor.name}
                   href={sponsor.url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -173,8 +111,6 @@ export function SponsorshipSection() {
                 >
                   {tile}
                 </Link>
-              ) : (
-                <div key={i}>{tile}</div>
               );
             })}
           </div>

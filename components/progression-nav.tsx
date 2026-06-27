@@ -77,7 +77,7 @@ export function ProgressionNav() {
         {/* Progress bar fill — white */}
         <div
           className="absolute left-1/2 -translate-x-1/2 top-4 w-px transition-all duration-150 origin-top"
-          style={{ height: `${progress}%`, maxHeight: 'calc(100% - 32px)', background: "oklch(1 0 0 / 0.9)" }}
+          style={{ height: `${progress}%`, maxHeight: "calc(100% - 32px)", background: "oklch(1 0 0 / 0.9)" }}
         />
 
         {/* Section buttons */}

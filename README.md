@@ -1,35 +1,49 @@
-# v0-evasion-ecommerce-template
+# WATFlight Website
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+WATFlight is a University of Waterloo student design team advancing sustainable aviation technology. This repository contains the team's single-page public website.
 
-## Built with v0
+## Development
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+Requirements:
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_GDIqmm6o6yc4VAOg7dVPpgtQpD54)
-
-## Getting Started
-
-First, run the development server:
+- Node.js 20+
+- pnpm 10.33.3
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). If that port is occupied, Next.js will print the alternate port.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quality Commands
 
-## Learn More
+```bash
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm start
+```
 
-To learn more, take a look at the following resources:
+All three validation commands must pass before deployment. The production build uses Next.js's supported Webpack path for deterministic local and CI builds.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+## Architecture
 
-<a href="https://v0.app/chat/api/kiro/clone/Jackie-lab-maker/v0-evasion-ecommerce-template" alt="Open in Kiro"><img src="https://pdgvvgmkdvyeydso.public.blob.vercel-storage.com/open%20in%20kiro.svg?sanitize=true" /></a>
+- `app/page.tsx` defines the order of the single-page sections.
+- `components/sections/` contains the rendered page sections.
+- `content/site-content.ts` is the source of truth for navigation, competitions, sponsors, team members, join steps, and social links.
+- `components/section-heading.tsx` provides the shared heading treatment for peer sections.
+- `lib/scroll-store.ts` owns the single scroll/resize listener shared by the hero and progression navigation.
+- `app/globals.css` contains the Tailwind theme tokens and the small amount of global animation CSS.
+
+Most sections are React Server Components. Only the fixed header, scroll-driven hero, and progression navigation are client components.
+
+The site uses an Inter-first system font stack and does not fetch fonts during the production build.
+
+## Images
+
+Runtime images live in `public/images/` and are rendered through `next/image`. When adding a `fill` image, provide an accurate `sizes` value so the optimizer can select an appropriate source width.
+
+## Deployment
+
+The production site is deployed through Vercel's Git integration. A push to `main` triggers a production build and deployment.

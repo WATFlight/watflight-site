@@ -15,3 +15,4 @@
 11. 移除 Team 区域重复的顶部留白，缩短赞助联系文案与 Waterloo Engineering 标志之间的距离，同时保留 Sponsorship 区域原有的底部间距。
 12. 将上一部分分界线到 “Partner With Us” 的距离统一为 `80px`，使其与分界线到 “Get Involved” 的距离一致，不再随桌面断点额外增大。
 13. 统一 “Competing on the world stage.”、“Help us build the future of flight.” 和 “Want to join WATFlight?” 三个同级标题的文本宽度、字号阶梯、字重与字距，并移除强制换行，使其按相同规则自然排版。
+14. 完成代码库六阶段优化：恢复质量门禁、清理模板遗留代码与资源、收窄客户端组件边界、恢复图片优化、合并滚动监听并降低重渲染、集中站点内容与共享标题样式。

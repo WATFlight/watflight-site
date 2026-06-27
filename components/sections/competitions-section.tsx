@@ -1,45 +1,16 @@
-"use client";
-
 import Link from "next/link";
-
-const competitions = [
-  {
-    id: "01",
-    name: "SUAS Competition",
-    organizer: "RoboNation",
-    date: "Sep 14–17, 2026",
-    location: "Tulsa, Oklahoma",
-    description:
-      "The Student Unmanned Aerial Systems Competition challenges teams to design, build, and fly fully autonomous drones. WATFlight will compete in autonomous navigation, obstacle avoidance, object detection, and payload delivery — putting our engineering to the test against top university teams.",
-    tags: ["Autonomous Flight", "Obstacle Avoidance", "Payload Delivery"],
-    href: "https://suas-competition.org/",
-  },
-  {
-    id: "02",
-    name: "Fly Your Ideas",
-    organizer: "Airbus",
-    date: "Finals June 25, 2026",
-    location: "Remote · Farnborough Airshow",
-    description:
-      "Airbus's global student innovation challenge asks teams to tackle real aerospace industry problems. The 2026 theme focuses on innovative digital technologies to secure tomorrow's connected aerospace systems. Finalists earn guaranteed Airbus internships and pitch live to industry leaders.",
-    tags: ["Innovation", "Digital Technology", "Aerospace Security"],
-    href: "https://www.airbus.com/en/flyyourideas",
-  },
-];
+import { SectionHeading } from "@/components/section-heading";
+import { competitions } from "@/content/site-content";
 
 export function CompetitionsSection() {
   return (
     <section id="competitions" className="bg-background px-6 pt-0 pb-20 md:px-12 md:pt-0 lg:px-20 lg:pt-0">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-16">
-          <p className="text-xs uppercase tracking-[0.25em] font-mono text-muted-foreground mb-6">
-            Where We Compete
-          </p>
-          <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-            Competing on the world stage.
-          </h2>
-        </div>
+        <SectionHeading
+          eyebrow="Where We Compete"
+          title="Competing on the world stage."
+          className="mb-16"
+        />
 
         {/* Competition Cards */}
         <div className="space-y-px border-t border-border">
