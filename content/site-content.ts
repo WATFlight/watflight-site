@@ -94,7 +94,7 @@ export const sponsors = [
 export const teamMembers = [
   {
     name: "Jackie",
-    title: "Team Lead",
+    title: "Team Director & Propulsion Lead",
     linkedIn: "https://www.linkedin.com/in/jingkai-shao3/",
     email: "j66shao@uwaterloo.ca",
   },
@@ -154,6 +154,15 @@ export const subteams = [
     tags: ["Partnerships", "Operations", "Outreach"],
     image: "/images/team-business.jpg",
     imageAlt: "A team collaborating on plans around a whiteboard",
+  },
+  {
+    id: "05",
+    name: "Propulsion Team",
+    description:
+      "Powers our flight vehicles through thrust optimization. The team designs, tests, and refines electric powertrain systems—integrating high-efficiency brushless motors, carbon-fiber propellers, custom battery packs, and speed controllers to maximize endurance and thrust output.",
+    tags: ["Electric Powertrain", "Thrust Testing", "Battery Systems"],
+    image: "/images/team-propulsion.png",
+    imageAlt: "A high-performance brushless electric motor and carbon-fiber propeller mounted on a thrust test stand",
   },
 ] as const;
 

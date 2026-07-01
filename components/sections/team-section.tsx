@@ -193,9 +193,9 @@ export function TeamSection() {
         {/* Subteams Section */}
         <div className="mx-auto max-w-6xl">
           <SectionHeading
-            eyebrow="Four disciplines. One aircraft."
+            eyebrow="Five disciplines. One aircraft."
             title="How we build flight."
-            description="From lightweight structures to weather-guided autonomy, our four subteams turn an ambitious soaring mission into a complete aircraft system."
+            description="From lightweight structures and electric propulsion to weather-guided autonomy, our five subteams turn an ambitious soaring mission into a complete aircraft system."
             descriptionClassName="max-w-2xl"
             className="mb-10 md:mb-14"
           />
