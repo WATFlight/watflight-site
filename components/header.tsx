@@ -51,15 +51,8 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Right: Join CTA + mobile toggle */}
+        {/* Right: mobile toggle */}
         <div className="flex items-center gap-2 z-10">
-          <Link
-            href="#join"
-            onClick={(e) => handleNavClick(e, "join")}
-            className="hidden items-center rounded-full px-4 py-1.5 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-foreground hover:text-background md:inline-flex"
-          >
-            Join
-          </Link>
           <button
             type="button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -75,7 +68,7 @@ export function Header() {
       {isMenuOpen && (
         <div className="mt-2 overflow-hidden rounded-2xl border border-border/60 bg-background/95 backdrop-blur-xl transition-all duration-200">
           <nav className="flex flex-col p-2">
-            {[{ href: "#hero", id: "hero", label: "Home" }, ...headerNavLinks, { href: "#join", id: "join", label: "Join" }].map(({ href, id, label }) => (
+            {[{ href: "#hero", id: "hero", label: "Home" }, ...headerNavLinks].map(({ href, id, label }) => (
               <Link
                 key={id}
                 href={href}

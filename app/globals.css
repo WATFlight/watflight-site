@@ -171,3 +171,10 @@
     opacity: 1;
   }
 }
+
+@media (min-width: 1024px) {
+  .subteam-image-clip {
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+}
+

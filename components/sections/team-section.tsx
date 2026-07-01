@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Github, Instagram, Linkedin, Mail } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
-import { joinSteps, socialLinks, teamMembers } from "@/content/site-content";
+import { joinSteps, socialLinks, subteams, teamMembers } from "@/content/site-content";
 
 function DiscordIcon({ className }: { className?: string }) {
   return (
@@ -24,33 +24,92 @@ const socialIcons = {
   github: Github,
 };
 
-function TeamMemberCard({ member }: { member: (typeof teamMembers)[number] }) {
+function LeadCard({ member }: { member: (typeof teamMembers)[number] }) {
   return (
-    <article className="flex flex-col items-center rounded-2xl bg-muted/30 p-6 text-center">
-      <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-muted">
+    <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-muted/30">
+      {/* Avatar placeholder */}
+      <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mb-4">
         <span className="text-3xl font-medium text-muted-foreground">
           {member.name.charAt(0)}
         </span>
       </div>
-      <h3 className="text-lg font-medium text-foreground">{member.name}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{member.title}</p>
-      <div className="mt-4 flex items-center gap-3">
+
+      {/* Name & Title */}
+      <h3 className="text-lg font-medium text-foreground">
+        {member.name}
+      </h3>
+      <p className="text-sm text-muted-foreground mt-1">
+        {member.title}
+      </p>
+
+      {/* Individual Links */}
+      <div className="flex items-center gap-3 mt-4">
         <a
           href={member.linkedIn}
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-full bg-muted p-2 transition-colors hover:bg-muted/80"
+          className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
           aria-label={`${member.name}'s LinkedIn`}
         >
-          <Linkedin className="h-4 w-4 text-foreground" />
+          <Linkedin className="w-4 h-4 text-foreground" />
         </a>
         <a
           href={`mailto:${member.email}`}
-          className="rounded-full bg-muted p-2 transition-colors hover:bg-muted/80"
+          className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
           aria-label={`Email ${member.name}`}
         >
-          <Mail className="h-4 w-4 text-foreground" />
+          <Mail className="w-4 h-4 text-foreground" />
         </a>
+      </div>
+    </div>
+  );
+}
+
+function SubteamCard({ 
+  subteam
+}: { 
+  subteam: (typeof subteams)[number];
+}) {
+  return (
+    <article className="group relative rounded-2xl border border-border bg-muted/15 overflow-hidden transition-all duration-300 hover:bg-muted/25">
+      <div className="grid grid-cols-1 lg:grid-cols-12 lg:items-stretch min-h-[220px]">
+        {/* Left Side: Content Details */}
+        <div className="p-6 sm:p-8 lg:p-10 lg:col-span-8 flex flex-col justify-center">
+          <h3 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">
+            {subteam.name}
+          </h3>
+          
+          {/* Skills/Tags */}
+          <div className="mt-5 flex flex-wrap gap-1.5">
+            {subteam.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-border bg-muted/30 px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Description - displayed below skills */}
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            {subteam.description}
+          </p>
+        </div>
+
+        {/* Right Side: Subteam Image (Flush right/top/bottom with diagonal cut on lg screens) */}
+        <div className="relative aspect-video lg:aspect-auto lg:col-span-4 h-full min-h-[200px] lg:min-h-0 overflow-hidden">
+          <div className="w-full h-full relative subteam-image-clip">
+            <Image
+              src={subteam.image}
+              alt={subteam.imageAlt}
+              fill
+              sizes="(max-width: 1024px) 100vw, 33vw"
+              className="object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent opacity-60" />
+          </div>
+        </div>
       </div>
     </article>
   );
@@ -93,9 +152,9 @@ function SocialLink({ link }: { link: (typeof socialLinks)[number] }) {
 
 export function TeamSection() {
   return (
-    <section id="team" className="bg-background pb-14 pt-0 md:pb-32 md:pt-0 lg:pb-40 lg:pt-0">
+    <section id="team" className="overflow-hidden bg-background pb-14 pt-0 md:pb-32 md:pt-0 lg:pb-40 lg:pt-0">
       <div className="px-6 md:px-12 lg:px-20">
-        <div className="mb-16 text-center md:mb-20">
+        <div className="mb-12 text-center md:mb-16">
           <div className="mb-8 flex justify-center">
             <Image
               src="/images/uw-engineering-logo-white.png"
@@ -114,13 +173,41 @@ export function TeamSection() {
           </h2>
         </div>
 
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
-          {teamMembers.map((member) => (
-            <TeamMemberCard key={member.email} member={member} />
-          ))}
+        <div className="mx-auto max-w-5xl mb-16">
+          <p className="mx-auto max-w-3xl text-center text-base leading-8 text-muted-foreground sm:text-lg">
+            WATFlight brings together students across engineering and business to build an
+            autonomous glider that can find and use rising air. Every subteam contributes to
+            one shared goal: longer, smarter, and more energy-efficient flight.
+          </p>
         </div>
 
-        <div id="join" className="mx-auto mt-24 max-w-6xl border-t border-border pt-20">
+        {/* Team Leadership Section */}
+        <div className="mx-auto max-w-5xl mb-24 md:mb-32">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 justify-center">
+            {teamMembers.map((member) => (
+              <LeadCard key={member.name} member={member} />
+            ))}
+          </div>
+        </div>
+
+        {/* Subteams Section */}
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading
+            eyebrow="Four disciplines. One aircraft."
+            title="How we build flight."
+            description="From lightweight structures to weather-guided autonomy, our four subteams turn an ambitious soaring mission into a complete aircraft system."
+            descriptionClassName="max-w-2xl"
+            className="mb-10 md:mb-14"
+          />
+
+          <div className="space-y-6 md:space-y-8">
+            {subteams.map((subteam) => (
+              <SubteamCard key={subteam.id} subteam={subteam} />
+            ))}
+          </div>
+        </div>
+
+        <div id="join" className="mx-auto mt-20 max-w-6xl border-t border-border pt-16 md:mt-24 md:pt-20">
           <SectionHeading
             eyebrow="Get Involved"
             title="Want to join WATFlight?"

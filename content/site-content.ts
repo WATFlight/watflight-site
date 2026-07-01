@@ -2,6 +2,7 @@ export const headerNavLinks = [
   { href: "#competitions", id: "competitions", label: "Competitions" },
   { href: "#sponsors", id: "sponsors", label: "Sponsors" },
   { href: "#team", id: "team", label: "Team" },
+  { href: "#join", id: "join", label: "Join Us" },
 ] as const;
 
 export const progressionSections = [
@@ -115,6 +116,45 @@ export const teamMembers = [
     title: "Software Lead",
     linkedIn: "https://www.linkedin.com/in/molly-xie-uw",
     email: "z95xie@uwaterloo.ca",
+  },
+] as const;
+
+export const subteams = [
+  {
+    id: "01",
+    name: "Mechanical Team",
+    description:
+      "Turns an autonomous glider concept into a flight-ready aircraft. The team develops the airframe, aerodynamic surfaces, and lightweight structures, then validates each design through manufacturing and ground testing.",
+    tags: ["Airframe", "Aerodynamics", "Fabrication"],
+    image: "/images/team-mechanical.jpg",
+    imageAlt: "Hands assembling a precision mechanical component in a workshop",
+  },
+  {
+    id: "02",
+    name: "Electrical Team",
+    description:
+      "Builds the aircraft's nervous system: avionics, power distribution, sensors, wiring, and flight-computer integration. Every connection is designed for dependable sensing, control, and data collection in the air.",
+    tags: ["Avionics", "Sensors", "Power Systems"],
+    image: "/images/team-electrical.jpg",
+    imageAlt: "Flight electronics and a microcontroller on an engineering workbench",
+  },
+  {
+    id: "03",
+    name: "Software Team",
+    description:
+      "Develops the strategic layer for autonomous thermal soaring. Live weather becomes a map of likely lift, the best reachable hotspot is selected, and MAVLink guides the glider there before ArduSoar takes over to centre the thermal and climb.",
+    tags: ["Weather Intelligence", "MAVLink", "SITL"],
+    image: "/images/team-software.jpg",
+    imageAlt: "Software and data visualizations displayed on an engineering laptop",
+  },
+  {
+    id: "04",
+    name: "Business Team",
+    description:
+      "Keeps the mission moving beyond the workshop. The team builds sponsor relationships, manages operations and finances, leads recruitment, and shares WATFlight's work with the Waterloo and aviation communities.",
+    tags: ["Partnerships", "Operations", "Outreach"],
+    image: "/images/team-business.jpg",
+    imageAlt: "A team collaborating on plans around a whiteboard",
   },
 ] as const;
 
