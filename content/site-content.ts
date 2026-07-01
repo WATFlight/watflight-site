@@ -94,7 +94,7 @@ export const sponsors = [
 export const teamMembers = [
   {
     name: "Jackie",
-    title: "Team Director & Propulsion Lead",
+    title: ["Team Director", "Propulsion Lead"],
     linkedIn: "https://www.linkedin.com/in/jingkai-shao3/",
     email: "j66shao@uwaterloo.ca",
   },

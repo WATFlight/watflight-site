@@ -26,7 +26,7 @@ const socialIcons = {
 
 function LeadCard({ member }: { member: (typeof teamMembers)[number] }) {
   return (
-    <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-muted/30">
+    <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-muted/30 h-full">
       {/* Avatar placeholder */}
       <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mb-4">
         <span className="text-3xl font-medium text-muted-foreground">
@@ -38,12 +38,20 @@ function LeadCard({ member }: { member: (typeof teamMembers)[number] }) {
       <h3 className="text-lg font-medium text-foreground">
         {member.name}
       </h3>
-      <p className="text-sm text-muted-foreground mt-1">
-        {member.title}
-      </p>
+      <div className="text-sm text-muted-foreground mt-1">
+        {Array.isArray(member.title) ? (
+          (member.title as readonly string[]).map((line, idx) => (
+            <span key={idx} className="block">
+              {line}
+            </span>
+          ))
+        ) : (
+          member.title
+        )}
+      </div>
 
       {/* Individual Links */}
-      <div className="flex items-center gap-3 mt-4">
+      <div className="flex items-center gap-3 mt-auto pt-4">
         <a
           href={member.linkedIn}
           target="_blank"

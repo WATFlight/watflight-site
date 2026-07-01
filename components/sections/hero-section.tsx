@@ -42,7 +42,7 @@ const initialHeroStyle = {
   "--hero-gap": "0px",
   "--hero-padding-top": "0px",
   "--hero-padding-side": "0px",
-  "--hero-padding-bottom": "24px",
+  "--hero-padding-bottom": "0px",
   "--hero-side-width": "0%",
   "--hero-side-opacity": "0",
   "--hero-left-x": "-100%",
@@ -63,7 +63,7 @@ function applyHeroProgress(section: HTMLElement, scrollProgress: number) {
   section.style.setProperty("--hero-gap", `${imageProgress * 16}px`);
   section.style.setProperty("--hero-padding-top", `${imageProgress * 96}px`);
   section.style.setProperty("--hero-padding-side", `${imageProgress * 16}px`);
-  section.style.setProperty("--hero-padding-bottom", `${24 + imageProgress * 76}px`);
+  section.style.setProperty("--hero-padding-bottom", `${imageProgress * 100}px`);
   section.style.setProperty("--hero-side-width", `${imageProgress * 22}%`);
   section.style.setProperty("--hero-side-opacity", `${imageProgress}`);
   section.style.setProperty("--hero-left-x", `${-100 + imageProgress * 100}%`);
@@ -177,7 +177,7 @@ export function HeroSection() {
               />
 
               <div
-                className="absolute inset-0 flex items-end pb-4 md:pb-6 lg:pb-8 overflow-hidden"
+                className="absolute inset-0 flex items-end pb-0 overflow-hidden"
                 style={{ opacity: "var(--hero-text-opacity)" }}
               >
                 <h1 className="w-full whitespace-nowrap text-center text-[16vw] font-medium leading-[0.8] tracking-tighter text-white lg:text-[13vw]">
