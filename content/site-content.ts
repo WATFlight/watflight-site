@@ -88,7 +88,6 @@ export const sponsors = [
     name: "Microchip Technology",
     logo: "/images/microchip-logo.png",
     url: "https://www.microchip.com/",
-    imageClassName: "h-auto w-full object-contain",
   },
 ] as const;
 

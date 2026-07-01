@@ -95,7 +95,7 @@ export function SponsorshipSection() {
                     width={560}
                     height={200}
                     sizes="(max-width: 640px) calc(100vw - 112px), 336px"
-                    className={"imageClassName" in sponsor ? sponsor.imageClassName : "h-12 w-auto max-w-full object-contain md:h-20"}
+                    className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto max-w-[85%] object-contain"
                   />
                 </div>
               );
