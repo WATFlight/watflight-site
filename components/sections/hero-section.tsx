@@ -42,7 +42,7 @@ const initialHeroStyle = {
   "--hero-gap": "0px",
   "--hero-padding-top": "0px",
   "--hero-padding-side": "0px",
-  "--hero-padding-bottom": "32px",
+  "--hero-padding-bottom": "24px",
   "--hero-side-width": "0%",
   "--hero-side-opacity": "0",
   "--hero-left-x": "-100%",
@@ -63,7 +63,7 @@ function applyHeroProgress(section: HTMLElement, scrollProgress: number) {
   section.style.setProperty("--hero-gap", `${imageProgress * 16}px`);
   section.style.setProperty("--hero-padding-top", `${imageProgress * 96}px`);
   section.style.setProperty("--hero-padding-side", `${imageProgress * 16}px`);
-  section.style.setProperty("--hero-padding-bottom", `${32 + imageProgress * 68}px`);
+  section.style.setProperty("--hero-padding-bottom", `${24 + imageProgress * 76}px`);
   section.style.setProperty("--hero-side-width", `${imageProgress * 22}%`);
   section.style.setProperty("--hero-side-opacity", `${imageProgress}`);
   section.style.setProperty("--hero-left-x", `${-100 + imageProgress * 100}%`);
@@ -172,12 +172,12 @@ export function HeroSection() {
                 alt="WATFlight logo"
                 fill
                 sizes="100vw"
-                className="object-contain p-6 sm:p-12 md:p-24 lg:p-32"
+                className="hero-logo-image object-contain p-6 sm:p-12 md:p-24 lg:p-32"
                 priority
               />
 
               <div
-                className="absolute inset-0 flex items-end pb-1 md:pb-2 lg:pb-3 overflow-hidden"
+                className="absolute inset-0 flex items-end pb-4 md:pb-6 lg:pb-8 overflow-hidden"
                 style={{ opacity: "var(--hero-text-opacity)" }}
               >
                 <h1 className="w-full whitespace-nowrap text-center text-[16vw] font-medium leading-[0.8] tracking-tighter text-white lg:text-[13vw]">
@@ -204,10 +204,10 @@ export function HeroSection() {
               transform: "translateY(var(--hero-tagline-y))",
             }}
           >
-            <h2 className="text-[clamp(1.75rem,7vw,3.25rem)] font-semibold leading-[1.1] tracking-tight text-white">
+            <h2 className="hero-slogan-text text-[9vw] font-semibold leading-[1.1] tracking-tight text-white md:text-[7vw]">
               Built by students.
             </h2>
-            <h2 className="text-[clamp(1.75rem,7vw,3.25rem)] font-semibold leading-[1.1] tracking-tight text-white/60">
+            <h2 className="hero-slogan-text-dim text-[9vw] font-semibold leading-[1.1] tracking-tight text-white/60 md:text-[7vw]">
               Cleared for flight.
             </h2>
           </div>
