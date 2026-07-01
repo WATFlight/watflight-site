@@ -159,7 +159,7 @@ export const subteams = [
     id: "05",
     name: "Propulsion Team",
     description:
-      "Powers our flight vehicles through thrust optimization. The team designs, tests, and refines electric powertrain systems—integrating high-efficiency brushless motors, carbon-fiber propellers, custom battery packs, and speed controllers to maximize endurance and thrust output.",
+      "Powers our flight vehicles through thrust optimization. The team designs, tests, and refines electric powertrain systems by integrating high-efficiency brushless motors, carbon-fiber propellers, custom battery packs, and speed controllers to maximize endurance and thrust output.",
     tags: ["Electric Powertrain", "Thrust Testing", "Battery Systems"],
     image: "/images/team-propulsion.png",
     imageAlt: "A high-performance brushless electric motor and carbon-fiber propeller mounted on a thrust test stand",
