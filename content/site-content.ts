@@ -83,11 +83,25 @@ export const sponsors = [
     name: "Waterloo Institute for Sustainable Aeronautics",
     logo: "/images/wisa-logo.png",
     url: "https://uwaterloo.ca/sustainable-aeronautics/",
+    logoClassName: "h-12 sm:h-14 md:h-16 max-w-[92%]",
   },
   {
     name: "Microchip Technology",
     logo: "/images/microchip-logo.png",
     url: "https://www.microchip.com/",
+    logoClassName: "h-9 sm:h-11 md:h-12 max-w-[85%]",
+  },
+  {
+    name: "Psycraft",
+    logo: "/images/psycraft-logo.png",
+    url: "https://psycraft.ca/",
+    logoClassName: "h-14 sm:h-16 md:h-18 max-w-[85%]",
+  },
+  {
+    name: "Multi-Scale Additive Manufacturing Lab",
+    logo: "/images/msam-logo.png",
+    url: "https://msam.uwaterloo.ca/",
+    logoClassName: "h-9 sm:h-11 md:h-12 max-w-[85%]",
   },
 ] as const;
 

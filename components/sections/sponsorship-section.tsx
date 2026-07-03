@@ -82,11 +82,11 @@ export function SponsorshipSection() {
             Our Sponsors
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {sponsors.map((sponsor) => {
               const tile = (
                 <div
-                  className="flex h-full items-center justify-center rounded-xl border border-border px-8 py-8 md:px-12 md:py-10"
+                  className="flex h-20 sm:h-24 md:h-28 items-center justify-center rounded-xl border border-border px-6 py-4"
                   style={{ background: "oklch(0.14 0.01 250)" }}
                 >
                   <Image
@@ -95,7 +95,9 @@ export function SponsorshipSection() {
                     width={560}
                     height={200}
                     sizes="(max-width: 640px) calc(100vw - 112px), 336px"
-                    className="h-14 sm:h-16 md:h-20 lg:h-24 w-auto max-w-[85%] object-contain"
+                    className={`${
+                      (sponsor as { logoClassName?: string }).logoClassName || "h-12"
+                    } w-auto object-contain`}
                   />
                 </div>
               );
