@@ -130,6 +130,12 @@ export const teamMembers = [
     linkedIn: "https://www.linkedin.com/in/molly-xie-uw",
     email: "z95xie@uwaterloo.ca",
   },
+  {
+    name: "Danica",
+    title: "Business Lead",
+    linkedIn: "https://www.linkedin.com/in/danica-ma-79909b383/",
+    email: "dclma@uwaterloo.ca",
+  },
 ] as const;
 
 export const subteams = [

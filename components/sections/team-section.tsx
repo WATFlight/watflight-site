@@ -190,10 +190,15 @@ export function TeamSection() {
         </div>
 
         {/* Team Leadership Section */}
-        <div className="mx-auto max-w-5xl mb-24 md:mb-32">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 justify-center">
+        <div className="mx-auto max-w-6xl mb-24 md:mb-32">
+          <div className="flex flex-wrap justify-center gap-6 md:gap-8">
             {teamMembers.map((member) => (
-              <LeadCard key={member.name} member={member} />
+              <div
+                key={member.name}
+                className="w-[calc((100%_-_1.5rem)/2)] sm:w-[calc((100%_-_3rem)/3)] md:w-[calc((100%_-_4rem)/3)] lg:w-[calc((100%_-_8rem)/5)]"
+              >
+                <LeadCard member={member} />
+              </div>
             ))}
           </div>
         </div>
