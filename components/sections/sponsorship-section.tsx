@@ -5,6 +5,17 @@ import { SectionHeading } from "@/components/section-heading";
 import { sponsors, sponsorshipTiers } from "@/content/site-content";
 
 export function SponsorshipSection() {
+  const sponsorGroups = [
+    {
+      label: "Our Sponsors",
+      partners: sponsors.filter((sponsor) => sponsor.category === "sponsor"),
+    },
+    {
+      label: "Software Support",
+      partners: sponsors.filter((sponsor) => sponsor.category === "software-support"),
+    },
+  ];
+
   return (
     <section id="sponsors" className="bg-background px-6 pt-0 pb-20 md:px-12 md:pt-0 md:pb-28 lg:px-20 lg:pt-0 lg:pb-36">
       <div className="max-w-6xl mx-auto">
@@ -76,46 +87,42 @@ export function SponsorshipSection() {
           ))}
         </div>
 
-        {/* Current Sponsors */}
+        {/* Current sponsors and software supporters */}
         <div className="border-t border-border pt-16">
-          <p className="text-xs uppercase tracking-[0.25em] font-mono text-muted-foreground mb-12 text-center">
-            Our Sponsors
-          </p>
+          {sponsorGroups.map((group, groupIndex) => (
+            <div key={group.label} className={groupIndex === 0 ? "" : "mt-14 sm:mt-16"}>
+              <p className="mb-8 text-center font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground sm:mb-10">
+                {group.label}
+              </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {sponsors.map((sponsor) => {
-              const tile = (
-                <div
-                  className="flex h-20 sm:h-24 md:h-28 items-center justify-center rounded-xl border border-border px-6 py-4"
-                  style={{ background: "oklch(0.14 0.01 250)" }}
-                >
-                  <Image
-                    src={sponsor.logo}
-                    alt={sponsor.name}
-                    width={560}
-                    height={200}
-                    sizes="(max-width: 640px) calc(100vw - 112px), 336px"
-                    className={`${
-                      (sponsor as { logoClassName?: string }).logoClassName || "h-12"
-                    } w-auto object-contain`}
-                  />
-                </div>
-              );
-
-              return (
-                <Link
-                  key={sponsor.name}
-                  href={sponsor.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={sponsor.name}
-                  className="block transition-opacity hover:opacity-80"
-                >
-                  {tile}
-                </Link>
-              );
-            })}
-          </div>
+              <div className="mx-auto flex max-w-4xl flex-wrap justify-center gap-4 sm:gap-6">
+                {group.partners.map((sponsor) => (
+                  <Link
+                    key={sponsor.name}
+                    href={sponsor.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={sponsor.name}
+                    className="block w-full transition-opacity hover:opacity-80 sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+                  >
+                    <div
+                      className="flex h-20 items-center justify-center rounded-xl border border-border px-6 py-4 sm:h-24 md:h-28"
+                      style={{ background: "oklch(0.14 0.01 250)" }}
+                    >
+                      <Image
+                        src={sponsor.logo}
+                        alt={sponsor.name}
+                        width={560}
+                        height={200}
+                        sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) 50vw, 288px"
+                        className={`${sponsor.logoClassName} w-auto object-contain`}
+                      />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* CTA */}

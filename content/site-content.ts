@@ -84,24 +84,35 @@ export const sponsors = [
     logo: "/images/wisa-logo.png",
     url: "https://uwaterloo.ca/sustainable-aeronautics/",
     logoClassName: "h-12 sm:h-14 md:h-16 max-w-[92%]",
+    category: "sponsor",
   },
   {
     name: "Microchip Technology",
     logo: "/images/microchip-logo.png",
     url: "https://www.microchip.com/",
     logoClassName: "h-9 sm:h-11 md:h-12 max-w-[85%]",
+    category: "sponsor",
   },
   {
     name: "Psycraft",
     logo: "/images/psycraft-logo.png",
     url: "https://psycraft.ca/",
     logoClassName: "h-14 sm:h-16 md:h-18 max-w-[85%]",
+    category: "software-support",
   },
   {
     name: "Multi-Scale Additive Manufacturing Lab",
     logo: "/images/msam-logo.png",
     url: "https://msam.uwaterloo.ca/",
     logoClassName: "h-9 sm:h-11 md:h-12 max-w-[85%]",
+    category: "sponsor",
+  },
+  {
+    name: "Notion",
+    logo: "/images/notion-logo.svg",
+    url: "https://www.notion.com/",
+    logoClassName: "h-11 sm:h-13 md:h-14 max-w-[75%]",
+    category: "software-support",
   },
 ] as const;
 
