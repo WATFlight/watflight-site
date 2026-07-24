@@ -27,11 +27,15 @@ const socialIcons = {
 function LeadCard({ member }: { member: (typeof teamMembers)[number] }) {
   return (
     <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-muted/30 h-full">
-      {/* Avatar placeholder */}
-      <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mb-4">
-        <span className="text-3xl font-medium text-muted-foreground">
-          {member.name.charAt(0)}
-        </span>
+      {/* Team member portrait */}
+      <div className="relative mb-4 h-24 w-24 overflow-hidden rounded-full bg-muted">
+        <Image
+          src={member.image}
+          alt={member.imageAlt}
+          fill
+          sizes="96px"
+          className="object-cover"
+        />
       </div>
 
       {/* Name & Title */}
