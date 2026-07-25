@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Star } from "lucide-react";
+// import { Star } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
-import { sponsors, sponsorshipTiers } from "@/content/site-content";
+import { sponsors } from "@/content/site-content";
+// import { sponsorshipTiers } from "@/content/site-content";
 
 export function SponsorshipSection() {
   const sponsorGroups = [
@@ -27,7 +28,8 @@ export function SponsorshipSection() {
           className="mb-20"
         />
 
-        {/* Tier Cards */}
+        {/* Sponsorship tier cards are temporarily hidden.
+        Tier Cards
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
           {sponsorshipTiers.map((tier) => (
             <div
@@ -37,7 +39,7 @@ export function SponsorshipSection() {
                 border: `1px solid ${tier.borderColor}`,
               }}
             >
-              {/* Tier heading + badge */}
+              Tier heading + badge
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <h3 className="mb-1 text-2xl font-semibold text-foreground">
@@ -64,10 +66,10 @@ export function SponsorshipSection() {
                 </div>
               </div>
 
-              {/* Divider */}
+              Divider
               <div className="border-t border-border mb-8" />
 
-              {/* Perks */}
+              Perks
               <ul className="space-y-4 flex-1">
                 {tier.perks.map((perk) => (
                   <li key={perk} className="flex items-start gap-3">
@@ -86,6 +88,7 @@ export function SponsorshipSection() {
             </div>
           ))}
         </div>
+        */}
 
         {/* Current sponsors and software supporters */}
         <div className="border-t border-border pt-16">

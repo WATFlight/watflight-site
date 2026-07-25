@@ -2,7 +2,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { TeamSection } from "@/components/sections/team-section";
 import { CompetitionsSection } from "@/components/sections/competitions-section";
-// import { SponsorshipSection } from "@/components/sections/sponsorship-section";
+import { SponsorshipSection } from "@/components/sections/sponsorship-section";
 import { ProgressionNav } from "@/components/progression-nav";
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
       <HeroSection />
       <TestimonialsSection />
       <CompetitionsSection />
-      {/* <SponsorshipSection /> */}
+      <SponsorshipSection />
       <TeamSection />
     </main>
   );
