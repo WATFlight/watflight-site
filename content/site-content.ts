@@ -232,6 +232,6 @@ export const joinSteps = [
 export const socialLinks = [
   { label: "LinkedIn", href: "https://linkedin.com/company/watflight", icon: "linkedin" },
   { label: "Instagram", href: "https://instagram.com/watflight", icon: "instagram" },
-  { label: "Discord", href: "https://discord.gg/dhVNt6fkwj", icon: "discord" },
+  { label: "Discord", href: "https://discord.gg/GVFaZvz2Zd", icon: "discord" },
   { label: "GitHub", href: "https://github.com/WATFlight", icon: "github" },
 ] as const;
