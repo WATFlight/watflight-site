@@ -2,6 +2,263 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ==========================================================================
+   WATFlight design tokens
+   Source: Figma file ZTpRvqKrFDvxGgQ71b6xjt, Design System frame 77:2, plus the style
+   summaries reported by the approved page frames. `static` keeps every variable in the output.
+   ========================================================================== */
+@theme static {
+  /* Design System frame 77:2 */
+  --color-canvas: #050505; /* Background: primary site canvas */
+  --color-surface: #0F0F0F; /* Surface: raised content / cards */
+  --color-surface-2: #171717; /* Surface 02: hover + secondary layers */
+  --color-ink: #F4F4F0; /* Text primary: headings; also the cream CTA / sponsor band fill */
+  --color-ink-2: #969690; /* Text secondary: body copy + metadata */
+  --color-rule: #2B2B2B; /* Grid / border: rules and technical framing */
+  --color-blue: #3F7CFF; /* Primary blue: main CTA, links, key stats, active nav */
+  --color-blue-light: #6698FF; /* Light blue: hover states, lighter highlights */
+  --color-blue-dark: #1F4FBF; /* Dark blue: pressed states, subtle dark accents */
+
+  /* Page-level styles reported by the page frames (approved, decision D19) */
+  --color-rule-strong: #444444; /* Border/Strong: dark button and card borders */
+  --color-ink-muted: #666666; /* Text/Muted: non-essential decoration ONLY (3.6:1 on canvas, fails AA for text) */
+  --color-blue-subtle: #102A56; /* Accent/Subtle: no usage yet */
+
+  /* Accessibility adjustments (approved, decision D19) */
+  --color-field-border: #969690; /* Form-control borders need 3:1 against the canvas; #2B2B2B is 1.4:1 */
+  --color-focus: #6698FF; /* Focus ring; .focus-on-light switches it to --color-blue-dark on cream */
+
+  --radius-control: 2px; /* Button corner radius from the Design System */
+
+  /* The Figma frame width. A named breakpoint (`frame:`) sorts correctly after `xl:`, whereas an
+     arbitrary `min-[1440px]:` variant is emitted before the named breakpoints and gets overridden. */
+  --breakpoint-frame: 90rem;
+
+  /* Fonts.
+     Geist is loaded by next/font in app/layout.tsx and exposed as --font-geist.
+
+     TEMPORARY FALLBACK: Bunken Tech Sans (SC Wide and Std Wide, Medium) is licensed and its font
+     files are not in the repo. Until they are supplied, display type falls back to the system sans
+     stacks below. These do NOT match the comps. When the licensed files arrive, load them with
+     next/font/local using `variable: '--font-bunken-sc'` and `variable: '--font-bunken-std'`; these
+     stacks pick them up automatically. See docs/rebuild-notes.md. */
+  --font-body: var(--font-geist), 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-display-sc: var(--font-bunken-sc, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif);
+  --font-display-std: var(--font-bunken-std, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif);
+}
+
+/* ==========================================================================
+   Type scale (Figma text-style names). Sizes step at 768px and 1280px: the 1440 and 1280 layouts
+   use the designed sizes; 768 and 390 are derived values (decision D20, subject to visual review).
+   Body and label styles do not change with width.
+   ========================================================================== */
+
+/* Display Hero: Bunken Tech Sans SC Wide Medium, 80/88 */
+@utility type-display-hero {
+  font-family: var(--font-display-sc);
+  font-weight: 500;
+  /* TEMP: lowercase renders as small caps, as in the SC cut. Harmless once the real font is loaded. */
+  font-variant-caps: small-caps;
+  font-size: 2.5rem;
+  line-height: 2.75rem;
+  letter-spacing: 0;
+  @media (min-width: 48rem) {
+    font-size: 3.5rem;
+    line-height: 3.75rem;
+  }
+  @media (min-width: 80rem) {
+    font-size: 5rem;
+    line-height: 5.5rem;
+  }
+}
+
+/* Display Page: Bunken Tech Sans SC Wide Medium, 64/72 */
+@utility type-display-page {
+  font-family: var(--font-display-sc);
+  font-weight: 500;
+  font-variant-caps: small-caps;
+  font-size: 2rem;
+  line-height: 2.375rem;
+  letter-spacing: 0;
+  @media (min-width: 48rem) {
+    font-size: 2.75rem;
+    line-height: 3.125rem;
+  }
+  @media (min-width: 80rem) {
+    font-size: 4rem;
+    line-height: 4.5rem;
+  }
+}
+
+/* Heading/H2: Bunken Tech Sans Std Wide Medium, 36/44 */
+@utility type-h2 {
+  font-family: var(--font-display-std);
+  font-weight: 500;
+  font-size: 1.625rem;
+  line-height: 2rem;
+  letter-spacing: 0;
+  @media (min-width: 48rem) {
+    font-size: 1.875rem;
+    line-height: 2.375rem;
+  }
+  @media (min-width: 80rem) {
+    font-size: 2.25rem;
+    line-height: 2.75rem;
+  }
+}
+
+/* Heading/H3: Bunken Tech Sans Std Wide Medium, 28/36 */
+@utility type-h3 {
+  font-family: var(--font-display-std);
+  font-weight: 500;
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  letter-spacing: 0;
+  @media (min-width: 48rem) {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  @media (min-width: 80rem) {
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+  }
+}
+
+/* Heading/H4: Bunken Tech Sans Std Wide Medium, 22/30 */
+@utility type-h4 {
+  font-family: var(--font-display-std);
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  letter-spacing: 0;
+  @media (min-width: 80rem) {
+    font-size: 1.375rem;
+    line-height: 1.875rem;
+  }
+}
+
+/* Heading/H5: Geist Medium, 18/26 */
+@utility type-h5 {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.625rem;
+  letter-spacing: 0;
+}
+
+/* Body/Large: Geist Regular, 18/29 */
+@utility type-body-lg {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.8125rem;
+  letter-spacing: 0;
+}
+
+/* Body/Default: Geist Regular, 16/25 */
+@utility type-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5625rem;
+  letter-spacing: 0;
+}
+
+/* Body/Small: Geist Regular, 14/21 */
+@utility type-body-sm {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.3125rem;
+  letter-spacing: 0;
+}
+
+/* Label/Eyebrow: Geist Medium, 12/16, tracking 12% */
+@utility type-eyebrow {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Label/Metadata: Geist Regular, 12/18, tracking 12% */
+@utility type-meta {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* UI/Nav: Geist Medium, 14/20, tracking 1% */
+@utility type-nav {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.01em;
+}
+
+/* UI/Button: Geist Medium, 14/20, tracking 4%, uppercase */
+@utility type-button {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  html {
+    background-color: var(--color-canvas);
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+  }
+
+  /* Default border color is the Design System rule color. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-rule);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Cream surfaces (CTA band, sponsor strip): #6698FF is only 2.5:1 on #F4F4F0. */
+  .focus-on-light :focus-visible {
+    outline-color: var(--color-blue-dark);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   LEGACY (pre-rebuild scaffolding). Still referenced by the old components that have not been
+   deleted yet. Remove together with them at the cleanup step of the rebuild plan.
+   ========================================================================== */
 :root {
   --background: #FFFFFF;
   --foreground: #0A0A0A;
@@ -74,7 +331,8 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-inter), 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* --font-sans now points at Geist; the old Inter wiring was removed with the layout change. */
+  --font-sans: var(--font-geist), 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'PP Editorial New', 'Times New Roman', serif;
   --color-background: var(--background);
@@ -113,29 +371,6 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    overflow-x: hidden;
-    scrollbar-color: white transparent;
-    scrollbar-width: thin;
-  }
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: white;
-    border-radius: 3px;
-  }
-
 }
 
 @keyframes slideUp {
@@ -177,5 +412,3 @@
     clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
   }
 }
-
-

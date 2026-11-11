@@ -1,16 +1,24 @@
 import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Geist } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { Header } from '@/components/header'
+import { SkipLink } from '@/components/layout/skip-link'
+import { SiteHeader } from '@/components/layout/site-header'
+import { SiteFooter } from '@/components/layout/site-footer'
+import { GridRails } from '@/components/ui/grid-rails'
 import './globals.css'
 
-const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
+// Geist covers navigation, buttons and body text (decision D17). The Bunken Tech Sans display fonts
+// are licensed and not in the repo; globals.css documents the temporary system fallback.
+const geist = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: 'WATFlight | University of Waterloo Aviation Technology',
-  description: 'A University of Waterloo student team building aviation technology. MiniFlight EVTOL is our first project — an autonomous aircraft.',
-  generator: 'v0.app',
+  title: {
+    default: 'WATFlight | Building the Future of Aerospace',
+    template: '%s | WATFlight',
+  },
+  description:
+    'WATFlight is a student-run design team at the University of Waterloo designing, building and flying innovative aerospace systems.',
   icons: {
     icon: [
       { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
@@ -27,10 +35,17 @@ export default function RootLayout({
   children: ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        <Header />
-        {children}
+    <html lang="en" className={`dark ${geist.variable}`}>
+      <body className="font-sans antialiased">
+        <div className="relative isolate flex min-h-dvh flex-col">
+          <GridRails />
+          <SkipLink />
+          <SiteHeader />
+          <main id="main" tabIndex={-1} className="relative z-10 flex-1 outline-none">
+            {children}
+          </main>
+          <SiteFooter />
+        </div>
         <Analytics />
       </body>
     </html>
