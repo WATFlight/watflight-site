@@ -13,7 +13,7 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 const linkClasses =
-  "type-nav transition-colors duration-150 motion-reduce:transition-none hover:text-blue-light active:text-blue-dark";
+  "type-nav hover:text-[var(--hdr-link-hover)] active:text-blue-dark";
 
 /**
  * Primary navigation, the only Client Component in the shell. It needs the current pathname for the
@@ -22,6 +22,10 @@ const linkClasses =
  * toggle) and whenever the route changes.
  *
  * The open state stores the pathname it was opened on, so navigating closes it without an effect.
+ *
+ * Colors that depend on the header theme (labels, toggle, menu) deliberately have no color
+ * transition: the theme swaps instantly, so a fading label would flash low contrast on the new
+ * surface. The Join button keeps its transition because its colors never change with the theme.
  *
  * Icons: Menu and X come from lucide-react. They are generic UI icons with no Figma export
  * (decision D21), recorded in docs/rebuild-notes.md.
@@ -45,9 +49,14 @@ export function PrimaryNav() {
 
   return (
     <div className="contents" onKeyDown={handleKeyDown}>
-      {/* Desktop navigation: 44px gaps, 26px divider, dark CTA (Figma header frame). */}
+      {/* Desktop navigation (from 1024px): Geist Medium 16/24 labels, 32px gaps (40px from 1280px,
+          where there is room; at 1024px 40px would leave the logo only ~12px of air). The Join WATFlight
+          button lives in its own full-height cell: the 1px left border of that cell is the divider
+          between News and the button, so it runs from the header's top edge to its bottom rule.
+          The button is centered in the cell with 32px on each side; the negative right margin keeps
+          the button's right edge on the page margin, as in Figma. */}
       <nav aria-label="Primary" className="hidden lg:block">
-        <ul className="flex h-full items-stretch gap-11">
+        <ul className="flex h-full items-stretch gap-8 xl:gap-10">
           {navLinks.map(({ href, label }) => {
             const active = isActive(pathname, href);
             return (
@@ -55,30 +64,31 @@ export function PrimaryNav() {
                 <Link
                   href={href}
                   aria-current={active ? "page" : undefined}
-                  className={cn(linkClasses, active ? "text-blue" : "text-ink")}
+                  className={cn(
+                    linkClasses,
+                    // #3F7CFF on the dark header; #1F4FBF (6.5:1) on the cream header to meet WCAG AA.
+                    active ? "text-blue group-data-[theme=light]/header:text-blue-dark" : "text-[var(--hdr-fg)]",
+                  )}
                 >
                   {label}
                 </Link>
                 {active ? (
                   <span
                     aria-hidden="true"
-                    className="absolute bottom-[-1px] left-1/2 h-[2px] w-[47px] -translate-x-1/2 bg-blue"
+                    className="absolute bottom-0 left-1/2 z-10 h-[2px] w-[47px] -translate-x-1/2 bg-blue"
                   />
                 ) : null}
               </li>
             );
           })}
-          <li aria-hidden="true" className="flex items-center">
-            <span className="h-[26px] w-px bg-rule" />
-          </li>
-          <li className="relative flex items-center">
-            <Button href={joinCta.href} variant="dark" aria-current={joinActive ? "page" : undefined}>
+          <li className="relative -mr-8 flex items-center border-l border-[var(--hdr-rule)] px-8">
+            <Button href={joinCta.href} variant="join" aria-current={joinActive ? "page" : undefined}>
               {joinCta.label}
             </Button>
             {joinActive ? (
               <span
                 aria-hidden="true"
-                className="absolute bottom-[-1px] left-1/2 h-[2px] w-[131px] -translate-x-1/2 bg-blue"
+                className="absolute bottom-0 left-1/2 z-10 h-[2px] w-[131px] -translate-x-1/2 bg-blue"
               />
             ) : null}
           </li>
@@ -94,7 +104,7 @@ export function PrimaryNav() {
           aria-controls="mobile-nav"
           aria-label={isOpen ? "Close menu" : "Open menu"}
           onClick={toggle}
-          className="inline-flex size-12 items-center justify-center border border-rule-strong text-ink transition-colors duration-150 motion-reduce:transition-none hover:bg-surface-2"
+          className="inline-flex size-12 items-center justify-center border border-[var(--hdr-rule-strong)] text-[var(--hdr-fg)] hover:bg-[var(--hdr-hover)]"
         >
           {isOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
         </button>
@@ -103,20 +113,20 @@ export function PrimaryNav() {
       <div
         id="mobile-nav"
         hidden={!isOpen}
-        className="absolute inset-x-0 top-full z-30 border-b border-rule bg-canvas lg:hidden"
+        className="absolute inset-x-0 top-full z-30 border-b border-[var(--hdr-rule)] bg-[var(--hdr-bg)] lg:hidden"
       >
         <nav aria-label="Primary" className="mx-auto max-w-[1440px] px-5 pb-6 md:px-8">
           <ul>
             {navLinks.map(({ href, label }) => {
               const active = isActive(pathname, href);
               return (
-                <li key={href} className="border-b border-rule">
+                <li key={href} className="border-b border-[var(--hdr-rule)]">
                   <Link
                     href={href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "type-h5 flex min-h-14 items-center transition-colors duration-150 motion-reduce:transition-none hover:text-blue-light",
-                      active ? "text-blue" : "text-ink",
+                      "type-h5 flex min-h-14 items-center hover:text-[var(--hdr-link-hover)]",
+                      active ? "text-blue group-data-[theme=light]/header:text-blue-dark" : "text-[var(--hdr-fg)]",
                     )}
                   >
                     {label}
@@ -127,7 +137,7 @@ export function PrimaryNav() {
           </ul>
           <Button
             href={joinCta.href}
-            variant="dark"
+            variant="join"
             aria-current={joinActive ? "page" : undefined}
             className="mt-6 w-full"
           >

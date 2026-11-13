@@ -32,9 +32,27 @@ export const contact = {
 
 export const institutionLabel = "University of Waterloo / Faculty of Engineering";
 
-/** Existing, previously verified destinations (decision D12). GitHub is intentionally omitted. */
+/**
+ * Existing, previously verified destinations (decision D12). GitHub is intentionally omitted.
+ * Icons are the exact SVGs from the approved Home frame (footer `akar-icons:*` layers).
+ */
 export const socialLinks = [
-  { label: "LinkedIn", href: "https://linkedin.com/company/watflight" },
-  { label: "Instagram", href: "https://instagram.com/watflight" },
-  { label: "Discord", href: "https://discord.gg/GVFaZvz2Zd" },
+  {
+    label: "LinkedIn",
+    href: "https://linkedin.com/company/watflight",
+    icon: "/images/icons/social-linkedin.svg",
+    iconSize: 17,
+  },
+  {
+    label: "Instagram",
+    href: "https://instagram.com/watflight",
+    icon: "/images/icons/social-instagram.svg",
+    iconSize: 18,
+  },
+  {
+    label: "Discord",
+    href: "https://discord.gg/GVFaZvz2Zd",
+    icon: "/images/icons/social-discord.svg",
+    iconSize: 17,
+  },
 ] as const;

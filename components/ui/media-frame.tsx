@@ -11,6 +11,11 @@ type MediaFrameProps = {
   sizes: string;
   priority?: boolean;
   bordered?: boolean;
+  /**
+   * Skip the registry aspect ratio so the frame can be sized by its parent (stretch, absolute
+   * insets). Without it the frame keeps the slot's aspect ratio.
+   */
+  fluid?: boolean;
   /** Optional gradient overlay classes, for example "bg-gradient-to-r from-black to-transparent". */
   overlayClassName?: string;
   className?: string;
@@ -28,6 +33,7 @@ export function MediaFrame({
   sizes,
   priority = false,
   bordered = false,
+  fluid = false,
   overlayClassName,
   className,
   imageClassName,
@@ -37,7 +43,7 @@ export function MediaFrame({
   return (
     <div
       className={cn("relative overflow-hidden bg-surface", bordered && "border border-rule", className)}
-      style={{ aspectRatio: `${width} / ${height}` }}
+      style={fluid ? undefined : { aspectRatio: `${width} / ${height}` }}
     >
       {path ? (
         <>

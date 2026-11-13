@@ -34,14 +34,14 @@
      arbitrary `min-[1440px]:` variant is emitted before the named breakpoints and gets overridden. */
   --breakpoint-frame: 90rem;
 
-  /* Fonts.
-     Geist is loaded by next/font in app/layout.tsx and exposed as --font-geist.
-
-     TEMPORARY FALLBACK: Bunken Tech Sans (SC Wide and Std Wide, Medium) is licensed and its font
-     files are not in the repo. Until they are supplied, display type falls back to the system sans
-     stacks below. These do NOT match the comps. When the licensed files arrive, load them with
-     next/font/local using `variable: '--font-bunken-sc'` and `variable: '--font-bunken-std'`; these
-     stacks pick them up automatically. See docs/rebuild-notes.md. */
+  /* Fonts. All three families are loaded by next/font in app/layout.tsx, which sets the variables
+     read here on <html>:
+       --font-geist       Geist (Google Fonts)
+       --font-bunken-sc   Bunken Tech Sans SC Wide Medium  (self-hosted from app/fonts)
+       --font-bunken-std  Bunken Tech Sans Std Wide Medium (self-hosted from app/fonts)
+     The Bunken files are the unmodified originals; the owner confirmed web-embedding rights (see
+     docs/rebuild-notes.md). The system stacks after each variable are only a safety net for the
+     moment before the fonts load or if they fail, and do not match the comps. */
   --font-body: var(--font-geist), 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --font-display-sc: var(--font-bunken-sc, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif);
   --font-display-std: var(--font-bunken-std, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif);
@@ -53,14 +53,20 @@
    Body and label styles do not change with width.
    ========================================================================== */
 
-/* Display Hero: Bunken Tech Sans SC Wide Medium, 80/88 */
+/* Display Hero: Bunken Tech Sans SC Wide Medium, 80/88.
+   The SC cut draws lowercase letters as small caps natively, so no `font-variant-caps` is applied:
+   synthesizing small caps on top of the real font shrinks them a second time (measured: 491px ->
+   405px for "our mission" at 64px). Without the font the fallback shows plain system-sans text. */
 @utility type-display-hero {
   font-family: var(--font-display-sc);
   font-weight: 500;
-  /* TEMP: lowercase renders as small caps, as in the SC cut. Harmless once the real font is loaded. */
-  font-variant-caps: small-caps;
-  font-size: 2.5rem;
-  line-height: 2.75rem;
+  /* 40px from about 387px up. Below that the longest word ("AEROSPACE", 8.18em wide in this face)
+     would run past the 20px page margins, so the size follows the viewport (viewport minus the
+     margins and a 15px classic scrollbar): 31.9px at 320px, 38.6px at 375px. Line height keeps
+     the 1.1 ratio. */
+  --hero-fs: min(2.5rem, calc((100vw - 55px) / 8.3));
+  font-size: var(--hero-fs);
+  line-height: calc(var(--hero-fs) * 1.1);
   letter-spacing: 0;
   @media (min-width: 48rem) {
     font-size: 3.5rem;
@@ -72,11 +78,10 @@
   }
 }
 
-/* Display Page: Bunken Tech Sans SC Wide Medium, 64/72 */
+/* Display Page: Bunken Tech Sans SC Wide Medium, 64/72 (same small-caps note as Display Hero) */
 @utility type-display-page {
   font-family: var(--font-display-sc);
   font-weight: 500;
-  font-variant-caps: small-caps;
   font-size: 2rem;
   line-height: 2.375rem;
   letter-spacing: 0;
@@ -193,12 +198,13 @@
   text-transform: uppercase;
 }
 
-/* UI/Nav: Geist Medium, 14/20, tracking 1% */
+/* UI/Nav: Geist Medium, 16/24, tracking 1%. Figma draws 14/20; raised to 16/24 after the visual
+   review found the labels too small (owner-directed). */
 @utility type-nav {
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
   letter-spacing: 0.01em;
 }
 
@@ -212,6 +218,331 @@
   text-transform: uppercase;
 }
 
+/* Figma "Body/Large" is 18/29, but the cream CTA bands set their paragraph at 18/22. Not a named
+   style in the Design System, so it gets its own utility. */
+@utility type-band-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+  letter-spacing: 0;
+}
+
+/* ==========================================================================
+   Layout tokens and stacking layers
+
+   The technical grid is a FOREGROUND framing system: vertical rails sit above photographs and
+   graphics, the header sits above the rails, and everything stays interactive because the rails
+   are pointer-events: none. Layers, lowest to highest (all inside the root `isolate` wrapper):
+
+     z-content (10)  <footer>, and the horizontal <Rule>s in <main>, which paint above the positioned
+                     image sections they sit between. <main> itself is deliberately NOT a stacking
+                     context. Image sections are `isolate`, so their inner z-0 / z-10 values never
+                     leak out.
+     z-grid    (20)  GridRails: decorative, aria-hidden, pointer-events: none, above photographs,
+                     graphics, logos and every section background, including the Home sponsors &
+                     partners panel (which has no layer of its own, so the rails cross it unbroken).
+     z-header  (40)  Sticky header, themed dark or light (see `.site-header` below). Its mobile menu
+                     panel lives in the header's own stacking context, so it needs no separate layer.
+     z-skip   (100)  Skip link, visible on keyboard focus only.
+   ========================================================================== */
+:root {
+  /* Sticky header: 73px of content plus the 1px bottom rule (Figma draws the rule at y=74). */
+  --header-height: 74px;
+  /* Distance of each vertical rail from the viewport edge (or from the 1440px frame edge on wider
+     screens). Always smaller than the page margin (20 / 32 / 48 / 64px) so content sits between
+     the rails with a gap. */
+  --rail-inset: 8px;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --rail-inset: 14px;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --rail-inset: 28px;
+  }
+}
+
+@media (min-width: 80rem) {
+  :root {
+    --rail-inset: 50px;
+  }
+}
+
+@utility z-content {
+  z-index: 10;
+}
+
+@utility z-grid {
+  z-index: 20;
+}
+
+@utility z-header {
+  z-index: 40;
+}
+
+@utility z-skip {
+  z-index: 100;
+}
+
+/* ==========================================================================
+   Header themes. The header is dark (#050505) by default and switches to a light (#F4F4F0) surface
+   while it overlaps a cream section (`data-header-theme="light"`, observed by HeaderTheme). The
+   theme is a handful of custom properties, so one set of classes serves both. The swap is
+   instant on purpose: the logo is a different file per theme and cannot cross-fade, and a fading
+   surface under a swapped logo would flash an unreadable frame. (Hover color transitions on links
+   and buttons remain and are disabled under prefers-reduced-motion.) The Join WATFlight button
+   keeps its dark treatment in both themes; its colors are fixed tokens, not themed.
+   ========================================================================== */
+.site-header {
+  --hdr-bg: #050505;
+  --hdr-fg: #f4f4f0;
+  --hdr-rule: #2b2b2b;
+  --hdr-rule-strong: #444444;
+  --hdr-hover: #171717;
+  --hdr-link-hover: #6698ff;
+  --hdr-focus: #6698ff;
+}
+
+.site-header[data-theme="light"] {
+  --hdr-bg: #f4f4f0;
+  --hdr-fg: #050505;
+  /* Neutral dark rules, clearly visible on cream. */
+  --hdr-rule: #444444;
+  --hdr-rule-strong: #444444;
+  --hdr-hover: #e4e4de;
+  --hdr-link-hover: #1f4fbf;
+  --hdr-focus: #1f4fbf;
+}
+
+/* The header's own bottom rule sits inside its 74px box, so the content area is an even 74px and
+   the logo (36), the 48px button and the labels all center on whole pixels. */
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: var(--hdr-rule);
+  pointer-events: none;
+}
+
+.site-header :focus-visible {
+  outline-color: var(--hdr-focus);
+}
+
+/* Earth-horizon overlay (Home mission section). From 1280px the copy sits on the left: the top
+   fades in from black over 162px (Figma: 40.865% of its 397px frame) and the left half is solid
+   black, fading out to the right edge (Figma: solid to 29.327% of a 993px image that starts at
+   x=447, which is 51.25% of the 1440px frame). Below 1280px the copy sits above the image, so a
+   vertical black-to-transparent scrim keeps it readable. */
+@utility earth-overlay {
+  background-image:
+    linear-gradient(180deg, #000 0, rgb(0 0 0 / 0) 162px),
+    linear-gradient(180deg, rgb(0 0 0 / 0.94) 0%, rgb(0 0 0 / 0.82) 55%, rgb(0 0 0 / 0) 100%);
+
+  @media (min-width: 80rem) {
+    background-image:
+      linear-gradient(180deg, #000 0, rgb(0 0 0 / 0) 162px),
+      linear-gradient(90deg, #000 0%, #000 51.25%, rgb(0 0 0 / 0) 100%);
+  }
+}
+
+/* ==========================================================================
+   Sponsor marquee (Home). CSS-driven, no dependency; one small client controller (see
+   components/sections/home/sponsor-marquee-controller.tsx) reports which logos have loaded and
+   starts the motion once the track is stable.
+   Structure: the viewport clips overflow, so the page itself can never scroll sideways. The track
+   holds the real (accessible) logo list followed by aria-hidden copies; it slides left by exactly
+   one group width (-100% / copies) and restarts, which is invisible because every group is
+   identical and ends with the same trailing gap (so the join between two groups is as wide as the
+   gap between any two logos and nothing collides at the loop point).
+   Logos are shipped as one-colour white artwork on transparency (see content/home.ts), so no CSS
+   filter is applied: the files render exactly as designed.
+   ========================================================================== */
+.sponsor-marquee {
+  --marquee-gap: 3.5rem;
+  /* The component sets --marquee-duration-sm / -lg from the width of the group so the speed stays
+     about 40px/s however many organizations there are. */
+  --marquee-duration: var(--marquee-duration-sm, 90s);
+  --logo-scale: 0.8;
+  --marquee-fade: clamp(1.5rem, 4vw, 4rem);
+  position: relative;
+}
+
+@media (min-width: 48rem) {
+  .sponsor-marquee {
+    --marquee-gap: 6rem;
+    --marquee-duration: var(--marquee-duration-lg, 120s);
+    --logo-scale: 1;
+  }
+}
+
+/* A short fade at both ends so logos do not hard-cut at the viewport edge, narrow enough that a
+   logo stays readable until it is nearly gone. */
+.sponsor-marquee__viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--marquee-fade),
+    #000 calc(100% - var(--marquee-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--marquee-fade),
+    #000 calc(100% - var(--marquee-fade)),
+    transparent 100%
+  );
+}
+
+.sponsor-marquee__track {
+  display: flex;
+  width: max-content;
+  animation: sponsor-marquee var(--marquee-duration) linear infinite;
+  /* Paused at the first frame until SponsorMarqueeController sets data-motion="running" (fonts
+     ready, images settled, track width stable); the <noscript> rule in the component runs it without JS. */
+  animation-play-state: paused;
+}
+
+.sponsor-marquee[data-motion="running"] .sponsor-marquee__track {
+  animation-play-state: running;
+}
+
+.sponsor-marquee__group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--marquee-gap);
+  padding-inline-end: var(--marquee-gap);
+}
+
+.sponsor-marquee__item {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+/* A logo's reserved slot: the exact box of the artwork (height x the file's aspect ratio, so no logo
+   is ever stretched or squeezed). It exists, with its size, in the server-rendered HTML, so the track
+   has its final geometry before a single image arrives and nothing moves when one does. */
+.sponsor-marquee__slot {
+  position: relative;
+  display: block;
+  flex: none;
+  height: calc(var(--logo-height) * var(--logo-scale));
+  width: calc(var(--logo-height) * var(--logo-scale) * var(--logo-ratio));
+}
+
+/* The logo fills the slot but stays transparent until SponsorMarqueeController reports it loaded and
+   decoded (data-state="ready"); the text fallback below covers the slot until then. */
+.sponsor-marquee__logo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+}
+
+/* Text wordmark in the same slot while the image loads, or for good if it fails: same face, color
+   and contrast as the permanent text wordmarks, sized per logo to fit the slot (never below 11px;
+   a longer name wraps). Decorative (aria-hidden): the image's alt text names the organization. */
+.sponsor-marquee__fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: max(11px, calc(var(--fallback-size) * var(--logo-scale)));
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+  color: var(--color-ink);
+}
+
+.sponsor-marquee__slot[data-state="ready"] > .sponsor-marquee__logo {
+  opacity: 1;
+}
+
+.sponsor-marquee__slot[data-state="ready"] > .sponsor-marquee__fallback,
+.sponsor-marquee__slot[data-state="error"] > .sponsor-marquee__logo {
+  display: none;
+}
+
+/* Text-only wordmark for an organization whose official logo is pending: plain Geist Medium in the
+   ink color (#F4F4F0 on #050505 is about 18:1), sized per entry like a logo's optical height. */
+.sponsor-marquee__wordmark {
+  display: block;
+  /* A fixed box (not max-width): the track's width must not change when Geist replaces the fallback font. */
+  width: calc(var(--wordmark-max) * var(--logo-scale));
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: calc(var(--wordmark-size) * var(--logo-scale));
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+  color: var(--color-ink);
+}
+
+@keyframes sponsor-marquee {
+  to {
+    transform: translateX(calc(-100% / var(--marquee-copies)));
+  }
+}
+
+/* Pause on hover, on keyboard focus anywhere inside, and when the pause checkbox is checked. */
+.sponsor-marquee:hover .sponsor-marquee__track,
+.sponsor-marquee:focus-within .sponsor-marquee__track,
+.sponsor-marquee:has(.sponsor-marquee__pause:checked) .sponsor-marquee__track {
+  animation-play-state: paused;
+}
+
+/* Reduced motion: no movement, no duplicates, no edge mask. The real list becomes a centered,
+   wrapping static row. */
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-marquee__track {
+    animation: none;
+    width: 100%;
+    justify-content: center;
+    padding-inline: var(--marquee-gap);
+  }
+
+  .sponsor-marquee__viewport {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  /* The real group may now shrink to the container width so its logos wrap instead of running
+     off-screen (it is `flex: none` in the animated layout). */
+  .sponsor-marquee__group {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline-end: 0;
+    column-gap: 3rem;
+    row-gap: 2.5rem;
+  }
+
+  .sponsor-marquee__group--copy,
+  .sponsor-marquee__controls {
+    display: none;
+  }
+}
+
 /* ==========================================================================
    Base
    ========================================================================== */
@@ -221,25 +552,41 @@
     color-scheme: dark;
   }
 
+  /* Keeps keyboard-focused elements and in-page anchors clear of the sticky header. This is a
+     scroll-margin on the page content rather than a scroll-padding on <html>: scroll-padding also
+     treats the sticky header itself as "obscured", so tabbing through the header while scrolled down
+     made the browser scroll the page up about half a screen per key press. */
+  main,
+  main *,
+  footer,
+  footer * {
+    scroll-margin-top: var(--header-height);
+  }
+
   body {
     background-color: var(--color-canvas);
     color: var(--color-ink);
   }
 
-  /* Default border color is the Design System rule color. */
+  /* Default border color is the Design System rule color. The outline color is set up front on
+     every element so the focus ring never animates in from `currentColor` when an element has
+     `transition-colors`. */
   *,
   ::before,
   ::after {
     border-color: var(--color-rule);
+    outline-color: var(--color-focus);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-focus);
+    outline-style: solid;
+    outline-width: 2px;
     outline-offset: 2px;
   }
 
   /* Cream surfaces (CTA band, sponsor strip): #6698FF is only 2.5:1 on #F4F4F0. */
-  .focus-on-light :focus-visible {
+  .focus-on-light,
+  .focus-on-light * {
     outline-color: var(--color-blue-dark);
   }
 

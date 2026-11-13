@@ -1,19 +1,22 @@
 /**
- * Decorative vertical rails, 50px inside each edge of the 1440px frame, from the Figma "grid line"
- * layers. Shown from 1280px up only: below that the page margin is too tight for them. They sit
- * behind page content (z-0), so solid bands such as the cream CTA band cover them.
+ * Decorative vertical rails: the foreground of the technical grid.
+ *
+ * They sit in the `z-grid` layer (see the layer notes in app/globals.css), above photographs,
+ * gradients and graphics but below the sticky header, so they cross every image area while the
+ * header stays on top. They are `aria-hidden` and `pointer-events-none`, so they never block
+ * clicks, taps or focus.
+ *
+ * Each rail is `--rail-inset` from the viewport edge (50px at 1280px and up, shrinking at smaller
+ * widths so it always stays outside the page margin). On screens wider than 1440px the rails stay
+ * inside the 1440px frame, as in the comps. Horizontal rules run edge to edge and cross them.
  */
 export function GridRails() {
+  const edge = "max(var(--rail-inset), calc((100% - 1440px) / 2 + var(--rail-inset)))";
+
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 hidden xl:block">
-      <div
-        className="absolute inset-y-0 w-px bg-rule"
-        style={{ left: "max(50px, calc((100% - 1440px) / 2 + 50px))" }}
-      />
-      <div
-        className="absolute inset-y-0 w-px bg-rule"
-        style={{ right: "max(50px, calc((100% - 1440px) / 2 + 50px))" }}
-      />
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-grid">
+      <div className="absolute inset-y-0 w-px bg-rule" style={{ left: edge }} />
+      <div className="absolute inset-y-0 w-px bg-rule" style={{ right: edge }} />
     </div>
   );
 }

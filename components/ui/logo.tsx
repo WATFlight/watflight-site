@@ -3,38 +3,46 @@ import { cn } from "@/lib/cn";
 
 type LogoProps = {
   size?: "header" | "footer";
+  /**
+   * Header only: also render the dark artwork and swap between the two with the header theme
+   * (`group/header` with `data-theme="light"`), so the logo never goes through a raster filter.
+   */
+  themed?: boolean;
   className?: string;
 };
 
 /**
- * TEMPORARY logo lockup. The exact Figma logo is a vector (WATFLIGHT-mark + WATFLIGHT-wordmark)
- * that has not been exported yet. Until then:
- *  - the mark is the existing raster `public/images/watflight-logo.png` (same hexagon + arrow,
- *    but on a black rounded square), and
- *  - the wordmark is live text in the display-font fallback, not the Figma lettering.
- * Replace this component's contents with the exported SVGs when they are approved.
- * Tracked in docs/rebuild-notes.md.
+ * WATFlight lockup (mark + wordmark): the exact vector from the approved Home frame's header
+ * `LOGO` layer, saved as `public/images/brand/watflight-lockup.svg` (white artwork for the dark
+ * canvas). `watflight-lockup-dark.svg` is the same vector with its fills changed to #050505 (paths
+ * untouched), used while the header is on its light theme. The footer uses the white vector at
+ * 429px wide, which is how the Figma footer scales it.
+ * The images are decorative: the surrounding link supplies the accessible name.
  */
-export function Logo({ size = "header", className }: LogoProps) {
+export function Logo({ size = "header", themed = false, className }: LogoProps) {
   const isFooter = size === "footer";
+  const width = isFooter ? 429 : 214;
+  const height = isFooter ? 72 : 36;
+  const sizeClasses = isFooter ? "h-auto w-[429px] max-w-full" : "h-9 w-auto";
 
   return (
-    <span className={cn("inline-flex items-center", isFooter ? "gap-4" : "gap-3", className)}>
+    <>
       <Image
-        src="/images/watflight-logo.png"
+        src="/images/brand/watflight-lockup.svg"
         alt=""
-        width={isFooter ? 72 : 36}
-        height={isFooter ? 72 : 36}
-        className={isFooter ? "size-[72px]" : "size-9"}
+        width={width}
+        height={height}
+        className={cn(sizeClasses, themed && "group-data-[theme=light]/header:hidden", className)}
       />
-      <span
-        className={cn(
-          "font-display-std font-medium uppercase leading-none tracking-[0.14em] text-ink",
-          isFooter ? "text-[32px]" : "text-[20px]",
-        )}
-      >
-        WATFlight
-      </span>
-    </span>
+      {themed ? (
+        <Image
+          src="/images/brand/watflight-lockup-dark.svg"
+          alt=""
+          width={width}
+          height={height}
+          className={cn(sizeClasses, "hidden group-data-[theme=light]/header:block", className)}
+        />
+      ) : null}
+    </>
   );
 }

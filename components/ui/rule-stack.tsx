@@ -7,10 +7,9 @@ type RuleStackProps = {
 };
 
 /**
- * Three stacked horizontal bars (2px, 5px, 8px) used to frame cream bands. Bar thicknesses and gaps
- * were read from the Home frame's line layers (2 / 5 / 8px bars, 10 / 5 / 3px gaps toward the band).
- * The color is the Design System rule color; the stack's tone in Figma is unverified at full
- * resolution. Total height is 33px.
+ * Three stacked horizontal bars (2px, 5px, 8px) framing a cream band. Measurements and color come
+ * from the Home frame's line assets: strokes of 2 / 5 / 8px in #F4F4F0 (the cream band color, not
+ * the #2B2B2B rule color), with 10 / 5 / 3px gaps counting toward the band. Total height is 33px.
  */
 export function RuleStack({ position, className }: RuleStackProps) {
   return (
@@ -18,11 +17,11 @@ export function RuleStack({ position, className }: RuleStackProps) {
       aria-hidden="true"
       className={cn("flex w-full", position === "top" ? "flex-col" : "flex-col-reverse", className)}
     >
-      <div className="h-[2px] bg-rule" />
+      <div className="h-[2px] bg-ink" />
       <div className="h-[10px]" />
-      <div className="h-[5px] bg-rule" />
+      <div className="h-[5px] bg-ink" />
       <div className="h-[5px]" />
-      <div className="h-[8px] bg-rule" />
+      <div className="h-[8px] bg-ink" />
       <div className="h-[3px]" />
     </div>
   );

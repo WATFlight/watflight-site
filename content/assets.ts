@@ -9,16 +9,16 @@
 // their slots have not been measured. Add them when those sections are built.
 
 export type AssetSlot = {
-  /** Public path (for example `/images/home/hero.jpg`), or `null` while the asset is missing. */
+  /** Public path (for example `/images/home/hero-aircraft.png`), or `null` while the asset is missing. */
   path: string | null;
-  /** Slot size in the 1440px Figma frame, used for the aspect ratio. */
+  /** Aspect-ratio basis: the slot size in the 1440px Figma frame (or the source size where noted). */
   width: number;
   height: number;
   note?: string;
 };
 
-const slot = (width: number, height: number, note?: string): AssetSlot => ({
-  path: null,
+const slot = (width: number, height: number, path: string | null, note?: string): AssetSlot => ({
+  path,
   width,
   height,
   note,
@@ -26,25 +26,35 @@ const slot = (width: number, height: number, note?: string): AssetSlot => ({
 
 export const assetSlots = {
   // Home 262:79
-  "HOME-HERO": slot(1440, 810, "Hero aircraft photo with left and right black gradients"),
-  "HOME-GLOBE": slot(993, 397, "Earth image with top and left fades"),
-  "HOME-PROJECT": slot(760, 332, "Project image beside the project card"),
-  "HOME-PROGRESS": slot(677, 212, "One source image cropped three ways; source size approximate"),
+  "HOME-HERO": slot(1440, 810, "/images/home/hero-aircraft.png", "Layer 'image 10'. Left and right black gradients are applied in CSS."),
+  "HOME-GLOBE": slot(993, 397, "/images/home/earth-horizon.png", "Layer 'GLOBE'. Top and left fades are applied in CSS."),
+  "HOME-PROJECT": slot(
+    760,
+    332,
+    "/images/home/hydrogen-electric-uav-program.png",
+    "Layer 'Screenshot 2026-10-28 at 9.25.59 PM 1'. ENABLED by the owner. The raster has spec numbers baked into the artwork (wingspan 2.8 m, payload 2.0 kg, cruise speed 25 m/s) that no approved text supports; they are unverified and need team confirmation.",
+  ),
+  "HOME-PROGRESS": slot(
+    2172,
+    724,
+    "/images/home/development-progress-blueprints.png",
+    "Layer 'image 11': one source image, cropped three ways in the development-progress row. Size is the source size.",
+  ),
 
   // About Us 262:80
-  "ABOUT-HERO": slot(729, 397, "Hero image with left-to-black gradient"),
+  "ABOUT-HERO": slot(729, 397, null, "Hero image with left-to-black gradient"),
 
   // Current Project 333:496
-  "PROJ-HERO": slot(1260, 420, "Hero image with top-to-transparent gradient"),
-  "PROJ-COMP-1": slot(161, 62, "Component logo or render, identity unknown"),
-  "PROJ-COMP-2": slot(165, 68, "Component logo or render, identity unknown"),
-  "PROJ-COMP-3": slot(159, 64, "Component logo or render, identity unknown"),
-  "PROJ-COMP-4": slot(181, 68, "Component logo or render, identity unknown"),
-  "PROJ-ROADMAP": slot(1274, 311, "Raster in the comp; contents unverified"),
-  "PROJ-GALLERY-1": slot(440, 158),
-  "PROJ-GALLERY-2": slot(441, 188),
-  "PROJ-GALLERY-3": slot(428, 353),
-  "PROJ-GALLERY-4": slot(425, 353),
+  "PROJ-HERO": slot(1260, 420, null, "Hero image with top-to-transparent gradient"),
+  "PROJ-COMP-1": slot(161, 62, null, "Component logo or render, identity unknown"),
+  "PROJ-COMP-2": slot(165, 68, null, "Component logo or render, identity unknown"),
+  "PROJ-COMP-3": slot(159, 64, null, "Component logo or render, identity unknown"),
+  "PROJ-COMP-4": slot(181, 68, null, "Component logo or render, identity unknown"),
+  "PROJ-ROADMAP": slot(1274, 311, null, "Raster in the comp; contents unverified"),
+  "PROJ-GALLERY-1": slot(440, 158, null),
+  "PROJ-GALLERY-2": slot(441, 188, null),
+  "PROJ-GALLERY-3": slot(428, 353, null),
+  "PROJ-GALLERY-4": slot(425, 353, null),
 } satisfies Record<string, AssetSlot>;
 
 export type AssetSlotId = keyof typeof assetSlots;
