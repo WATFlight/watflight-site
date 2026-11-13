@@ -21,6 +21,15 @@ type CtaBandProps = {
    */
   descriptionGap?: string;
   actionsGap?: string;
+  /**
+   * Replaces the default 1280px-and-up sizing of the cream area ("xl:min-h-[550px] xl:py-0", the About
+   * frame) for a frame with another band height: Current Project uses "xl:min-h-[466px] xl:py-0".
+   * Pass whole Tailwind classes so they are generated. Ignored with `fullViewport`; when omitted the
+   * markup is exactly what Home and About already render.
+   */
+  contentClassName?: string;
+  /** Extra classes for the title, for example `text-balance` for a long title. Omitted: unchanged markup. */
+  titleClassName?: string;
   /** Buttons, rendered in a centered row. */
   children?: ReactNode;
 };
@@ -41,6 +50,8 @@ export function CtaBand({
   fullViewport = false,
   descriptionGap,
   actionsGap,
+  contentClassName,
+  titleClassName,
   children,
 }: CtaBandProps) {
   return (
@@ -57,10 +68,10 @@ export function CtaBand({
         <PageContainer
           className={cn(
             "flex flex-col items-center justify-center py-16 text-center md:py-24",
-            fullViewport ? "xl:py-24" : "xl:min-h-[550px] xl:py-0",
+            fullViewport ? "xl:py-24" : (contentClassName ?? "xl:min-h-[550px] xl:py-0"),
           )}
         >
-          <h2 id={`${id}-heading`} className="type-display-page text-canvas">
+          <h2 id={`${id}-heading`} className={cn("type-display-page text-canvas", titleClassName)}>
             {title}
           </h2>
           {subtitle ? <p className="type-h2 mt-[9px] text-canvas">{subtitle}</p> : null}

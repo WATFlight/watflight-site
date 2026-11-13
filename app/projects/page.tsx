@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { PageContainer } from "@/components/ui/page-container";
-import { SectionHeading } from "@/components/ui/section-heading";
+import { ProjectCta } from "@/components/sections/projects/project-cta";
+import { ProjectGallery } from "@/components/sections/projects/project-gallery";
+import { ProjectHero } from "@/components/sections/projects/project-hero";
+import { ProjectRoadmap } from "@/components/sections/projects/project-roadmap";
+import { ProjectSystem } from "@/components/sections/projects/project-system";
+import { Rule } from "@/components/ui/rule";
 
 export const metadata: Metadata = {
   title: "Current Project",
@@ -8,18 +12,20 @@ export const metadata: Metadata = {
     "We are developing a hydrogen-electric unmanned aerial vehicle designed for long-endurance, low-emission flight through autonomous operation.",
 };
 
-// Route skeleton: page sections are built in later milestones (Current Project frame 333:496).
-// The project identity (hydrogen-electric UAV program) follows the approved Figma direction.
+// Current Project (Figma frame 333:496). Full-width #2B2B2B rules sit under the hero and under the
+// system/specification section only (the frame draws no others); the vertical grid rails overlay every
+// section (z-grid layer). The sticky header turns light only while the cream call-to-action band is
+// under it. All copy and technical statements are pending team verification (docs/rebuild-notes.md).
 export default function ProjectsPage() {
   return (
-    <PageContainer className="py-16 md:py-24">
-      <SectionHeading
-        as="h1"
-        size="display-page"
-        eyebrow="Current Project"
-        title="hydrogen-electric UAV program"
-        titleClassName="text-blue"
-      />
-    </PageContainer>
+    <>
+      <ProjectHero />
+      <Rule />
+      <ProjectSystem />
+      <Rule />
+      <ProjectRoadmap />
+      <ProjectGallery />
+      <ProjectCta />
+    </>
   );
 }
