@@ -14,6 +14,13 @@ type CtaBandProps = {
    * and center the content both ways. The rule stacks stay full width at the top and bottom.
    */
   fullViewport?: boolean;
+  /**
+   * Optional overrides for the gap above the description and above the buttons. Home's frame uses
+   * 27px and 38px (the defaults, applied with classes so Home's markup is unchanged); the About frame
+   * uses 22px and 61px. Applied as inline margins only when given.
+   */
+  descriptionGap?: string;
+  actionsGap?: string;
   /** Buttons, rendered in a centered row. */
   children?: ReactNode;
 };
@@ -26,7 +33,16 @@ type CtaBandProps = {
  * comps; `fullViewport` makes the whole section (stacks included) at least one viewport tall.
  * Spacing between the title, subtitle, description and buttons follows the Home frame.
  */
-export function CtaBand({ id, title, subtitle, description, fullViewport = false, children }: CtaBandProps) {
+export function CtaBand({
+  id,
+  title,
+  subtitle,
+  description,
+  fullViewport = false,
+  descriptionGap,
+  actionsGap,
+  children,
+}: CtaBandProps) {
   return (
     <section
       aria-labelledby={`${id}-heading`}
@@ -49,10 +65,18 @@ export function CtaBand({ id, title, subtitle, description, fullViewport = false
           </h2>
           {subtitle ? <p className="type-h2 mt-[9px] text-canvas">{subtitle}</p> : null}
           {description ? (
-            <p className="type-band-body mt-[27px] max-w-[536px] text-surface">{description}</p>
+            <p
+              className="type-band-body mt-[27px] max-w-[536px] text-surface"
+              style={descriptionGap ? { marginTop: descriptionGap } : undefined}
+            >
+              {description}
+            </p>
           ) : null}
           {children ? (
-            <div className="mt-[38px] flex flex-wrap items-center justify-center gap-4 md:gap-[38px]">
+            <div
+              className="mt-[38px] flex flex-wrap items-center justify-center gap-4 md:gap-[38px]"
+              style={actionsGap ? { marginTop: actionsGap } : undefined}
+            >
               {children}
             </div>
           ) : null}

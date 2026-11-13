@@ -2,7 +2,7 @@
 
 Working notes for the Figma-based rebuild on `rebuild/figma-hifi`. Source frames: Home `262:79`, About Us `262:80`, Current Project `333:496`, Sponsorship `340:771`, Join the Team `344:1128`, News & Blog `344:1129`, Design System `77:2` in Figma file `ZTpRvqKrFDvxGgQ71b6xjt`.
 
-Milestones so far: the foundation (tokens, type scale, fonts, shared shell and primitives, six route skeletons) and the Home page. The other five pages, remaining Figma assets and legacy-file deletion come later.
+Milestones so far: the foundation (tokens, type scale, fonts, shared shell and primitives, six route skeletons), the Home page, and the About page (frame `262:80`, see "About page" below). The other four pages, remaining Figma assets and legacy-file deletion come later.
 
 ## Fonts
 
@@ -42,6 +42,10 @@ Not used from the Home frame: `image 21`, the `bxs:download` icon (no Sponsor Pa
 
 ## Needs verification before launch
 
+- **LAUNCH BLOCKER: faculty advisors (About).** The Figma About frame shows "Dr. John Doe" (Department of Mechanical & Mechatronics Engineering) and "Dr. Jane Doe" (Department of Electrical & Computer Engineering). They are placeholders and must not ship. `content/about.ts` therefore keeps `facultyAdvisory.advisors` empty and `FacultyAdvisory` renders nothing (no heading, no rule, no empty box) while it is empty. To launch the section, the team must supply real advisors (name, department, institution, and a portrait with alt text only if one exists) and add them to that array. No names, portraits, departments or biographies were invented.
+- **Journey dates (About, D5):** "2025 Founded", "2025 Early Development", "2026 Autonomous Aviation" and "TODAY Current Stage" are transcribed from the frame and are provisional. They have not been verified against the team's records and no "current development stage" claim may be added until they are. The text is unchanged from Figma, including the missing full stop on the first three descriptions.
+- **About hero photo provenance (`ABOUT-HERO`):** the exact `Rectangle 39` export is used, as instructed. The picture looks illustrative rather than documentary (people in black WATFlight apparel at a workshop bench, a WATFlight banner and a whiteboard of design notes). Confirm it is an approved photo of the team, and that anyone recognisable in it has agreed to its use. The alt text describes only what is visible and does not call the people team members.
+- **Team roster (About):** JACKIE (Founder & Team Director), SHAOFU (Founder & Mechanical Lead), HIRAM (Electrical Lead), MANYA (Software Lead) are the frame's names and titles, still provisional (D2). The four portrait frames are empty in the comp and stay empty on purpose (decorative, `aria-hidden`); no legacy portrait was reused.
 - **Home project image (`HOME-PROJECT`, `content/assets.ts`):** shown at the owner's request. The raster has a spec readout baked into the artwork (wingspan 2.8 m, payload 2.0 kg, cruise speed 25 m/s). No approved text supports those figures and the Current Project frame gives no quantitative specifications. They are unverified technical claims: confirm them with the team, or swap in an export without the overlay before this goes live. The alt text deliberately does not repeat the numbers. To remove the image, set the slot's `path` back to `null`.
 
 ## Hidden on purpose
@@ -184,5 +188,56 @@ Nothing below has been confirmed by the team; it follows the approved Figma fram
 - **Sponsor logos on Home:** the 23 organizations on the owner's list plus 20|20 Laboratory. Whether each is a current sponsor or partner is the team's call, and several text-only entries still need a verified identity and an official logo (see the inventory).
 - **Provisional `h1` text:** the Sponsorship, Join and News headings were read from flattened images at thumbnail scale ("PARTNER WITH WATFLIGHT", "JOIN THE TEAM.", "LATEST FROM WATFLIGHT."). Verify against full-resolution frames or supplied copy.
 - **Page descriptions:** each route's metadata description is taken from approved Figma copy with the approved spelling fixes (D10). The News description is generic because that frame's copy is flattened.
-- **"Explore our teams"** in the Home Join band links to `/about#leadership`, which does not exist until the About page is built.
-- **Intentionally excluded:** coordinates display (D7), Faculty Advisory section and its Doe placeholders (D4), "Sponsor Package" button (D9), unmatched sponsor logos (D8), GitHub in the footer (D12), and the legacy competitions, sponsorship tiers, progression navigation and join steps (D16).
+- **"Explore our teams"** in the Home Join band links to `/about#leadership`, which now resolves to the "meet the team" section of the About page.
+- **Intentionally excluded:** coordinates display (D7), the Faculty Advisory Doe placeholders (D4; the section's structure now exists but renders nothing until real advisors are added, see the launch blocker above), "Sponsor Package" button (D9), unmatched sponsor logos (D8), GitHub in the footer (D12), and the legacy competitions, sponsorship tiers, progression navigation and join steps (D16).
+
+## About page (frame 262:80)
+
+Built from the About frame, the Design System frame (`77:2`) and the shared shell from Home. Sections, in order, all server components in `components/sections/about/`: `AboutHero`, `AboutJourney`, `AboutTeam`, `AboutSubteams`, `FacultyAdvisory`, `AboutCta`; copy is in `content/about.ts`. One `h1` ("ABOUT WATFLIGHT", set on two lines, one `span` per line with a space between so the accessible name is a single phrase), `h2` per section, `h3` for timeline stages, team members and disciplines. The About nav item is active through the shell's existing `aria-current` logic (no shell change).
+
+### Assets (exported from the approved frame; no temporary Figma URL remains)
+
+| Saved as | Figma layer | Used for |
+|---|---|---|
+| `public/images/about/about-hero-workshop-team.png` (1823x863 source) | `Rectangle 39` (image fill) | Hero photo, slot `ABOUT-HERO` in `content/assets.ts` |
+| `public/images/about/timeline-marker.svg` (22x22) | `Group 35` | Timeline markers |
+| `public/images/about/subteam-mechanical-wrench.svg` (30x30) | `clarity:wrench-line` | Mechanical card icon |
+| `public/images/about/subteam-electrical-circuit-board.svg` (24x24) | `codicon:circuit-board` | Electrical card icon |
+| `public/images/about/subteam-software-code-brackets.svg` (22x22) | `icon-park-outline:code-brackets` | Software card icon |
+
+The icons and the marker are rendered at their own root size (never rescaled). Not exported: every `Line` / `grid line` SVG (rebuilt with CSS from the stroke colors and weights read from the files: `#2B2B2B` rules, `#969690` timeline line, `#3F7CFF` stems and link underline, `#1F4FBF` team accent rule), the header and footer artwork (shared, already on Home), and the full-page screenshot (visual reference only). The Figma crop of the hero is `object-fit: cover`, centered, into 729x397; the component keeps that 729:397 ratio at every width, so the crop is the same everywhere. The gradient is black at 0% to transparent at 71.154% (CSS, not baked into the file).
+
+### Copy corrections and transcription
+
+Applied as instructed: "design, simulating" to "designing, simulating", "unscrewed" to "unmanned", "PBC" to "PCB". Everything else is the frame's own text, including "carbon-fiber" and the absent full stops (journey intro, first three stage descriptions). The frame's off-canvas clipped duplicate "Mechanical" text inside the first advisor card is not carried over. The two "OUR JOURNEY" / "MEET THE TEAM" titles are lowercase in the source text (as "our mission" is on Home): the SC cut draws lowercase as small caps. Button labels use the site's mixed case ("Explore projects", "Join WATFlight"); the button style uppercases them.
+
+### Layout decisions
+
+- **Hero (1440 reference):** 578px section; headline 182px below the header; photo 729x397, 112px below the header, right edge on the right grid rail (`right: var(--rail-inset)`, width 50.625% of the 1440px frame, so it scales from 1280 to 1440px). Below 1280px the photo stacks under the copy inside the page margins. The paragraph overlaps the photo's black left edge by up to about 100px between 1280 and 1440px; the worst-case contrast behind it (pixel-measured) is 5.3:1 at 1366px and 6.1:1 or better at the other widths tested, so it stays above 4.5:1.
+- **Timeline:** `ol` of four items. 1280px and up: the frame's own proportions (stems at 126, 402, 736 and 1061px from the left margin at 1440px, 181px description boxes). 768 to 1279px: four equal columns. Under 768px: a vertical timeline with the line through the markers at the left and the stem pointing to the text. The rail-to-rail line starts on the left rail's inner edge and ends on the right rail (the frame's line runs x=52 to x=1390).
+- **Team:** four columns from 1024px (53px gaps from 1280px), two from 768px, one below. Frame boxes use 288.5:255 (the frame's 289/288 by 255).
+- **Subteams:** three columns from 1024px, one below. Cards have a border on the top, left and right only, as drawn in the frame (no bottom border; it is one class, `border-x border-t`, if the team wants a closed box). The frame hand-places each card's text 18 to 25px from its left edge and each icon 20 to 28px from its right edge; one 20px inset is used and each icon is centered on its title. Description boxes keep the frame's 352 / 379 / 352px widths (from 1280px) so the line breaks match. "LEARN MORE" goes to `/join`; its label and underline are unchanged and an invisible `::after` makes the touch target about 46px high.
+- **Faculty advisory:** the full-width rule moves into the section, so with no advisors nothing is drawn and the subteam section closes with a 104px gap before the call-to-action (35px plus the rule when advisors exist).
+- **Call-to-action:** the shared `CtaBand` (550px of cream from 1280px, not Home's full-viewport band). The About frame spaces its paragraph 22px below the title and its buttons 61px below the paragraph (Home: 27px and 38px), so `CtaBand` gained two optional props, `descriptionGap` and `actionsGap`, applied as inline margins only when given. Home passes neither, so its markup is unchanged. The shared `RuleStack` is 33px at the top and bottom, so the whole band is 616px tall against the frame's 621px (31px above, 40px below); the cream area is exactly 550px. The header turns light only while the band's stacks or cream are under its midline (`data-header-theme="light"`).
+- **Rails and rules:** the only full-width rule on the page is under the hero (the frame's other two are the header's own and the advisory rule). The grid rails cross every section above images and graphics.
+
+### Typography audit (About, 1440px, production values match Figma)
+
+| Role | Figma style | Rendered |
+|---|---|---|
+| H1 "ABOUT WATFLIGHT" | Bunken SC Wide Medium 64/72 | same, 2 lines |
+| Hero paragraph | Geist Regular 18/29, `#969690` | same, 644px wide, 3 lines |
+| "our journey", "meet the team" | Bunken SC Wide Medium 64/72 | same |
+| Journey intro | Geist Regular 16/25, `#969690` | same, 500px wide, 3 lines |
+| Timeline year | Geist Medium 12/16, tracking 1.44px | same |
+| Timeline title / description | Geist Medium 18/26 / Geist Regular 14/21 `#969690` | same, description 181px |
+| Member name | Bunken Std Wide Medium 28/36 | same |
+| Member role | Geist Medium 18/26 `#969690` | same |
+| "SUBTEAM DISCIPLINES" | Bunken Std Wide Medium 36/44 | same |
+| Discipline name / description | Std Wide Medium 22/30 / Geist Regular 16/25 `#969690` | same, 2 lines each |
+| "LEARN MORE" | Geist Regular 12/18, tracking 1.44px, `#3F7CFF` | same |
+| CTA title | Bunken SC Wide Medium 64/72 | same, one line |
+| CTA paragraph | Geist Regular 18/22 `#0F0F0F` | same, 536px, 2 lines |
+| CTA buttons | Geist Medium 14/20, tracking 0.56px, uppercase | same |
+
+Known, intentional differences: heading and label text is `#F4F4F0` where Figma sets pure white (Home decision); the CTA title is `#050505` where Figma sets `#000`. "Explore projects" is 197px wide against the frame's 199px (sub-pixel font metrics; the frame gives no fixed width for "Join WATFlight"). 95 box checks (positions and sizes of the hero, image, line, markers, stems, labels, frames, names, cards and link) are within 1.5px of the frame at 1440px.

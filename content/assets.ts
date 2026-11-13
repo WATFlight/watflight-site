@@ -42,7 +42,12 @@ export const assetSlots = {
   ),
 
   // About Us 262:80
-  "ABOUT-HERO": slot(729, 397, null, "Hero image with left-to-black gradient"),
+  "ABOUT-HERO": slot(
+    729,
+    397,
+    "/images/about/about-hero-workshop-team.png",
+    "Layer 'Rectangle 39' (image fill, 1823x863 source). Figma crops it with object-fit: cover, centered, into 729x397; the left-to-black gradient (black to transparent at 71.154%) is applied in CSS. Provenance unverified: the picture looks illustrative, confirm it is an approved team photo.",
+  ),
 
   // Current Project 333:496
   "PROJ-HERO": slot(1260, 420, null, "Hero image with top-to-transparent gradient"),
