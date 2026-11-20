@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { PageContainer } from "@/components/ui/page-container";
-import { SectionHeading } from "@/components/ui/section-heading";
+import { SponsorshipContact } from "@/components/sections/sponsorship/sponsorship-contact";
+import { SponsorshipHero } from "@/components/sections/sponsorship/sponsorship-hero";
+import { SponsorshipPartners } from "@/components/sections/sponsorship/sponsorship-partners";
+import { SponsorshipWays } from "@/components/sections/sponsorship/sponsorship-ways";
+import { SponsorshipWhy } from "@/components/sections/sponsorship/sponsorship-why";
+import { Rule } from "@/components/ui/rule";
 
 export const metadata: Metadata = {
   title: "Sponsorship",
@@ -8,20 +12,24 @@ export const metadata: Metadata = {
     "Support a student-driven team advancing innovative aerospace systems. Partner with WATFlight to invest in talent, technology and real-world impact.",
 };
 
-// Route skeleton: page sections are built in later milestones (Sponsorship frame 340:771).
-// The h1 wording is PROVISIONAL: the frame body is a flattened image read at thumbnail scale.
+// Sponsorship (Figma frame 340:771). The frame's body is one flattened AI-generated screenshot, so every
+// section below is rebuilt as semantic HTML from the owner's PNG export, using it as visual direction
+// only; all of its copy is provisional (see docs/rebuild-notes.md, "Sponsorship page"). Full-width
+// #2B2B2B rules separate the hero, why, ways and partners sections and close the page above the contact
+// section; the grid rails overlay every section. The page has no cream band, so the sticky header stays
+// dark throughout.
 export default function SponsorshipPage() {
   return (
-    <PageContainer className="py-16 md:py-24">
-      <SectionHeading
-        as="h1"
-        size="display-page"
-        title={
-          <>
-            PARTNER WITH <span className="text-blue">WATFLIGHT</span>
-          </>
-        }
-      />
-    </PageContainer>
+    <>
+      <SponsorshipHero />
+      <Rule />
+      <SponsorshipWhy />
+      <Rule />
+      <SponsorshipWays />
+      <Rule />
+      <SponsorshipPartners />
+      <Rule />
+      <SponsorshipContact />
+    </>
   );
 }

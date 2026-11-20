@@ -16,13 +16,21 @@ const linkClasses =
  * Framing: the footer is a full-width #050505 surface in the content layer. The vertical divider
  * runs the full height of the footer (it overshoots the container padding with negative margins)
  * so it meets the full-width rule that closes the page 20px above the bottom edge, instead of
- * floating as a short fragment. There is no top border: the page above ends in its own rule stack.
+ * floating as a short fragment.
+ *
+ * Top boundary: one 1px full-width #2B2B2B rule (`.site-footer__top-rule`) sits on the footer's top edge,
+ * taken out of the flow (absolute, so the footer's content is exactly where it was) and drawn under the
+ * grid rails' layer, so it meets the vertical rails and the divider below. Pages that end in the cream
+ * call-to-action band (Home, About, Current Project) already end in that band's own rule stack, so there
+ * the rule is hidden to avoid a doubled line (see "Footer top rule" in app/globals.css): every page has
+ * exactly one boundary line.
  */
 export function SiteFooter() {
   const [emailName, emailDomain] = contact.email.split("@");
 
   return (
     <footer className="relative z-content bg-canvas">
+      <div aria-hidden="true" className="site-footer__top-rule pointer-events-none absolute inset-x-0 top-0 h-px bg-rule" />
       <PageContainer className="grid gap-12 py-12 md:pt-14 md:pb-[54px] lg:grid-cols-[minmax(0,1fr)_1px_auto] lg:gap-0 frame:grid-cols-[557px_1px_auto]">
         <div className="flex flex-col gap-6 lg:pr-12">
           <Link href="/" aria-label="WATFlight home" className="w-fit max-w-full">

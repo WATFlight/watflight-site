@@ -55,14 +55,16 @@ function pageLoaded(): Promise<void> {
  *  - `data-state="ready" | "error"` on each `[data-logo-slot]` once its image has loaded and decoded
  *    (or failed). CSS then swaps the text for the logo in place, or keeps the text for good.
  *  - `data-motion="running"` on the marquee root once fonts are ready, the images have settled (or
- *    MAX_WAIT_MS has passed since they started loading) and the track's width has stopped changing,
- *    so the loop never starts on geometry that is still moving.
+ *    MAX_WAIT_MS has passed since they started loading) and every track's width has stopped changing,
+ *    so the loop never starts on geometry that is still moving (one track on Home, one per row on the
+ *    Sponsorship page).
  */
 export function SponsorMarqueeController({ rootId }: { rootId: string }) {
   useEffect(() => {
     const root = document.getElementById(rootId);
-    const track = root?.querySelector<HTMLElement>(".sponsor-marquee__track");
-    if (!root || !track) return;
+    // One track on Home, one per row on the Sponsorship page: the motion starts for all of them together.
+    const tracks = Array.from(root?.querySelectorAll<HTMLElement>(".sponsor-marquee__track") ?? []);
+    if (!root || tracks.length === 0) return;
     let cancelled = false;
 
     const slots = Array.from(root.querySelectorAll<HTMLElement>("[data-logo-slot]"));
@@ -80,7 +82,7 @@ export function SponsorMarqueeController({ rootId }: { rootId: string }) {
     const fonts = document.fonts ? document.fonts.ready.then(() => undefined) : Promise.resolve();
     const imagesOrCap = Promise.race([Promise.all(settled), loading.then(() => delay(MAX_WAIT_MS))]);
     Promise.all([fonts, imagesOrCap])
-      .then(() => waitForStableWidth(track))
+      .then(() => Promise.all(tracks.map(waitForStableWidth)))
       .then(() => {
         if (!cancelled) root.dataset.motion = "running";
       });

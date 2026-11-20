@@ -335,6 +335,16 @@
   outline-color: var(--hdr-focus);
 }
 
+/* Footer top rule (components/layout/site-footer.tsx). The footer draws one 1px rule on its top edge. A page
+   whose last section is the cream call-to-action band already ends in that band's own rule stack (Home,
+   About, Current Project), and a second line right under it would double the boundary, so there the rule
+   is not shown. The band is recognised by the `data-header-theme="light"` it already carries, as the last
+   child of <main>; no page markup changed. (Without :has() support the rule still shows, a hairline under
+   the band's last bar.) */
+main:has(> [data-header-theme="light"]:last-child) + footer .site-footer__top-rule {
+  display: none;
+}
+
 /* Earth-horizon overlay (Home mission section). From 1280px the copy sits on the left: the top
    fades in from black over 162px (Figma: 40.865% of its 397px frame) and the left half is solid
    black, fading out to the right edge (Figma: solid to 29.327% of a 993px image that starts at
@@ -502,6 +512,37 @@
   }
 }
 
+/* Two-row variant (Sponsorship "Our partners", SponsorMarqueeRows). Both rows are Home's track, only
+   stacked: each row has its own group width, so the component sets its duration (--marquee-duration-sm /
+   -lg, the same speed as Home) and its start (--marquee-start, a fraction of one loop) on the row. The
+   start is a negative animation delay, so the row begins part-way through its loop and the rows never
+   line up into columns. The pause rules below act on the root, so one hover, focus or checkbox stops both. */
+.sponsor-marquee__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 48rem) {
+  .sponsor-marquee__rows {
+    gap: 2.5rem;
+  }
+}
+
+.sponsor-marquee__row {
+  --marquee-duration: var(--marquee-duration-sm, 90s);
+}
+
+@media (min-width: 48rem) {
+  .sponsor-marquee__row {
+    --marquee-duration: var(--marquee-duration-lg, 120s);
+  }
+}
+
+.sponsor-marquee__row .sponsor-marquee__track {
+  animation-delay: calc(var(--marquee-duration) * var(--marquee-start, 0) * -1);
+}
+
 /* Pause on hover, on keyboard focus anywhere inside, and when the pause checkbox is checked. */
 .sponsor-marquee:hover .sponsor-marquee__track,
 .sponsor-marquee:focus-within .sponsor-marquee__track,
@@ -540,6 +581,23 @@
   .sponsor-marquee__group--copy,
   .sponsor-marquee__controls {
     display: none;
+  }
+
+  /* Two rows: the rows, tracks and groups stop being boxes (`display: contents`), so the 23 real entries
+     are the direct children of the one list and wrap together, centered, each exactly once. */
+  .sponsor-marquee__rows {
+    flex-flow: row wrap;
+    justify-content: center;
+    column-gap: 3rem;
+    row-gap: 2.5rem;
+    padding-inline: var(--marquee-gap);
+  }
+
+  .sponsor-marquee__row,
+  .sponsor-marquee__row .sponsor-marquee__viewport,
+  .sponsor-marquee__row .sponsor-marquee__track,
+  .sponsor-marquee__row .sponsor-marquee__group:not(.sponsor-marquee__group--copy) {
+    display: contents;
   }
 }
 

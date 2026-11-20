@@ -5,8 +5,9 @@
 // for `null` entries, so a missing image can never be silently replaced by unrelated photography.
 // The `null` entries in this file are the machine-checkable missing-asset list.
 //
-// Slots for Sponsorship, Join and News are not listed yet: those frames are flattened images and
-// their slots have not been measured. Add them when those sections are built.
+// Slots for Join and News are not listed yet: those frames are flattened images and their slots
+// have not been measured. Add them when those sections are built. Sponsorship's two photographs are
+// listed below as crops of the owner's export of its flattened body.
 
 export type AssetSlot = {
   /** Public path (for example `/images/home/hero-aircraft.png`), or `null` while the asset is missing. */
@@ -109,6 +110,22 @@ export const assetSlots = {
     353,
     "/images/projects/gallery-runway-flight.png",
     "Layer 'Screenshot 2026-10-30 at 9.39.10 PM 1' (682x566 PNG). Frame crop: centered object-fit: cover.",
+  ),
+
+  // Sponsorship 340:771. The frame's body is one flattened, AI-generated raster ('image 34'), so these
+  // two are CROPS of the owner's 3x PNG export of the frame (4320x9573), not Figma layers. Both pictures
+  // are illustrative and their provenance is unverified (docs/rebuild-notes.md, "Sponsorship page").
+  "SPONSORSHIP-HERO": slot(
+    644,
+    468,
+    "/images/sponsorship/sponsorship-hero-hangar-aircraft.jpg",
+    "Crop x=2254 y=670 w=1772 h=1244 of the 3x export (80px inside the design's blue corner brackets and faint inner frame, which are interface elements and are excluded); saved as JPEG q92. The slot is the bracket rectangle, 644x468 in the 1440px frame; the crop is slightly tighter. AI-generated: soft (the export upscales a lower-resolution raster) and the fuselage lettering is garbled.",
+  ),
+  "SPONSORSHIP-WAYS": slot(
+    546,
+    562,
+    "/images/sponsorship/sponsorship-ways-wing-inspection.jpg",
+    "Crop x=2547 y=4097 w=1479 h=1526 of the 3x export (80px inside the design's blue corner brackets and a faint blue inner frame line, excluded); saved as JPEG q92. The slot is the bracket rectangle, 546x562 in the 1440px frame. AI-generated and soft; the logo on the jacket is garbled.",
   ),
 } satisfies Record<string, AssetSlot>;
 
