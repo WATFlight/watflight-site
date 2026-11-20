@@ -134,37 +134,71 @@ export const projectSpecs = {
 };
 
 /**
- * The roadmap is ONE raster in the frame ("Screenshot 2026-10-30 at 9.24.24 PM 1"), so it stays a raster.
- * These are the labels printed in that picture, transcribed for assistive technology only. They are
- * pending verification (see docs/rebuild-notes.md); no dates and no completion states are stated,
- * because the picture gives none in words.
+ * Project roadmap (frame 333:496). In the frame the roadmap is ONE flattened raster ("Screenshot 2026-10-30
+ * at 9.24.24 PM 1", 1630x398) with its labels, titles and descriptions baked in. It is rebuilt here as live
+ * text: the four phases below are the wording printed in that picture, copied exactly (labels, titles and
+ * descriptions), in the picture's order. They are still pending verification (docs/rebuild-notes.md); no
+ * dates and no completion states are stated, because the picture gives none in words. The four aircraft
+ * illustrations are independent SVG files (slots PROJ-ROADMAP-1 to -4): original vector redraws of the four
+ * pictures in that raster, which served only as visual references. They hold no words and no timeline graphics.
+ *
+ * `node` is the timeline marker's state in the picture: filled blue for the first three phases, an
+ * outlined ring for Flight. It is purely visual (the marker is hidden from assistive technology), so it
+ * carries no meaning in words.
  */
+export type RoadmapStage = {
+  label: string;
+  title: string;
+  description: string;
+  illustration: { slot: Extract<AssetSlotId, `PROJ-ROADMAP-${number}`>; alt: string };
+  node: "filled" | "outlined";
+};
+
 export const projectRoadmap = {
   title: "project roadmap",
   description: "Our development roadmap takes the aircraft from concept through design, testing and flight.",
-  caption: "Project roadmap: Concept, Simulation, Integration, Flight",
   stages: [
     {
       label: "Concept",
       title: "Concept + Design",
       description: "Define requirements and develop the initial aircraft design.",
+      illustration: {
+        slot: "PROJ-ROADMAP-1",
+        alt: "Blue wireframe drawing of an aircraft with dimension marks.",
+      },
+      node: "filled",
     },
     {
       label: "Simulation",
       title: "Simulation + Systems",
       description: "Develop and test autonomy, propulsion, and system integration in simulation.",
+      illustration: {
+        slot: "PROJ-ROADMAP-2",
+        alt: "White wireframe aircraft over wavy contour lines.",
+      },
+      node: "filled",
     },
     {
       label: "Integration",
       title: "Hardware Integration + Testing",
       description: "Integrate subsystems and conduct ground and flight testing.",
+      illustration: {
+        slot: "PROJ-ROADMAP-3",
+        alt: "Exploded view of an aircraft fuselage and its internal components between two wing panels.",
+      },
+      node: "filled",
     },
     {
       label: "Flight",
       title: "Flight Testing / Future Development",
       description: "Full flight testing and continued iteration towards long-endurance autonomous operation.",
+      illustration: {
+        slot: "PROJ-ROADMAP-4",
+        alt: "Aircraft with long wings and two propellers over a dark ground.",
+      },
+      node: "outlined",
     },
-  ],
+  ] satisfies readonly RoadmapStage[],
 };
 
 export type GalleryImage = {

@@ -1,60 +1,31 @@
 import Image from "next/image";
-import { MediaFrame } from "@/components/ui/media-frame";
 import { PageContainer } from "@/components/ui/page-container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { cn } from "@/lib/cn";
 import { assetSlots } from "@/content/assets";
 import { projectRoadmap } from "@/content/projects";
 
-// Source size of the roadmap raster ('Screenshot 2026-10-30 at 9.24.24 PM 1'). The stage columns sit
-// at 5% to 99% of its width, so splitting it into equal halves or quarters never cuts a stage.
-const SOURCE_WIDTH = 1630;
-const SOURCE_HEIGHT = 398;
-
-type CropProps = {
-  /** Which part to show (0-based) when the picture is cut into `parts` equal pieces. */
-  index: number;
-  parts: 2 | 4;
-  sizes: string;
-  className?: string;
-};
-
-/** One piece of the exact roadmap raster, shown at its natural proportions: the same pixels, cropped. */
-function RoadmapCrop({ index, parts, sizes, className }: CropProps) {
-  const path = assetSlots["PROJ-ROADMAP"].path;
-  if (!path) return null;
-
-  return (
-    <div
-      aria-hidden="true"
-      className={cn("relative w-full overflow-hidden bg-surface", className)}
-      style={{ aspectRatio: `${SOURCE_WIDTH / parts} / ${SOURCE_HEIGHT}` }}
-    >
-      <Image
-        src={path}
-        alt=""
-        width={SOURCE_WIDTH}
-        height={SOURCE_HEIGHT}
-        sizes={sizes}
-        className="absolute top-0 h-full max-w-none"
-        style={{ width: `${parts * 100}%`, left: `${-index * 100}%` }}
-      />
-    </div>
-  );
-}
+// Phase label colors, as printed in the approved picture: the first phase in blue, the next two light,
+// the last (Flight) dimmer. All of them are 5:1 or better on #050505.
+const labelTone = ["text-blue", "text-ink", "text-ink", "text-ink-2"] as const;
 
 /**
- * Project roadmap (frame 333:496, 1440px reference): the 64/72 title 61px under the rule, a 761px
- * paragraph 12px below it, and the roadmap picture 35px further down, 1274px wide and centered
- * (19px inside the page margins). In the frame the roadmap is a single raster, so it stays the exact
- * export instead of being redrawn. Its text is baked into the pixels, so the figure also carries a
- * visually hidden ordered list with the stage labels, titles and descriptions printed in the picture
- * (pending verification), and the picture itself is hidden from assistive technology.
+ * Project roadmap (frame 333:496), rebuilt as live HTML and CSS. In the frame the whole roadmap is one
+ * flattened raster; here it is an ordered list of four phases (Concept, Simulation, Integration, Flight),
+ * each a label, an independent illustration, a title and a description, all real selectable text except
+ * the illustrations. The connecting line, the blue timeline nodes and the terminal arrow are decorative
+ * CSS and SVG, hidden from assistive technology, so screen readers meet the four phases once, in order,
+ * and the roadmap reads without any image. The "PROJECT ROADMAP" heading and its paragraph are unchanged.
  *
- * Readable treatment by width: the whole picture from 1280px (as in the frame); two stacked halves
- * (two stages each) from 768px; four stacked quarters (one stage each) below that. Each crop is the
- * same image, never scaled below about 0.8x its pixels, so the small type stays legible and the page
- * never scrolls sideways.
+ * Timeline nodes: filled blue for the first three phases, an outlined ring for Flight, as in the picture.
+ * Layouts (the phase order is always obvious: one connecting line runs through the nodes, in order):
+ * - 1280px and up: four equal columns under a horizontal line with the label above each node, the nodes on
+ *   the line at each column's left edge, and an arrow at its right end. Each illustration sits in an equal
+ *   2:1 area, left- and bottom-aligned (as in the frame), then the title and description.
+ * - 768 to 1279px: a vertical timeline (at most 820px wide, like the paragraph above it), one phase per row;
+ *   the illustration and the text sit side by side.
+ * - Below 768px: the same vertical timeline with each phase stacked (label, illustration, title,
+ *   description). Nothing is scaled down as a picture, so the text never shrinks and nothing scrolls sideways.
  */
 export function ProjectRoadmap() {
   return (
@@ -63,52 +34,73 @@ export function ProjectRoadmap() {
         <SectionHeading as="h2" size="display-page" id="project-roadmap-heading" title={projectRoadmap.title} />
         <p className="type-body-lg mt-3 max-w-[761px] text-ink-2">{projectRoadmap.description}</p>
 
-        <figure aria-labelledby="project-roadmap-caption" className="mt-8 md:mt-10 xl:mx-auto xl:mt-[35px] xl:max-w-[1274px]">
-          <figcaption id="project-roadmap-caption" className="sr-only">
-            {projectRoadmap.caption}
-          </figcaption>
-          <ol className="sr-only">
-            {projectRoadmap.stages.map((stage) => (
-              <li key={stage.label}>
-                {stage.label}: {stage.title}. {stage.description}
-              </li>
-            ))}
-          </ol>
-
-          {/* 1280px and up: the whole picture. */}
-          <MediaFrame
-            slot="PROJ-ROADMAP"
-            alt=""
-            sizes="(min-width: 1440px) 1274px, 100vw"
-            className="hidden w-full xl:block"
+        <div className="relative mt-10 md:mt-12 xl:mt-12">
+          {/* Decorative connecting line and terminal arrow: vertical below 1280px, horizontal from 1280px. */}
+          <span
+            aria-hidden="true"
+            className="absolute top-2 bottom-3 left-[6px] w-px bg-blue-dark/35 xl:top-[34px] xl:right-[8px] xl:bottom-auto xl:h-px xl:w-auto"
           />
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            width="9"
+            height="15"
+            viewBox="0 0 9 15"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="absolute bottom-0 left-[6px] -translate-x-1/2 rotate-90 text-blue/80 xl:top-[34.5px] xl:right-0 xl:bottom-auto xl:left-auto xl:translate-x-0 xl:-translate-y-1/2 xl:rotate-0"
+          >
+            <path d="M1.5 1.5 7.5 7.5 1.5 13.5" />
+          </svg>
 
-          {/* 768 to 1279px: two stages per row. */}
-          <div className="hidden md:flex md:flex-col md:gap-6 xl:hidden">
-            {[0, 1].map((index) => (
-              <RoadmapCrop
-                key={index}
-                index={index}
-                parts={2}
-                sizes="(min-width: 768px) min(1632px, calc(2 * (100vw - 4rem)))"
-                className="md:max-w-[815px]"
-              />
-            ))}
-          </div>
+          <ol
+            role="list"
+            className="flex flex-col gap-12 md:max-w-[820px] md:gap-14 xl:grid xl:max-w-none xl:grid-cols-4 xl:gap-x-8"
+          >
+            {projectRoadmap.stages.map((stage, index) => {
+              const { path, width, height } = assetSlots[stage.illustration.slot];
 
-          {/* Below 768px: one stage per row. */}
-          <div className="flex flex-col gap-8 md:hidden">
-            {[0, 1, 2, 3].map((index) => (
-              <RoadmapCrop
-                key={index}
-                index={index}
-                parts={4}
-                sizes="min(1632px, calc(4 * (100vw - 2.5rem)))"
-                className="max-w-[408px]"
-              />
-            ))}
-          </div>
-        </figure>
+              return (
+                <li
+                  key={stage.label}
+                  className="relative pl-9 md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-x-8 md:gap-y-5 md:pl-12 xl:block xl:pl-0"
+                >
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "absolute top-0.5 left-0 size-[13px] rounded-full xl:top-7",
+                      stage.node === "filled" ? "bg-blue" : "border-2 border-blue bg-canvas",
+                    )}
+                  />
+
+                  <p className={cn("type-eyebrow md:col-span-2 xl:col-auto", labelTone[index])}>{stage.label}</p>
+
+                  {path ? (
+                    <div className="mt-5 md:mt-0 xl:mt-[49px] xl:flex xl:aspect-[2/1] xl:items-end">
+                      <Image
+                        src={path}
+                        alt={stage.illustration.alt}
+                        width={width}
+                        height={height}
+                        // Vector files (hairline strokes that stay 1px at any size): served as they are, never re-encoded.
+                        unoptimized
+                        className="block h-auto w-full max-w-[340px] md:max-w-[360px] xl:h-full xl:max-w-none xl:object-contain xl:object-left-bottom"
+                      />
+                    </div>
+                  ) : null}
+
+                  <div className="mt-5 md:mt-0 md:self-center xl:mt-6">
+                    <h3 className="text-base leading-6 font-medium text-ink">{stage.title}</h3>
+                    <p className="type-body-sm mt-2 max-w-[360px] text-ink-2">{stage.description}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       </PageContainer>
     </section>
   );

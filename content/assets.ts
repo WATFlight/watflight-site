@@ -81,11 +81,35 @@ export const assetSlots = {
     "/images/projects/component-uav-platform.png",
     "Layer 'image 31' (128x48 PNG), the render beside 'UAV Platform'. The frame sizes it 181 wide at a 128:48 ratio.",
   ),
-  "PROJ-ROADMAP": slot(
-    1274,
-    311,
-    "/images/projects/project-roadmap.png",
-    "Layer 'Screenshot 2026-10-30 at 9.24.24 PM 1' (1630x398 PNG). One raster: the stage labels, titles and descriptions are baked into the picture, so a visually hidden list repeats them for assistive technology. Pending verification.",
+  // The roadmap's four illustrations: original SVG artwork (vector paths and strokes, no embedded raster, no
+  // external resource), redrawn as crisp, scalable replacements for the four blurry raster crops that the
+  // first live-text version used. The crops of the frame's single roadmap raster ('Screenshot 2026-10-30 at
+  // 9.24.24 PM 1', 1630x398, since removed from the project) served only as visual references for silhouette,
+  // composition, angle, colour and density; nothing was auto-traced. They are stylistic illustrations, not
+  // engineering models. Slot size = the SVG's viewBox (the crops' own sizes, so the layout is unchanged).
+  "PROJ-ROADMAP-1": slot(
+    326,
+    172,
+    "/images/projects/roadmap-concept.svg",
+    "SVG redraw of the Concept picture: a blue blueprint-style aircraft with dimension lines. Transparent background.",
+  ),
+  "PROJ-ROADMAP-2": slot(
+    330,
+    157,
+    "/images/projects/roadmap-simulation.svg",
+    "SVG redraw of the Simulation picture: an aircraft with a tall tail fin among aerodynamic flow lines. Transparent background.",
+  ),
+  "PROJ-ROADMAP-3": slot(
+    308,
+    176,
+    "/images/projects/roadmap-integration.svg",
+    "SVG redraw of the Integration picture: an exploded view with two wing panels around a row of generic components. Transparent background.",
+  ),
+  "PROJ-ROADMAP-4": slot(
+    335,
+    125,
+    "/images/projects/roadmap-flight.svg",
+    "SVG redraw of the Flight picture: a finished aircraft with swept wings and two propellers. Transparent background.",
   ),
   "PROJ-GALLERY-1": slot(
     440,
