@@ -5,9 +5,9 @@
 // for `null` entries, so a missing image can never be silently replaced by unrelated photography.
 // The `null` entries in this file are the machine-checkable missing-asset list.
 //
-// Slots for Join and News are not listed yet: those frames are flattened images and their slots
-// have not been measured. Add them when those sections are built. Sponsorship's two photographs are
-// listed below as crops of the owner's export of its flattened body.
+// Slots for News are not listed yet: that frame is a flattened image and its slots have not been
+// measured. Add them when those sections are built. Sponsorship's two photographs and Join's five are
+// listed below as crops of the owner's exports of their flattened bodies.
 
 export type AssetSlot = {
   /** Public path (for example `/images/home/hero-aircraft.png`), or `null` while the asset is missing. */
@@ -150,6 +150,40 @@ export const assetSlots = {
     562,
     "/images/sponsorship/sponsorship-ways-wing-inspection.jpg",
     "Crop x=2547 y=4097 w=1479 h=1526 of the 3x export (80px inside the design's blue corner brackets and a faint blue inner frame line, excluded); saved as JPEG q92. The slot is the bracket rectangle, 546x562 in the 1440px frame. AI-generated and soft; the logo on the jacket is garbled.",
+  ),
+  // Join the Team 344:1128. The frame is the owner's 3x PNG export (4320x8544), a flattened, AI-generated
+  // design reference, so these five are CROPS of it (inside the design's blue frames and gridlines, which
+  // are excluded and rebuilt in CSS), downscaled to about 2x their display size and saved as JPEG q86.
+  // All are illustrative and their provenance is unverified (docs/rebuild-notes.md, "Join the Team page").
+  "JOIN-HERO": slot(
+    1400,
+    994,
+    "/images/join/join-hero-workshop.jpg",
+    "Crop x=2245 y=746 w=1761 h=1250 of the 3x export (100px inside the design's blue frame), resized to 1400x994, JPEG q86. Soft (the export upscales a lower-resolution raster); the hoodie lettering is garbled.",
+  ),
+  "JOIN-SUBTEAM-1": slot(
+    840,
+    504,
+    "/images/join/join-subteam-mechanical.jpg",
+    "Crop x=355 y=2984 w=927 h=556 of the 3x export (80px inside the design's blue frame), resized to 840x504, JPEG q86.",
+  ),
+  "JOIN-SUBTEAM-2": slot(
+    840,
+    504,
+    "/images/join/join-subteam-electrical.jpg",
+    "Crop x=1715 y=2984 w=927 h=556 of the 3x export (80px inside the design's blue frame), resized to 840x504, JPEG q86.",
+  ),
+  "JOIN-SUBTEAM-3": slot(
+    840,
+    504,
+    "/images/join/join-subteam-software.jpg",
+    "Crop x=3063 y=2984 w=927 h=556 of the 3x export (80px inside the design's blue frame), resized to 840x504, JPEG q86.",
+  ),
+  "JOIN-CTA": slot(
+    1700,
+    604,
+    "/images/join/join-cta-aircraft.jpg",
+    "Crop x=1700 y=6620 w=2420 h=860 of the 3x export (clear of the heading, the right rail and the rules below), resized to 1700x604, JPEG q86. The aircraft's lettering is garbled and its right wing runs past the crop.",
   ),
 } satisfies Record<string, AssetSlot>;
 

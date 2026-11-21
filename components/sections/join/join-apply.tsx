@@ -1,0 +1,131 @@
+import { Button } from "@/components/ui/button";
+import { PageContainer } from "@/components/ui/page-container";
+import { cn } from "@/lib/cn";
+import { JoinEyebrow } from "@/components/sections/join/join-eyebrow";
+import { ApplyGlyph } from "@/components/sections/join/join-icons";
+import { sectionTitleClass, stepTitleClass } from "@/components/sections/join/styles";
+import { applyMailto, joinApply } from "@/content/join";
+
+const mailto = applyMailto();
+
+/** A decorative connector chevron, in the grey secondary-text color (the accent blue is kept sparing on this page). */
+function Chevron({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width="8"
+      height="12"
+      viewBox="0 0 8 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={cn("shrink-0 text-ink-2", className)}
+    >
+      <path d="m1.500 1.500 5 4.500-5 4.500" />
+    </svg>
+  );
+}
+
+function StepDescription({ text, linksEmail }: { text: string; linksEmail: boolean }) {
+  if (!linksEmail) return <>{text}</>;
+  const [before, after] = text.split(joinApply.email);
+  return (
+    <>
+      {before}
+      <a
+        href={mailto}
+        className="text-ink underline decoration-ink-2 underline-offset-4 transition-colors duration-150 hover:text-blue-light motion-reduce:transition-none"
+      >
+        {joinApply.email}
+      </a>
+      {after}
+    </>
+  );
+}
+
+/**
+ * How to apply (frame 344:1128, 1440px reference): the eyebrow, title and one sentence, then the application
+ * process as a real ordered list of three steps (Prepare Your Resume, Email Your Resume, Wait to Hear From Us),
+ * each a very light numeral and a line icon, a title and a description, and a light "EMAIL YOUR RESUME"
+ * button under them. Numerals, icons and the arrows between steps are live elements; the numerals, icons
+ * and arrows are decorative (aria-hidden: the list already numbers its items and the titles name them).
+ * From 768px the steps are three centered columns with a thin grey arrow between each pair; below 768px they
+ * form a vertical process: the numeral at the left with a thin grey line and a chevron running down through
+ * the steps, in chronological order. The button opens the visitor's email app with a prefilled, editable draft
+ * to the application address (the site uploads nothing), and the section is the target of the hero's
+ * "APPLY NOW" button, so it carries id="how-to-apply".
+ */
+export function JoinApply() {
+  const steps = joinApply.steps;
+
+  return (
+    <section id={joinApply.id} aria-labelledby="join-apply-heading">
+      <PageContainer className="py-14 md:py-16 xl:pt-[55px] xl:pb-[38px]">
+        <JoinEyebrow>{joinApply.eyebrow}</JoinEyebrow>
+        <h2 id="join-apply-heading" className={cn(sectionTitleClass, "mt-4 text-ink")}>
+          {joinApply.title}
+        </h2>
+        <p className="type-body-lg mt-4 text-ink">{joinApply.description}</p>
+
+        <div className="relative mt-10 md:mt-8 xl:mt-7">
+          {/* Decorative vertical line and chevron through the steps (below 768px). */}
+          <span aria-hidden="true" className="absolute top-8 bottom-0 left-[22px] w-px bg-ink-2/50 md:hidden" />
+          <Chevron className="absolute bottom-0 left-[22px] -translate-x-1/2 rotate-90 md:hidden" />
+
+          <ol role="list" className="grid gap-y-12 pb-8 md:grid-cols-3 md:gap-y-0 md:pb-0">
+            {steps.map((step, index) => (
+              <li
+                key={step.title}
+                className="relative grid grid-cols-[44px_minmax(0,1fr)] gap-x-5 md:flex md:flex-col md:items-center md:text-center"
+              >
+                <span
+                  aria-hidden="true"
+                  className="relative row-span-2 self-start bg-canvas text-center text-[44px] leading-[44px] font-extralight text-ink md:hidden"
+                >
+                  {index + 1}
+                </span>
+
+                {/* From 768px: the numeral and the icon side by side, centered. */}
+                <div className="flex items-center gap-4 md:justify-center">
+                  <span aria-hidden="true" className="hidden text-[64px] leading-[64px] font-extralight text-ink md:block">
+                    {index + 1}
+                  </span>
+                  <ApplyGlyph name={step.icon} className="size-8 text-ink md:size-10" />
+                </div>
+
+                <div className="mt-3 md:mt-4">
+                  <h3 className={stepTitleClass}>{step.title}</h3>
+                  <p className="type-body mt-2 max-w-[300px] text-ink-2 text-balance md:mx-auto">
+                    <StepDescription text={step.description} linksEmail={step.linksEmail} />
+                  </p>
+                </div>
+
+                {/* From 768px: a thin grey arrow centered on the boundary to the next column, between the groups. */}
+                {index < steps.length - 1 ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-8 right-0 hidden w-[min(137px,calc(100%-150px))] translate-x-1/2 items-center md:flex"
+                  >
+                    <span className="h-px flex-1 bg-ink-2/60" />
+                    <Chevron className="-ml-1" />
+                  </span>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div className="mt-10 flex justify-center md:mt-8">
+          <Button href={mailto} variant="light">
+            {joinApply.action.label}
+            <span className="sr-only">{joinApply.action.srOnly}</span>
+            <span aria-hidden="true">→</span>
+          </Button>
+        </div>
+      </PageContainer>
+    </section>
+  );
+}

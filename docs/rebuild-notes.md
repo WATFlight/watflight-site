@@ -463,3 +463,92 @@ Tested in headless Chromium on the production build: empty submit (errors for Na
 ### Shared sponsor roster (done; groundwork for "Our partners")
 
 The approved roster (23 organizations in the owner's order, each with its accessible name, white-logo artwork and provenance) moved verbatim from `content/home.ts` into `content/sponsors.ts` (`sponsorLogos` and the `SponsorEntry` / `SponsorImage` / `SponsorWordmark` types). `content/home.ts` re-exports the types and builds `sponsors = { title, logos: sponsorLogos, marqueeCopies: 3 }`, so no Home component file changed. Verification: the 276 entry lines and the type block are identical line for line to the committed file; all 23 entries are present (20 logos plus the text fallbacks Waterloo Real-time Embedded Systems Lab, HOMLab and Fluid Mechanics Research Lab), including the merged "Fuel Cell and Green Energy Lab — 20|20 Laboratory for Fuel Cell & Green Energy RD&D" entry; at the time of that refactor the rendered HTML of `/`, `/about`, `/projects` and `/sponsorship` (then still the skeleton) from a clean build was identical to a clean build of the committed `b0c21d2` (the final comparison, after the page was built, is in "Responsive and accessibility results" above) (same 3 sponsor lists, 60 logo images, `loading="lazy"`); the sponsor section's accessibility tree is identical (48 lines, 23 list items); the Home regression suite passes (37 checks at 1440px including the six zoom and reduced-motion contexts, 52 more at 320 and 768px, marquee geometry unchanged at 5580.9px / 132s).
+
+## Join the Team page (frame 344:1128)
+
+**Status:** built (`/join`): Hero, Subteams (`id="subteams"`), How to apply (`id="how-to-apply"`) and the Current Project call to action. Not committed, pushed or deployed. **Everything on this page is provisional.** The approved frame's body is a flattened, AI-generated screenshot, so none of its copy, descriptions or process was checked with the team; the register below lists what to confirm before launch.
+
+### What the export is
+
+- `~/Downloads/Join the team.png` is the **complete frame** (header, body and footer) at 3x: **4320x8544 px**, equal to 1440x2848 at 3x. **All text is legible.** The 3x export is an upscale of a lower-resolution raster, so crops are soft. It is a visual reference only: it is never imported, rendered or committed (it lives in Downloads and the working scratchpad; checked: no `figma.com` URL and no image wider than 1700px on the page, nothing from the export in `public/` beyond the five crops below).
+- The frame's header and footer are the shared shell and were not rebuilt. The export's footer reads "New & Blog" (a typo in the screenshot); the real shared footer ("News & Blog") is unchanged. The export's header draws "JOIN WATFLIGHT" as blue text with an underline; the shared header draws that item as the outlined button with a 2px blue underline when active (`aria-current="page"`, white text) as on every other page. **This difference was not changed** (it is shared behavior; see "To decide" below).
+- The approved Figma frame itself was not re-read (the Figma MCP call limit is exhausted), so there is no layer or token data: sizes were measured from the export and mapped to the Design System's roles.
+
+### Sections (semantic HTML, `components/sections/join/`, copy in `content/join.ts`)
+
+1. **Hero:** blue-dashed eyebrow "JOIN OUR TEAM", the page's one `h1` "JOIN THE TEAM.", two intro paragraphs, light "APPLY NOW →" (to `#how-to-apply`) and dark "LEARN MORE" (to `#subteams`), and the workshop photograph in four blue corner brackets drawn in CSS (the page's one blue frame; see "Second pass: less blue" below). Two columns (48% / 52%) from 1024px (photo 682x484 at 1440px, as in the export), stacked below.
+2. **Subteams:** eyebrow, `h2` "THREE SUBTEAMS. ONE SHARED MISSION.", a supporting paragraph at the right (from 1280px; stacked below), then a list of three `article`s (Mechanical, Electrical, Software): own photograph in a grey corner-bracket frame, a line icon, an `h3`, a description and a real `ul` of five bullets with a grey dash. Three equal columns 52px apart from 1280px, each separated by a 1px #2B2B2B vertical line centered in the gap; **below 1280px there are no separators**: from 768px each entry is a row (picture at the left, text at the right), on phones the picture sits over the text.
+3. **How to apply:** eyebrow "GET STARTED", `h2` "HOW TO APPLY.", one sentence, then a real **ordered list** of three steps (1 Prepare Your Resume, 2 Email Your Resume, 3 Wait to Hear From Us), each with a very light numeral, a line icon, a title and a description, thin grey arrows between the columns, and a light "EMAIL YOUR RESUME →" button. Three centered columns from 768px; below 768px a vertical process (numeral at the left, a thin grey line and chevron running down through the steps). The numerals, icons and arrows are `aria-hidden` (the list numbers its items and the titles name them).
+4. **Current Project call to action:** eyebrow "INTERESTED IN THE PROJECT?", `h2` "WANT TO LEARN MORE ABOUT WHAT YOU'D BE WORKING ON?" (balanced, three lines at 1440px), dark "EXPLORE THE CURRENT PROJECT →" (to `/projects`) and the aircraft photograph at the right with a fade into the background at its left edge (text never sits on the picture); the section has no line of its own at the bottom, so the shared footer's own top rule (one 1px #2B2B2B line) is the page's single boundary. Two columns (500 / 812) from 1024px, stacked below.
+
+Sections are separated by the shared full-width `Rule`. The page has no cream band, so the header stays dark throughout and the nav's "Join WATFlight" item is active.
+
+### The email draft (`applyMailto()` in `content/join.ts`)
+
+"EMAIL YOUR RESUME" and the address in step 2 open a `mailto:admin@watflight.com` draft with the subject `WATFlight application` and a neutral, editable body ("Hello, / I would like to apply to WATFlight. / Subteam or area of interest: " with the answer left blank). The site uploads and attaches nothing and shows no "sent" state; the step text says "Include your resume", not "upload". The button's accessible name is "EMAIL YOUR RESUME to admin@watflight.com, opens your email app" (the suffix is visually hidden so the visible label stays inside the name). **Not tested:** that a real email client opens and keeps the body (needs a desktop mail handler); the `href` was checked (recipient, subject and body decode as above).
+
+### Copy (provisional) and register of statements to verify
+
+All strings are in `content/join.ts`. Transcribed as shown in the export (straight apostrophes became typographic ones). Not in the design and added by the build: the `mailto:` subject and body, the hidden label suffix, the `alt` texts and the page's meta description (the earlier skeleton's). **Nothing was invented:** no deadline, eligibility rule, hiring status, interview promise beyond the export's sentence, or technical claim was added. Please confirm with the team before launch:
+
+- **Recruitment instructions:** that applying means emailing a resume with the subteam or area of interest, that "Selected applicants will be contacted to arrange an interview" (an interview promise taken from the export), and that applications are open (the page states no deadline, status or eligibility, and none was added).
+- **Recipient email:** `admin@watflight.com` (the export shows it in step 2 and the footer lists the same address) is the right address and someone answers it.
+- **Subteam descriptions and the 15 bullets:** every technical claim (airframe and structural design, avionics, PCB design, autonomy and flight control, ground station and supporting tools, and the rest) and that the three subteams are Mechanical, Electrical and Software.
+- **Intro and supporting paragraphs:** "sustainable aerospace systems"; "Regardless of your background, there is a place for you at WATFlight".
+- **All five photographs are AI-generated and illustrative** (see below).
+
+### Assets and provenance (`public/images/join/`, slots in `content/assets.ts`)
+
+Crops of the owner's 3x export, cut with `sharp` (lossless extract, Lanczos3 downscale to about 2x display size, JPEG quality 86, mozjpeg, progressive). Each crop sits 80 to 100px **inside** the design's blue corner brackets and faint inner frame line, which are excluded and rebuilt as four decorative CSS corners (`JoinFramedPhoto`); no heading, copy, border, bracket, gridline or rule is in any crop (checked on a contact sheet of all five; the only lettering is the "WATFLIGHT" banner and aircraft lettering that is part of the artwork and garbled).
+
+| File | Crop of the 3x export | Output | Size | Slot (display at 1440px) |
+|---|---|---|---|---|
+| `join-hero-workshop.jpg` | x=2245 y=746 w=1761 h=1250 | 1400x994 | 112,364 B | `JOIN-HERO` (682x484) |
+| `join-subteam-mechanical.jpg` | x=355 y=2984 w=927 h=556 | 840x504 | 48,187 B | `JOIN-SUBTEAM-1` (403x242) |
+| `join-subteam-electrical.jpg` | x=1715 y=2984 w=927 h=556 | 840x504 | 58,682 B | `JOIN-SUBTEAM-2` (403x242) |
+| `join-subteam-software.jpg` | x=3063 y=2984 w=927 h=556 | 840x504 | 40,613 B | `JOIN-SUBTEAM-3` (403x242) |
+| `join-cta-aircraft.jpg` | x=1700 y=6620 w=2420 h=860 | 1700x604 | 65,731 B | `JOIN-CTA` (812x288) |
+
+They are **AI-generated and illustrative, not evidence of real team activities, aircraft or achievements**; they are soft (upscaled source), the hoodie and fuselage lettering is garbled, and their provenance is unverified. Alt texts start "Illustrative ...". **Confirm the images' origin and replace them with real photographs before launch.** All are `next/image` with the slot's intrinsic size and a `sizes` value per layout (the hero is `priority`); served as WebP of about 7 to 20 KB at 640 to 828px.
+
+### Typography and design choices that differ from the export
+
+Bunken for display, Geist for text, Design System tokens for colour. The export's sizes are inconsistent (measured cap heights: section titles 25, 27 and 23px; its hero paragraph about 21 to 22px while the cards use about 18px), so roles were mapped, not copied:
+
+- `h1`: `type-display-page` (64/72 from 1280px; measured about 69). Section `h2`: one size, Bunken SC Wide 31/40 from 1280px, 28/36 from 768px, 26/32 below (`join/styles.ts`). Subteam names: Bunken Std Wide 26/32. Step titles Geist 18/26 medium. Hero paragraphs `type-body-lg` 18/29 (the export's larger size was not followed, to stay on the Design System scale). Card descriptions and bullets `type-body-lg` 18/29 (matches the export's measured size and its line breaks). Step descriptions and the subteams paragraph `type-body` 16/25. Numerals Geist ExtraLight 64px (44px on phones).
+- Content aligns to the shared 64px container; the export's own margins are irregular. Hero padding is symmetric (the export's is not). The icons are part of the screenshot, so five are redrawn as simple stroked SVGs of the same subjects (chip, braces, document, envelope, people; 1.6px round strokes) and the Mechanical wrench reuses the approved About wrench (see "Second pass"), all `aria-hidden`. The export's three thin lines under the CTA are **not** reproduced (see "Second pass"). The CTA picture column is 812px (the export's about 825px) so the three-line title fits.
+- At 1440px the page is 2,797px tall (2,850px before the second pass removed the stacked lines; the export's is 2,848) and the section rules are at y=750, 1693 and 2176 (the export's 750, 1693 and 2175); the footer's top rule is at y=2513.
+
+### Second pass: less blue, wrench icon, one footer boundary (owner-directed)
+
+**Blue (accent `#3F7CFF`, token unchanged).** Left on the page: the four short eyebrow dashes (hero, subteams, how to apply, project call to action), the **hero photograph's** blue frame (four 2px corner brackets in `#3F7CFF` and the 1px outline at 30% opacity; it is the page's one framed hero image, as on Sponsorship, so it was kept; to make it grey too, pass `tone="neutral"` to the hero's `JoinFramedPhoto`), the shared header's active-item underline, and the shared hover and focus states (buttons turn blue on hover, the step-2 address turns `#6698FF`, the 2px `#6698FF` focus ring). Changed to neutral:
+
+| Element | Before | Now |
+|---|---|---|
+| Three subteam picture brackets (4 x 3, 2px) | `#3F7CFF` | `#444444` (`border-rule-strong`; a step lighter than the `#2B2B2B` rule so the brackets still read over a dark photograph) |
+| Their 1px outline | `#3F7CFF` at 30% | `#2B2B2B` (`border-rule`) |
+| The 15 subteam bullet dashes | `#3F7CFF` | `#969690` (`bg-ink-2`, the bullet text's own grey) |
+| Arrows between steps (desktop line) | `#3F7CFF` | `#969690` at 60% |
+| Their chevrons (desktop and the phone timeline's end) | `#3F7CFF` | `#969690` |
+| The phone timeline's vertical line | `#3F7CFF` at 50% | `#969690` at 50% |
+
+No blue directional cue was kept in the process: the numerals, grey arrows and step order carry the progression (one arrow could be made blue by changing `text-ink-2` and `bg-ink-2/60` in `join-apply.tsx`). A computed-style audit of the page at 1440 and 390px finds blue only in the items listed first.
+
+**Mechanical icon.** The oval is replaced by the About page's Mechanical wrench (`public/images/about/subteam-mechanical-wrench.svg`): its two paths are inlined in `join-icons.tsx` and filled with the current text colour (`#F4F4F0`) instead of that file's fixed `#969690`, shown at 36px so its 26-unit drawing (about 32px) is as large as the chip and its outline about as thick as the other icons' 1.6px strokes. Decorative (`aria-hidden`). The chip and braces are untouched; all three sit in the same 40px-high box, so their tops and bottoms line up (checked at 1440 and 390px).
+
+**Footer boundary.** The three thin lines under the call to action, their wrapper and the bottom padding that sat under them are deleted from `join-cta.tsx` (nothing else on the page had a bottom border). The section now ends 24px under the picture at 1280px and up (the same as the 24px above it, 33 to 34px at 1280px, 64px from 768px, 48px on phones), and the shared footer's own top rule (`.site-footer__top-rule`, 1px `#2B2B2B`, full width) is the only horizontal line there: measured exactly **one** rule row between the picture's bottom edge and the footer at 1920, 1440, 1280, 1024, 768, 390, 375 and 320px, no empty band, and both rails unbroken on every pixel row from the header to the page bottom at all eight widths (production build). No shared file changed: sampled at 1440 and 390px, Home, About and Projects still show no `#2B2B2B` row at the footer's top (their cream band closes them) and Sponsorship, News and Join show one.
+
+### To decide (shared shell, not changed)
+
+- The shared header's active "Join WATFlight" is the outlined button with a 2px blue underline and white text; the export draws it as blue text with an underline. Changing it would alter every page, so it was left; say if it should follow the export.
+
+### Responsive and accessibility results (production build)
+
+- Widths: 1920, 1440, 1280, 1024, 768, 767, 390, 375, 320 and the zoom equivalents 720, 640, 360 (200% and 400% of 1440 and 1280): **no horizontal overflow and nothing outside the viewport at any width** (the CTA button uses the shared button's `wrap` mode, which fixed a 20px overflow at 320px found during testing); all five images loaded at every width with the intrinsic sizes above; no touch target under 44px high outside running text. Page heights after the second pass (1920 / 1440 / 1280 / 1024 / 768 / 390 / 375 / 320px): 2,797 / 2,797 / 2,800 / 3,395 / 4,486 / 5,371 / 5,355 / 5,725.
+- One `h1`, `h2` per section, `h3` per entry and step, no skipped level; lists are real `ul` / `ol`; the ARIA snapshot shows no decorative icon, numeral or arrow; both mailto links have clear names; all five photographs have accurate `alt`. Tab order: Apply now, Learn more, the address in step 2, Email your resume, Explore the current project, then the footer; every stop shows the shell's 2px `#6698FF` ring.
+- Anchors: "APPLY NOW" and "LEARN MORE" land the target section's top exactly at the sticky header's bottom edge (74px) at 1440 and 390px (the shell's scroll margin; the headings are clear of the header). Under `prefers-reduced-motion` the jump is instant (it is instant for everyone by design). The `/projects` button navigates to Current Project.
+- With every image request blocked the page stays fully readable (all text present, frames keep their size, nothing overlaps) at 1440px.
+- **Cold caches** (production build, empty `.next/cache/images`, fresh browser context): all five images load and the hero is the largest contentful paint (172ms desktop; 844ms on a throttled 1.6 Mbps / 150ms connection); no failed image request.
+- `pnpm lint` and `pnpm typecheck` clean; a clean `pnpm build` succeeds (seven static routes); every route returns 200. The only console error is the Vercel analytics script (`/_vercel/insights/script.js`, 404 outside Vercel, as on every page).
+- **Regression:** the only shared file touched is `content/assets.ts`, and only by adding five slots (no existing slot or comment about another page changed); no component, style, shell or other page file changed, so Home, About, Projects and Sponsorship were not re-screenshotted (they all return 200).
+- Verified only in headless Chromium: no Safari, Firefox or real-device pass.
