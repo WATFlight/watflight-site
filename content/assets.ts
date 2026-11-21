@@ -5,9 +5,8 @@
 // for `null` entries, so a missing image can never be silently replaced by unrelated photography.
 // The `null` entries in this file are the machine-checkable missing-asset list.
 //
-// Slots for News are not listed yet: that frame is a flattened image and its slots have not been
-// measured. Add them when those sections are built. Sponsorship's two photographs and Join's five are
-// listed below as crops of the owner's exports of their flattened bodies.
+// Sponsorship's two photographs, Join's five and News's three are listed below as crops of the owner's
+// exports of their flattened bodies.
 
 export type AssetSlot = {
   /** Public path (for example `/images/home/hero-aircraft.png`), or `null` while the asset is missing. */
@@ -184,6 +183,28 @@ export const assetSlots = {
     604,
     "/images/join/join-cta-aircraft.jpg",
     "Crop x=1700 y=6620 w=2420 h=860 of the 3x export (clear of the heading, the right rail and the rules below), resized to 1700x604, JPEG q86. The aircraft's lettering is garbled and its right wing runs past the crop.",
+  ),
+  // News & Blog 344:1129. The frame is the owner's 3x PNG export (4320x7806), a flattened, AI-generated design
+  // reference, so these three are CROPS of it, taken inside the design's outlines, corner brackets and (for the
+  // featured picture) its overlay gridline, which are rebuilt in CSS. All are illustrative and their provenance
+  // is unverified (docs/rebuild-notes.md, "News & Blog page").
+  "NEWS-FEATURED": slot(
+    1400,
+    1223,
+    "/images/news/news-featured-aircraft.jpg",
+    "Crop x=2102 y=522 w=1887 h=1648 of the 3x export (70px to 105px inside the design's frame outline, which also puts the four baked-in corner brackets outside the crop), resized to 1400x1223, JPEG q86. The export has a faint white overlay line (about 7% opacity, 5 to 10px wide at 3x) across the picture at x=3065 to 3074; it was subtracted from those ten columns (p = (p - 255a) / (1 - a), a = 0.016 to 0.071 per column, measured against the neighbouring columns) so the crop has no line, and no other pixel was changed. Soft (the export upscales a lower-resolution raster).",
+  ),
+  "NEWS-UPDATE-1": slot(
+    1200,
+    649,
+    "/images/news/news-update-prototype.jpg",
+    "Crop x=359 y=3305 w=1554 h=841 of the 3x export (at least 48px inside the picture's outline and its faint inner corner marks), resized to 1200x649, JPEG q86.",
+  ),
+  "NEWS-UPDATE-2": slot(
+    1200,
+    649,
+    "/images/news/news-update-power-distribution.jpg",
+    "Crop x=2329 y=3305 w=1554 h=841 of the 3x export (at least 48px inside the picture's outline), resized to 1200x649, JPEG q86.",
   ),
 } satisfies Record<string, AssetSlot>;
 
