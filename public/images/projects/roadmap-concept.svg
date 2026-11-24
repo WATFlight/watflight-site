@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 326 172" width="326" height="172" role="img" aria-labelledby="t">
+<title id="t">Blue wireframe drawing of an aircraft with dimension marks.</title>
+<style>path,line,polygon,polyline,circle,ellipse,rect{vector-effect:non-scaling-stroke}</style>
+
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<g stroke="#3F7CFF" stroke-width=".8" opacity=".7">
+<path d="M84 12v62M79 22h10M79 72h10M72 66h28"/>
+<path d="M285 8v48M280 12h10M280 54h10M304 14v50M299 18h10M299 62h10"/>
+<path d="M20 100v42M15 108h10M15 136h10M12 124h16"/>
+<path d="M150 99 308 152M206 142l108 24M64 73l46 8" stroke-dasharray="6 5" opacity=".75"/>
+</g>
+<defs><path id="w" d="M13.5 123.8L101.8 106.2L175.7 90.6L242.6 61.7L304.6 35.1L301.4 26.9L237.4 48.3L170.3 73.4L98.2 89.8L10.5 110.2Z"/><path id="f" d="M84.8 44.4L170.2 75.3L263.3 111.3L268.7 96.7L173.8 64.7L87.2 37.6Z"/></defs>
+<use href="#w" stroke="#3F7CFF" stroke-width="3.5" opacity=".16"/>
+<use href="#f" stroke="#3F7CFF" stroke-width="3.5" opacity=".16"/>
+<g stroke="#A9C4FF" stroke-width="1.1">
+<use href="#w" fill="#6698FF" fill-opacity=".1"/>
+<path d="M12.8 120.6L100.9 102.3L174.4 86.5L241.4 58.5L303.8 33.1M11.2 113.4L99.1 93.7L171.6 77.5L238.6 51.5L302.2 28.9" stroke-width=".6" opacity=".7"/>
+<path d="M13.5 123.8L10.5 110.2M101.8 106.2L98.2 89.8M175.7 90.6L170.3 73.4M242.6 61.7L237.4 48.3M304.6 35.1L301.4 26.9M57.6 115L54.4 100M138.7 98.4L134.3 81.6M209.1 76.2L203.9 60.8M273.6 48.4L269.4 37.6" stroke="#3F7CFF" stroke-width=".9"/>
+<path d="M12 117L100 98L173 82L240 55L303 31" stroke-width=".7" stroke-dasharray="7 4" opacity=".8"/>
+</g>
+<g stroke="#D6E2FF" stroke-width="1.1">
+<use href="#f" fill="#6698FF" fill-opacity=".14"/>
+<path d="M85.4 42.7L171.1 72.6L264.7 107.7M86.6 39.3L172.9 67.4L267.3 100.3" stroke-width=".6" opacity=".7"/>
+<path d="M84.8 44.4L87.2 37.6M170.2 75.3L173.8 64.7M263.3 111.3L268.7 96.7M110.4 53.7L113.2 45.7M140.3 64.5L143.5 55.2M198.1 86.1L202.3 74.3M230.7 98.7L235.5 85.5" stroke="#3F7CFF" stroke-width=".9"/>
+<path d="M106 46q9-8 21-2" stroke="#A9C4FF"/><path d="M130 54h12v6h-12z" stroke="#A9C4FF" stroke-width=".8"/>
+</g>
+<g stroke="#D6E2FF" stroke-width="1.1">
+<path d="M252 70c3 8 4.500 25 2 37-2.500 12-6 24-10 33-2.500-9-3-24-.5-36 2.500-12 5-24 8.500-34Z" fill="#A9C4FF" fill-opacity=".14"/>
+<path d="M239 118c8-4 18-9 27-13M247 93c6-2 12-4 18-4" stroke="#A9C4FF" stroke-width=".9"/>
+<circle cx="251" cy="104" r="3"/>
+</g>
+<g fill="#F4F4F0" stroke="none"><circle cx="176" cy="61" r="1.300"/><circle cx="148" cy="70" r="1.100"/><circle cx="173" cy="82" r="1.500"/><circle cx="129" cy="77" r="1"/><circle cx="243" cy="46" r="1"/><circle cx="303" cy="31" r="1.300"/><circle cx="12" cy="117" r="1.300"/><circle cx="86" cy="41" r="1.200"/></g>
+</g>
+</svg>

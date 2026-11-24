@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 308 176" width="308" height="176" role="img" aria-labelledby="t">
+<title id="t">Exploded view of an aircraft fuselage and its internal components between two wing panels.</title>
+<style>path,line,polygon,polyline,circle,ellipse,rect{vector-effect:non-scaling-stroke}</style>
+
+<defs><linearGradient id="p" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#969690" stop-opacity=".30"/><stop offset="1" stop-color="#969690" stop-opacity=".08"/></linearGradient>
+<linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F4F0" stop-opacity=".42"/><stop offset="1" stop-color="#F4F4F0" stop-opacity=".1"/></linearGradient></defs>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<g stroke="#3F7CFF" stroke-width=".8" stroke-dasharray="5 4" opacity=".8">
+<path d="M14 118 292 50"/>
+<path d="M171 46v28M150 108v22M96 36l22 40M232 112l-30-26"/>
+</g>
+<g stroke="#D9E2F2" stroke-width="1">
+<path d="M52 18L82 8L204 39L138 51Z" fill="url(#p)"/><path d="M82 8L82 11L204 42L204 39M204 39L204 42M138 51L138 54L204 42" stroke-width=".7" opacity=".7"/><path d="M59.5 15.5L154.5 48M67 13L171 45M74.5 10.5L187.5 42" stroke-width=".6" opacity=".55"/>
+<path d="M75 155L210 106L299 120L100 166Z" fill="url(#p)"/><path d="M210 106L210 109L299 123L299 120M299 120L299 123M100 166L100 169L299 123" stroke-width=".7" opacity=".7"/><path d="M108.8 142.8L149.8 154.5M142.5 130.5L199.5 143M176.3 118.3L249.3 131.5" stroke-width=".6" opacity=".55"/>
+</g>
+<g stroke="#F4F4F0" stroke-width="1">
+<path d="M22 108 12 120 18 162 25 160 27 119Z" fill="url(#c)"/>
+<path d="M33.6 126.1L57.1 121.2L50.4 89.9L26.9 94.8Z" fill="url(#c)" stroke="none"/><path d="M33.6 126.1L57.1 121.2M26.9 94.8L50.4 89.9"/><ellipse cx="53.7" cy="105.5" rx="6.1" ry="16" transform="rotate(-12 53.7 105.5)"/><ellipse cx="30.3" cy="110.5" rx="6.1" ry="16" transform="rotate(-12 30.3 110.5)" stroke-width=".8" opacity=".7"/>
+<circle cx="52" cy="104" r="5" stroke-width=".8"/><path d="M26 109 20 111" stroke-width="1.6"/>
+<path d="M66 98h24v15h-24z" fill="url(#c)"/><path d="M66 98l8-5h24l-8 5M90 98l8-5v15l-8 5" stroke-width=".8" opacity=".85"/>
+<path d="M94 94h20v12h-20z" fill="url(#c)"/><path d="M94 94l8-5h20l-8 5M114 94l8-5v12l-8 5" stroke-width=".8" opacity=".85"/>
+<path d="M96 111h22v11h-22z" fill="url(#c)"/><path d="M96 111l7-4h22l-7 4M118 111l7-4v11l-7 4" stroke-width=".8" opacity=".85"/>
+<path d="M124 87h30v15h-30z" fill="url(#c)"/><path d="M124 87l8-5h30l-8 5M154 87l8-5v15l-8 5" stroke-width=".8" opacity=".85"/>
+<path d="M128 106h30v13h-30z" fill="url(#c)"/><path d="M128 106l7-4h30l-7 4M158 106l7-4v13l-7 4" stroke-width=".8" opacity=".85"/>
+<path d="M160 90h24v17h-24z" fill="url(#c)"/><path d="M160 90l8-5h24l-8 5M184 90l8-5v17l-8 5" stroke-width=".8" opacity=".85"/>
+<path d="M192.1 101.6L221.5 95.4L211.9 50.4L182.5 56.6Z" fill="url(#c)" stroke="none"/><path d="M192.1 101.6L221.5 95.4M182.5 56.6L211.9 50.4"/><ellipse cx="216.7" cy="72.9" rx="8.7" ry="23" transform="rotate(-12 216.7 72.9)"/><ellipse cx="187.3" cy="79.1" rx="8.7" ry="23" transform="rotate(-12 187.3 79.1)" stroke-width=".8" opacity=".7"/>
+<path d="M214 55C230 42 262 40 280 55c8 8-6 26-30 38-14 6-30 8-44 7" fill="url(#p)"/><path d="M222 60C238 50 260 50 272 60c4 6-8 18-26 27" stroke-width=".7" opacity=".7"/><circle cx="248" cy="73" r="2.200" fill="#F4F4F0" stroke="none"/>
+</g>
+</g>
+</svg>
