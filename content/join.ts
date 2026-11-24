@@ -111,36 +111,51 @@ export const joinApply = {
   eyebrow: "GET STARTED",
   title: "HOW TO APPLY.",
   description: "Follow the steps below to apply to WATFlight.",
-  // The recipient is the address shown in the design and in the site footer. UNVERIFIED (see the notes).
-  email: "admin@watflight.com",
   steps: [
     {
       title: "Prepare Your Resume",
       description: "Include your resume and the subteam or area you’re interested in.",
       icon: "document",
-      linksEmail: false,
     },
     {
-      title: "Email Your Resume",
-      description: "Send your resume to admin@watflight.com.",
+      title: "Submit Your Application",
+      description: "Complete the application form and attach your PDF résumé.",
       icon: "mail",
-      // The address inside this sentence is a mailto: link too.
-      linksEmail: true,
     },
     {
       title: "Wait to Hear From Us",
       description: "Selected applicants will be contacted to arrange an interview.",
       icon: "people",
-      linksEmail: false,
     },
-  ] satisfies readonly { title: string; description: string; icon: ApplyIcon; linksEmail: boolean }[],
-  // There is no upload on this site: the button opens the visitor's email app with a prefilled, editable
-  // draft (the visitor attaches the resume there). The subject and body are neutral and are NOT in the design.
-  action: {
-    label: "EMAIL YOUR RESUME",
-    srOnly: " to admin@watflight.com, opens your email app",
-    subject: "WATFlight application",
-    body: "Hello,\r\n\r\nI would like to apply to WATFlight.\r\n\r\nSubteam or area of interest: ",
+  ] satisfies readonly { title: string; description: string; icon: ApplyIcon }[],
+  form: {
+    label: "WATFlight team application",
+    nameLabel: "Name",
+    namePlaceholder: "Your name",
+    emailLabel: "Email",
+    emailPlaceholder: "you@example.com",
+    subteamLabel: "Subteam or area of interest",
+    subteamPlaceholder: "Choose an area",
+    subteamOptions: ["Mechanical", "Electrical", "Software", "Other / not sure"] as const,
+    messageLabel: "Additional note",
+    messagePlaceholder: "Tell us briefly where you’d like to contribute",
+    resumeLabel: "Résumé",
+    resumeHelp: "PDF only, 2 MB maximum.",
+    submitLabel: "Submit application",
+    submittingLabel: "Submitting application",
+    statusSending: "Sending your application…",
+    statusSent: "Thanks — your application has been sent to WATFlight.",
+    statusSpamCheck: "Complete the spam check before submitting your application.",
+    statusError: "We could not send your application. Please try again later.",
+    errors: {
+      name: "Enter your name.",
+      emailMissing: "Enter your email address.",
+      emailInvalid: "Enter a valid email address.",
+      subteam: "Choose a subteam or area of interest.",
+      resumeMissing: "Attach your résumé as a PDF.",
+      resumeType: "Your résumé must be a PDF file.",
+      resumeSize: "Your résumé must be 2 MB or smaller.",
+    },
   },
 };
 
@@ -153,9 +168,3 @@ export const joinProjectCta = {
     alt: "Illustrative image of a pale aircraft with a front propeller and long wings on a reflective hangar floor.",
   } satisfies { slot: Extract<AssetSlotId, `JOIN-${string}`>; alt: string },
 };
-
-/** The `mailto:` link behind "EMAIL YOUR RESUME" (subject and body are percent-encoded; line breaks are CRLF). */
-export function applyMailto(): string {
-  const { subject, body } = joinApply.action;
-  return `mailto:${joinApply.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}

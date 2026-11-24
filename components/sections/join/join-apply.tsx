@@ -1,12 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/ui/page-container";
 import { cn } from "@/lib/cn";
+import { JoinApplicationForm } from "@/components/sections/join/join-application-form";
 import { JoinEyebrow } from "@/components/sections/join/join-eyebrow";
 import { ApplyGlyph } from "@/components/sections/join/join-icons";
 import { sectionTitleClass, stepTitleClass } from "@/components/sections/join/styles";
-import { applyMailto, joinApply } from "@/content/join";
-
-const mailto = applyMailto();
+import { joinApply } from "@/content/join";
 
 /** A decorative connector chevron, in the grey secondary-text color (the accent blue is kept sparing on this page). */
 function Chevron({ className }: { className?: string }) {
@@ -29,34 +27,17 @@ function Chevron({ className }: { className?: string }) {
   );
 }
 
-function StepDescription({ text, linksEmail }: { text: string; linksEmail: boolean }) {
-  if (!linksEmail) return <>{text}</>;
-  const [before, after] = text.split(joinApply.email);
-  return (
-    <>
-      {before}
-      <a
-        href={mailto}
-        className="text-ink underline decoration-ink-2 underline-offset-4 transition-colors duration-150 hover:text-blue-light motion-reduce:transition-none"
-      >
-        {joinApply.email}
-      </a>
-      {after}
-    </>
-  );
-}
-
 /**
  * How to apply (frame 344:1128, 1440px reference): the eyebrow, title and one sentence, then the application
- * process as a real ordered list of three steps (Prepare Your Resume, Email Your Resume, Wait to Hear From Us),
- * each a very light numeral and a line icon, a title and a description, and a light "EMAIL YOUR RESUME"
- * button under them. Numerals, icons and the arrows between steps are live elements; the numerals, icons
+ * process as a real ordered list of three steps (Prepare Your Resume, Submit Your Application, Wait to Hear From Us),
+ * each a very light numeral and a line icon, a title and a description, and the application form beneath
+ * them. Numerals, icons and the arrows between steps are live elements; the numerals, icons
  * and arrows are decorative (aria-hidden: the list already numbers its items and the titles name them).
  * From 768px the steps are three centered columns with a thin grey arrow between each pair; below 768px they
  * form a vertical process: the numeral at the left with a thin grey line and a chevron running down through
- * the steps, in chronological order. The button opens the visitor's email app with a prefilled, editable draft
- * to the application address (the site uploads nothing), and the section is the target of the hero's
- * "APPLY NOW" button, so it carries id="how-to-apply".
+ * the steps, in chronological order. The section is the target of the hero's "APPLY NOW" button, so it
+ * carries id="how-to-apply". The application form sends the applicant's details and PDF résumé directly
+ * to the team instead of relying on a local email app.
  */
 export function JoinApply() {
   const steps = joinApply.steps;
@@ -99,7 +80,7 @@ export function JoinApply() {
                 <div className="mt-3 md:mt-4">
                   <h3 className={stepTitleClass}>{step.title}</h3>
                   <p className="type-body mt-2 max-w-[300px] text-ink-2 text-balance md:mx-auto">
-                    <StepDescription text={step.description} linksEmail={step.linksEmail} />
+                    {step.description}
                   </p>
                 </div>
 
@@ -118,12 +99,8 @@ export function JoinApply() {
           </ol>
         </div>
 
-        <div className="mt-10 flex justify-center md:mt-8">
-          <Button href={mailto} variant="light">
-            {joinApply.action.label}
-            <span className="sr-only">{joinApply.action.srOnly}</span>
-            <span aria-hidden="true">→</span>
-          </Button>
+        <div className="mt-12 md:mt-14">
+          <JoinApplicationForm />
         </div>
       </PageContainer>
     </section>

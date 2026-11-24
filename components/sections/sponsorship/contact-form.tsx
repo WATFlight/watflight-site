@@ -2,15 +2,13 @@
 
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { Turnstile } from "@/components/ui/turnstile";
 import { cn } from "@/lib/cn";
 import { sponsorshipContact, type ContactField } from "@/content/sponsorship";
 
-// A mailto: URL longer than this is truncated or refused by some mail clients and browsers.
-const MAX_MAILTO_LENGTH = 1800;
-
 type FieldValues = Record<string, string>;
 type FieldErrors = Record<string, string>;
-type Status = "idle" | "opening" | "tooLong";
+type Status = "idle" | "submitting" | "sent" | "error";
 
 const controlClass =
   "block w-full rounded-control border border-field-border bg-surface px-4 text-base text-ink placeholder:text-ink-2 " +
@@ -24,25 +22,11 @@ function fieldError(field: ContactField, element: HTMLInputElement | HTMLTextAre
   return "";
 }
 
-function buildMailto(values: FieldValues): string {
-  const lines = [
-    `Name: ${values.name}`,
-    // The optional company line is left out when it is empty.
-    ...(values.company ? [`Company: ${values.company}`] : []),
-    `Email: ${values.email}`,
-    "",
-    values.message,
-  ];
-  const body = lines.join("\r\n");
-  return `mailto:${sponsorshipContact.email}?subject=${encodeURIComponent(sponsorshipContact.mailtoSubject)}&body=${encodeURIComponent(body)}`;
-}
-
 /**
- * Sponsorship inquiry form, the page's primary contact path. There is no backend: "Open email draft"
- * validates the fields with the browser's constraint validation, then hands the message to the visitor's
- * email app through a prefilled mailto: link to the sponsorship address. The button's label and accessible
- * name say exactly that, and nothing ever claims a message was sent (the status line only says the email app
- * should open). Nothing is stored. The plain address sits under the button as the secondary option.
+ * Sponsorship inquiry form, the page's primary contact path. It validates in the browser, verifies a
+ * Cloudflare Turnstile token on the server, then sends the inquiry to the team through the shared form
+ * endpoint. The sender's address becomes the email's reply-to address. Nothing is stored. The plain team
+ * address remains under the button as a secondary option.
  *
  * Layout: each field is a label directly above its control (10px), 26px between rows. From 768px Name and
  * Company share the first row as two equal columns and Work email, Message and the actions span the full
@@ -57,11 +41,15 @@ function buildMailto(values: FieldValues): string {
 export function ContactForm() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<Status>("idle");
+  const [statusMessage, setStatusMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileReset, setTurnstileReset] = useState(0);
 
   const fields = sponsorshipContact.fields;
 
   function onChange(field: ContactField, event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setStatus("idle");
+    setStatusMessage("");
     if (errors[field.id] && fieldError(field, event.currentTarget) === "") {
       setErrors((current) => {
         const next = { ...current };
@@ -71,7 +59,7 @@ export function ContactForm() {
     }
   }
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
 
@@ -94,35 +82,54 @@ export function ContactForm() {
     setErrors(nextErrors);
     if (firstInvalid) {
       setStatus("idle");
+      setStatusMessage("");
       firstInvalid.focus();
       return;
     }
 
-    const href = buildMailto(values);
-    if (href.length > MAX_MAILTO_LENGTH) {
-      setStatus("tooLong");
+    if (!turnstileToken) {
+      setStatus("error");
+      setStatusMessage(sponsorshipContact.statusSpamCheck);
       return;
     }
-    setStatus("opening");
-    // Hand the message to the visitor's email app through a temporary link click (the same as
-    // following a mailto: link). The page stays where it is.
-    const link = document.createElement("a");
-    link.href = href;
-    link.hidden = true;
-    document.body.append(link);
-    link.click();
-    link.remove();
+
+    setStatus("submitting");
+    setStatusMessage(sponsorshipContact.statusSending);
+
+    const formData = new FormData(form);
+    formData.set("formType", "sponsorship");
+    formData.set("turnstileToken", turnstileToken);
+
+    try {
+      const response = await fetch("/api/forms", { method: "POST", body: formData });
+      const result = (await response.json().catch(() => null)) as { message?: string } | null;
+
+      if (!response.ok) throw new Error(result?.message || sponsorshipContact.statusError);
+
+      form.reset();
+      setErrors({});
+      setStatus("sent");
+      setStatusMessage(sponsorshipContact.statusSent);
+    } catch (error) {
+      setStatus("error");
+      setStatusMessage(error instanceof Error ? error.message : sponsorshipContact.statusError);
+    } finally {
+      setTurnstileToken("");
+      setTurnstileReset((current) => current + 1);
+    }
   }
 
-  const statusText =
-    status === "opening"
-      ? sponsorshipContact.statusOpening
-      : status === "tooLong"
-        ? sponsorshipContact.statusTooLong
-        : "";
-
   return (
-    <form noValidate onSubmit={onSubmit} aria-label={sponsorshipContact.formLabel}>
+    <form
+      noValidate
+      onSubmit={onSubmit}
+      aria-label={sponsorshipContact.formLabel}
+      aria-busy={status === "submitting"}
+    >
+      <div className="sr-only" aria-hidden="true">
+        <label htmlFor="contact-website">Website</label>
+        <input id="contact-website" name="website" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="grid gap-y-[26px] md:grid-cols-2 md:gap-x-8">
         {fields.map((field) => {
           const inputId = `contact-${field.id}`;
@@ -162,9 +169,12 @@ export function ContactForm() {
       </div>
 
       <div className="mt-7">
-        <Button type="submit" variant="light" wrap>
-          {sponsorshipContact.submitLabel}
-          <span className="sr-only">{sponsorshipContact.submitSrOnly}</span>
+        <Turnstile action="sponsorship" resetSignal={turnstileReset} onTokenChange={setTurnstileToken} />
+      </div>
+
+      <div className="mt-7">
+        <Button type="submit" variant="light" wrap disabled={status === "submitting"}>
+          {status === "submitting" ? sponsorshipContact.submittingLabel : sponsorshipContact.submitLabel}
           <span aria-hidden="true">→</span>
         </Button>
       </div>
@@ -179,8 +189,12 @@ export function ContactForm() {
         </a>
       </p>
 
-      <p role="status" aria-live="polite" className={cn("type-body-sm text-ink", statusText && "mt-2")}>
-        {statusText}
+      <p
+        role={status === "error" ? "alert" : "status"}
+        aria-live="polite"
+        className={cn("type-body-sm text-ink", statusMessage && "mt-2")}
+      >
+        {statusMessage}
       </p>
     </form>
   );

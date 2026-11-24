@@ -2,7 +2,7 @@
 
 Working notes for the Figma-based rebuild on `rebuild/figma-hifi`. Source frames: Home `262:79`, About Us `262:80`, Current Project `333:496`, Sponsorship `340:771`, Join the Team `344:1128`, News & Blog `344:1129`, Design System `77:2` in Figma file `ZTpRvqKrFDvxGgQ71b6xjt`.
 
-Milestones so far: the foundation (tokens, type scale, fonts, shared shell and primitives, six route skeletons), the Home page, the About page (frame `262:80`, see "About page" below) and the Current Project page (frame `333:496`, see "Current Project page" below). The other three pages, remaining Figma assets and legacy-file deletion come later.
+Milestones so far: the foundation (tokens, type scale, fonts, shared shell and primitives, six route skeletons), the Home page, the About page (frame `262:80`), the Current Project page (frame `333:496`, with the roadmap later rebuilt as semantic HTML/CSS), the Sponsorship page (frame `340:771`), the Join the Team page (frame `344:1128`) and the News & Blog page (frame `344:1129`, with three static sample article pages); each has its own section below. A pre-PR regression audit of all of it is recorded in "Pre-PR regression audit" at the end. Legacy-file deletion and the launch items under "Needs verification before launch" and the per-page registers are still to do.
 
 ## Fonts
 
@@ -675,3 +675,59 @@ Bunken for display, Geist for text, Design System tokens for colour. The export'
 - `pnpm lint` and `pnpm typecheck` clean; a clean `pnpm build` succeeds (eleven static pages including the three article paths). The only console error on these pages is the Vercel analytics script (`/_vercel/insights/script.js`, 404 outside Vercel, as on every page); the deliberate unknown-slug request is the only other 404.
 - **Regression:** the only shared file touched is `content/assets.ts`, by adding three slots and rewording its header comment; no component, style, shell or other page file changed. Sampled at 1440 and 390px, Home, About and Projects still show no `#2B2B2B` row at the footer's top and Sponsorship, News and Join show one; all routes return 200.
 - Verified only in headless Chromium: no Safari, Firefox or real-device pass.
+
+## Pre-PR regression audit (all six pages, shared shell, production build)
+
+An end-to-end audit of the finished rebuild before any PR, run against a clean `pnpm build` served with `next start` on a side port, then once more against the dev server. Nothing was pushed, merged, deployed or committed; no dependency, package file or config was touched. Only headless Chromium was used (see "Not covered").
+
+### Coverage and results
+
+- **Routes:** `/`, `/about`, `/projects`, `/sponsorship`, `/join`, `/news`, the three article URLs, one unknown page and one unknown `/news/[slug]`. The unknown URLs return 404 with the static 404 page (the unknown slug is `dynamicParams = false`, so it is a normal 404).
+- **Responsive matrix:** 9 pages x 13 widths (1920, 1440, 1280, 1024, 768, 767, 390, 375, 320 and the zoom equivalents 720, 640, 360, 300) = 117 combinations, **0 issues**: no horizontal overflow, no clipped text, no broken image, exactly one `h1`, sticky header intact, both grid rails unbroken, one footer boundary rule, Bunken faces loaded, no layout shift, no console error beyond the known local analytics 404. The 404 pages were checked at six widths.
+- **Shared header/nav:** dark/light header theme over the cream bands, active state on every page and on the article pages (News stays active), mobile menu, skip link, anchors with `scroll-margin-top`, and the Join CTA.
+- **Forms, links, mailto:** both mailto drafts (sponsorship form, "Email your resume") build correctly and were intercepted, never sent; no real link fails; external links carry `rel="noopener noreferrer"`.
+- **Accessibility (automated, axe-core 4.12.1 injected from the existing transitive copy, nothing installed):** 20 runs, 0 violations. **Manual:** keyboard traversal 20/20 clean (visible focus on every stop), reduced motion 9/9, images blocked 60/60, text-over-photo contrast sampled (59 samples; the only shortfalls are the two Home items listed below). Automated and manual results are separate: axe's "incomplete" colour-contrast items over photographs were covered only by the custom sampling.
+- **Cold caches, images, fonts:** empty image cache and throttled-phone runs load every image; no failed request.
+- **Dev-mode pass** (`pnpm dev`, 11 URLs x 2 widths = 22 loads, scrolled end to end): no React hydration, key or accessibility warning, no Next error overlay, no failed request. The only message is a dev-only Next advisory on the two unknown-URL pages (the header logo is their largest contentful paint and Next suggests `loading="eager"`); it does not appear in a production build and is left alone because changing it would change the shared header on every page.
+
+### Defects found and fixed (all unstaged; three files of shared shell plus one logo component)
+
+1. **Skip link invisible when focused** (`components/layout/skip-link.tsx`): a missing space produced the class `focus-visible:z-skipfocus-visible:bg-ink`, so on focus the link had neither its stacking layer nor its background. Now `focus-visible:z-skip focus-visible:bg-ink`.
+2. **Footer logo could push the page sideways when the image failed to load** (`components/layout/site-footer.tsx`, `components/ui/logo.tsx`): a percentage `max-width` inside a shrink-to-fit link does not constrain an image that fails to load, so below about 430px a blocked or failed footer logo caused horizontal overflow. The link now has a definite width (`w-full max-w-[429px]`) and the image fills it (`h-auto w-full`); with the image loaded the footer is pixel-identical (0 differing footer pixels).
+3. **React hydration error #418 on unknown nested URLs** (`components/layout/primary-nav.tsx`): the prerendered not-found HTML cannot know the real path, so an active state computed from the browser path differed from the server HTML. Active state now comes from the route segments (`useSelectedLayoutSegments`: `/news` and one level below it count as News), which are the same on the server and the client. `app/news/[slug]/page.tsx` was touched during the investigation but is unchanged in behaviour (`dynamicParams = false`, as before).
+
+No design or content was changed to fix any of these.
+
+### Launch-readiness list
+
+**1. Blocking before launch**
+
+- AI-generated or illustrative imagery must be approved or replaced: About hero, Join hero / subteam / CTA crops, the three News pictures, Sponsorship's two photographs, and the Home and Projects project pictures and gallery (see each page's provenance register).
+- Faculty advisors are placeholders: the section renders nothing until real advisors are supplied.
+- Sample News articles: `newsSampleMode` in `content/news.ts` keeps `noindex, nofollow`, the SAMPLE ARTICLE label and the notice; set it to false and replace the sample bodies and pictures (see "Robots: noindex, nofollow, and how to remove it").
+- Unverified technical specs and claims on Home and Projects, including the figures baked into the Home project picture.
+
+**2. Needs team verification**
+
+- Roster (Jackie, Shaofu, Hiram, Manya) and the journey dates.
+- Sponsor and partner status and naming: three text-only wordmarks pending official logos, and the 20|20 naming caveat.
+- Sponsorship wording and the `admin@watflight.com` inbox / email-draft flow; Join recruitment wording, the interview promise, hiring status, and the resume mailto subject and body.
+- News headlines, dates, claims and article slugs; the provisional `h1` readings for Sponsorship, Join and News; the News meta description.
+- Bunken licence: web-embedding rights were confirmed verbally on 2026-11-11 and no licence document is stored in the repository; file it before launch.
+
+**3. Optional polish**
+
+- Home: mission-link contrast below about 1280px (12px blue link over clouds) and the hero paragraph at about 1280px, both text over photographs (a design decision, left as approved).
+- Add `robots.txt`, `sitemap.xml`, canonical / `metadataBase` / Open Graph metadata and a `favicon.ico`.
+- Delete the dead legacy modules (11) and the unused legacy public assets (about 44); update the stale `CLAUDE.md`.
+- Compress the large PNGs.
+- The local Vercel analytics 404 (`/_vercel/insights/script.js`) is expected outside Vercel.
+- Dev-only Next LCP advisory on the 404 page's header logo (see above).
+
+**4. Testing not yet covered**
+
+- Real Safari, Firefox and physical devices (only headless Chromium was used).
+- Real mail-client handling of the mailto drafts.
+- Screen-reader testing (NVDA, VoiceOver).
+- Lighthouse / performance budgets, and production-hosting behaviour (Vercel analytics, headers).
+- Actual 200% / 400% browser zoom (the width equivalents were tested), and no-JavaScript rendering.

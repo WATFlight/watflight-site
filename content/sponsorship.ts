@@ -103,8 +103,8 @@ export type ContactField = {
 // Revised after the owner's visual review (these changes override the screenshot): the form is the primary
 // contact path and direct email is secondary, so the left column no longer carries the "Sponsorship
 // Inquiries" email block, the fields are stacked (label above field), Company is optional, there is no
-// "all fields required" sentence, the Message placeholder is neutral, and the button says what it does
-// (opens an email draft) because nothing is sent by this site.
+// "all fields required" sentence, and the Message placeholder is neutral. The form now submits directly
+// through the site; the address underneath remains available as a secondary contact path.
 export const sponsorshipContact = {
   id: "contact",
   // No eyebrow or other metadata label above the title (owner's review). The title is one string and
@@ -156,16 +156,12 @@ export const sponsorshipContact = {
       errorMissing: "Enter a message.",
     },
   ] satisfies readonly ContactField[],
-  // Visible label "OPEN EMAIL DRAFT" (the button style uppercases it). The visually hidden part completes
-  // the accessible name, "Open email draft in your email app", and still contains the visible label.
-  submitLabel: "Open email draft",
-  submitSrOnly: " in your email app",
+  submitLabel: "Send inquiry",
+  submittingLabel: "Sending inquiry",
   // Shown directly under the button; only the address is a link.
   directEmailPrompt: "Prefer to email directly?",
-  // Functional copy that is not in the design: there is no backend, so the form hands the message to
-  // the visitor's email app, and it never says a message was sent.
-  mailtoSubject: "Sponsorship inquiry",
-  statusOpening: "Your email app should open with your message ready to send. If nothing happens, email admin@watflight.com.",
-  statusTooLong:
-    "Your message is too long to hand to an email app. Please shorten it, or email admin@watflight.com directly.",
+  statusSending: "Sending your inquiry…",
+  statusSent: "Thanks — your inquiry has been sent to WATFlight.",
+  statusSpamCheck: "Complete the spam check before sending your inquiry.",
+  statusError: "We could not send your inquiry. Please try again later.",
 };
