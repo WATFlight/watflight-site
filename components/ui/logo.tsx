@@ -23,7 +23,10 @@ export function Logo({ size = "header", themed = false, className }: LogoProps) 
   const isFooter = size === "footer";
   const width = isFooter ? 429 : 214;
   const height = isFooter ? 72 : 36;
-  const sizeClasses = isFooter ? "h-auto w-[429px] max-w-full" : "h-9 w-auto";
+  // Footer: fill the 429px-at-most link around it (a definite width), not a fixed 429px with max-w-full: a
+  // percentage max-width inside a shrink-to-fit link does not constrain an image that fails to load, which
+  // then pushed the page sideways below about 430px.
+  const sizeClasses = isFooter ? "h-auto w-full" : "h-9 w-auto";
 
   return (
     <>

@@ -33,7 +33,7 @@ export function SiteFooter() {
       <div aria-hidden="true" className="site-footer__top-rule pointer-events-none absolute inset-x-0 top-0 h-px bg-rule" />
       <PageContainer className="grid gap-12 py-12 md:pt-14 md:pb-[54px] lg:grid-cols-[minmax(0,1fr)_1px_auto] lg:gap-0 frame:grid-cols-[557px_1px_auto]">
         <div className="flex flex-col gap-6 lg:pr-12">
-          <Link href="/" aria-label="WATFlight home" className="w-fit max-w-full">
+          <Link href="/" aria-label="WATFlight home" className="w-full max-w-[429px]">
             <Logo size="footer" />
           </Link>
           <p className="type-meta max-w-[384px] text-ink-2">{institutionLabel}</p>

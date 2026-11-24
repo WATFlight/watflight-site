@@ -2,14 +2,28 @@
 
 import { useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { joinCta, navLinks } from "@/content/site";
 import { cn } from "@/lib/cn";
 
-function isActive(pathname: string, href: string): boolean {
-  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+/** Sections whose pages live one level below them (`/news/<slug>`); the section's nav item stays active there. */
+const sectionsWithChildPages = ["news"];
+
+/**
+ * A nav item is active when the ROUTE that matched is its page, or, for the sections above, a page one level
+ * below it. It reads the matched route segments (`useSelectedLayoutSegments`), not the browser's path: a URL
+ * that matches no route is answered with the prerendered 404, whose HTML cannot know that path, so marking an
+ * item active from the browser path (the earlier `pathname.startsWith(href + "/")`) differed from the server's
+ * HTML and raised a React hydration error (#418) on every unknown URL below a section, for example /about/x.
+ * The route's segments are the same on the server and in the browser, and an unknown URL has none of these.
+ */
+function isActive(segments: string[], href: string): boolean {
+  if (href === "/") return segments.length === 0;
+  const section = href.slice(1);
+  if (segments[0] !== section) return false;
+  return segments.length === 1 || (sectionsWithChildPages.includes(section) && segments.length === 2);
 }
 
 const linkClasses =
@@ -32,6 +46,7 @@ const linkClasses =
  */
 export function PrimaryNav() {
   const pathname = usePathname();
+  const segments = useSelectedLayoutSegments();
   const [openOnPath, setOpenOnPath] = useState<string | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const isOpen = openOnPath === pathname;
@@ -45,7 +60,7 @@ export function PrimaryNav() {
     }
   };
 
-  const joinActive = isActive(pathname, joinCta.href);
+  const joinActive = isActive(segments, joinCta.href);
 
   return (
     <div className="contents" onKeyDown={handleKeyDown}>
@@ -58,7 +73,7 @@ export function PrimaryNav() {
       <nav aria-label="Primary" className="hidden lg:block">
         <ul className="flex h-full items-stretch gap-8 xl:gap-10">
           {navLinks.map(({ href, label }) => {
-            const active = isActive(pathname, href);
+            const active = isActive(segments, href);
             return (
               <li key={href} className="relative flex items-center">
                 <Link
@@ -118,7 +133,7 @@ export function PrimaryNav() {
         <nav aria-label="Primary" className="mx-auto max-w-[1440px] px-5 pb-6 md:px-8">
           <ul>
             {navLinks.map(({ href, label }) => {
-              const active = isActive(pathname, href);
+              const active = isActive(segments, href);
               return (
                 <li key={href} className="border-b border-[var(--hdr-rule)]">
                   <Link
