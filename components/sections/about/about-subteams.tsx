@@ -51,6 +51,7 @@ export const AboutSubteams: FC<AboutSubteamsProps> = () => {
             className="relative shrink-0 after:absolute after:-inset-x-3 after:-inset-y-3.5 after:content-['']"
           >
             {subteams.link.label}
+            <span className="sr-only"> {subteams.link.hiddenLabel}</span>
           </TextLink>
         </div>
 

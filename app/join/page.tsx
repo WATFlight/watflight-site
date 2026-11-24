@@ -4,12 +4,14 @@ import { JoinCta } from "@/components/sections/join/join-cta";
 import { JoinHero } from "@/components/sections/join/join-hero";
 import { JoinSubteams } from "@/components/sections/join/join-subteams";
 import { Rule } from "@/components/ui/rule";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Join",
   description:
     "Join a multidisciplinary team designing, building, and testing real aerospace systems at the University of Waterloo.",
-};
+  path: "/join",
+});
 
 // Join the Team (Figma frame 344:1128). The frame is the owner's 3x PNG export of a flattened, AI-generated
 // design reference, rebuilt here as semantic HTML: only its five photographs were extracted (public/images/join).

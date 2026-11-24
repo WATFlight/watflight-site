@@ -92,8 +92,15 @@ export function JoinApplicationForm() {
   }
 
   return (
+    // method/action/encType are a privacy guard, not a no-JavaScript submission flow (the spam check needs
+    // JavaScript, so such a submit is rejected and nothing is sent). React's onSubmit handles every real submit.
+    // Without them a submit with scripts off, or before hydration, is a GET that puts the name, email and note in
+    // the URL.
     <form
       noValidate
+      method="post"
+      action="/api/forms"
+      encType="multipart/form-data"
       onSubmit={onSubmit}
       aria-label={joinApply.form.label}
       aria-busy={status === "submitting"}

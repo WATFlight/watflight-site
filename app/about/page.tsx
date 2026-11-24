@@ -7,12 +7,14 @@ import { AboutTeam } from "@/components/sections/about/about-team";
 import { FacultyAdvisory } from "@/components/sections/about/faculty-advisory";
 import { Rule } from "@/components/ui/rule";
 import { facultyAdvisory } from "@/content/about";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description:
     "WATFlight is a student-led engineering design team at the University of Waterloo designing, simulating, building, and flight-testing sustainable and autonomous unmanned aircraft systems.",
-};
+  path: "/about",
+});
 
 // About (Figma frame 262:80). Full-width #2B2B2B rules sit under the hero and (when advisors exist)
 // above the faculty section; the vertical grid rails overlay every section (z-grid layer). The

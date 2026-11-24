@@ -7,12 +7,14 @@ import { HomePartner } from "@/components/sections/home/home-partner";
 import { HomeProject } from "@/components/sections/home/home-project";
 import { HomeSponsors } from "@/components/sections/home/home-sponsors";
 import { Rule } from "@/components/ui/rule";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: { absolute: "WATFlight | Building the Future of Aerospace" },
   description:
     "WATFlight is a student-run design team at the University of Waterloo designing, building and flying innovative aerospace systems.",
-};
+  path: "/",
+});
 
 // Home (Figma frame 262:79). The sections above the sponsors are separated by full-width #2B2B2B
 // rules that run to both viewport edges and cross the vertical grid rails; the rails overlay those

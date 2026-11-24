@@ -621,7 +621,7 @@ The text under them is general, neutral prose about how a student team works (as
 
 ### Robots: noindex, nofollow, and how to remove it
 
-- **Now:** `/news` and the three article pages are served with `<meta name="robots" content="noindex, nofollow">` (checked in the served HTML of the production build; `/about` has none, and the 404 page keeps Next's own `noindex`). The site has no `robots.txt`, sitemap or `app/robots`/`sitemap` files, so nothing else lists these pages.
+- **Now:** `/news` and the three article pages are served with `<meta name="robots" content="noindex, nofollow">` (checked in the served HTML of the production build; `/about` has none, and the 404 page keeps Next's own `noindex`). `app/robots.ts` keeps the News pages crawlable (a crawler must be able to fetch a page to see its `noindex`) and `app/sitemap.ts` leaves them out while `newsSampleMode` is `true`, so nothing else lists these pages; switching the flag off adds `/news` and the articles to the sitemap automatically.
 - **One switch:** `newsSampleMode` in `content/news.ts` (currently `true`) drives it: `newsRobots` (used by `app/news/page.tsx` and `app/news/[slug]/page.tsx` metadata) is `{ index: false, follow: false }` while it is true, and the "SAMPLE ARTICLE" label and the notice show only while it is true.
 - **To launch:** (1) replace each story's `blocks` (and its image) with verified team content, or add the real stories and delete the samples; (2) set `newsSampleMode` to `false`, which removes the noindex directive from `/news` and every article and hides the label and notice; (3) update the story register below. Nothing else changes. If `/news` should be indexed before every story is real, split `/news` from the articles by giving `app/news/page.tsx` its own robots value.
 
@@ -718,7 +718,7 @@ No design or content was changed to fix any of these.
 **3. Optional polish**
 
 - Home: mission-link contrast below about 1280px (12px blue link over clouds) and the hero paragraph at about 1280px, both text over photographs (a design decision, left as approved).
-- Add `robots.txt`, `sitemap.xml`, canonical / `metadataBase` / Open Graph metadata and a `favicon.ico`.
+- ~~Add `robots.txt`, `sitemap.xml`, canonical / `metadataBase` / Open Graph metadata and a `favicon.ico`.~~ Done in the post-launch quality pass (below).
 - Delete the dead legacy modules (11) and the unused legacy public assets (about 44); update the stale `CLAUDE.md`.
 - Compress the large PNGs.
 - The local Vercel analytics 404 (`/_vercel/insights/script.js`) is expected outside Vercel.
@@ -799,3 +799,16 @@ The first Home hero pass ("flight systems startup") was technically strong but r
 **Removed from the first pass:** the narrow blue calibration edge and the quick 1 s sweep, the 90 ms headline start, the simultaneous trace/bracket/arming burst, the retirement at 1.9 s, the 0.45 soft speed (now 0.4 of the new arc). Pointer depth and a magnetic CTA remain unbuilt (overscan would alter the crop; wrapping the label would change Button markup).
 
 **Verified** (production build, headless Chromium, real-time screencast contact sheets for pacing): the settled hero is pixel-identical to the approved Home at 1920, 1440, 1280, 1024, 768, 390, 375 and 320; the reduced-motion page is geometry-identical (the only pixels that differ are the Home project image's four brackets); all five interruptions settle within about 0.5 s; an early key press is honoured when the bundle loads; frame pacing during the opening equals the pre-hangar page on desktop and on a phone with a 4x CPU slowdown. I could not literally watch the page at human speed; pacing was judged from timestamped real-time frames and measured milestones, and should be confirmed by eye on :3000.
+
+## Post-launch quality pass (2026-11-24)
+
+An audit of the live site (forms, every link, responsive widths down to 320px and text-spacing stress, keyboard, reduced motion, images off, slow network, JavaScript off, axe, Lighthouse) found the pages in good shape (axe: no violations; Lighthouse accessibility and best practices 100 on every page, SEO 100 except About at 91 for its generic "Learn more" link text, fixed below, and News at 63 for its intentional `noindex`). These real problems were fixed:
+
+- **Forms put personal data in the URL when JavaScript was off.** Both `<form>`s had no `method`, so a submit before hydration or with scripts blocked became a GET (`?name=...&email=...&message=...`), which ends up in history, request logs and referrers. They now carry `method="post" action="/api/forms" encType="multipart/form-data"` as a privacy guard. This is **not** a working no-JavaScript submission flow: the spam check needs JavaScript, so such a submit is rejected by the API (HTTP 400 JSON), nothing is sent, and the URL stays free of form data. React's `onSubmit` still handles every real submit.
+- **The favicon, Apple touch icon and `icon.svg` were the v0 template logo.** They are rebuilt from the WATFlight hexagon mark in `public/images/brand/watflight-lockup.svg` (cream on `#050505`): `public/icon.svg`, `icon-32x32.png`, `apple-icon.png` (full-bleed, iOS rounds it) and `favicon.ico` (16/32/48). The two `icon-light/dark-32x32.png` files were removed.
+- **SEO and sharing:** `lib/seo.ts` (`siteUrl`, `pageMetadata`), `metadataBase`, canonical URLs, Open Graph and Twitter cards for the five indexable pages, `app/robots.ts`, `app/sitemap.ts`, and `public/og-image.jpg` (a 1200x630 crop of the Home hero photograph; no text, no new artwork). The News pages keep `noindex, nofollow` and carry no canonical.
+- **404 and error pages:** `app/not-found.tsx` (the default was black text on a white block inside the dark shell, with the Home title) and `app/error.tsx` (retry or leave; it shows and logs nothing from the error).
+- **LCP, tried and not kept:** Lighthouse notes that Next 16 preloads a `priority` hero image without `fetchpriority="high"`. Adding the hint to `MediaFrame` made the flag go away but gave no measurable LCP gain in a mobile-preset A/B against the production tree (Sponsorship unchanged; Home within run-to-run noise, roughly 2.9 to 3.2s either way, because the Home hero's wait is its intro rather than the image fetch), so it was reverted. Compare runs only when the image cache is warm and the runs alternate, or the order skews the result.
+- **Link purpose:** the About "Learn more" and Join "LEARN MORE" links keep their visible copy and add visually hidden text ("about joining the team", "about the subteams").
+
+Left as it is: `www.watflight.com` serves the site directly. Redirect it to `watflight.com` in the Vercel project's domain settings (the canonical URLs already point to the apex).

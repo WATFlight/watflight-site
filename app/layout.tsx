@@ -9,6 +9,7 @@ import { SiteFooter } from '@/components/layout/site-footer'
 import { GridRails } from '@/components/ui/grid-rails'
 import { MotionBoot } from '@/components/motion/motion-boot'
 import { MotionController } from '@/components/motion/motion-controller'
+import { siteName, siteUrl, socialImage } from '@/lib/seo'
 import './globals.css'
 import './motion.css'
 
@@ -36,17 +37,24 @@ const bunkenStd = localFont({
 })
 
 export const metadata: Metadata = {
+  // Resolves every relative metadata URL (canonical, Open Graph and Twitter images) against the production origin.
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'WATFlight | Building the Future of Aerospace',
     template: '%s | WATFlight',
   },
   description:
     'WATFlight is a student-run design team at the University of Waterloo designing, building and flying innovative aerospace systems.',
+  // Defaults for pages that do not set their own (the News samples, the 404 page). Indexable pages set the full
+  // set through `pageMetadata` in lib/seo.ts.
+  openGraph: { type: 'website', siteName, locale: 'en_CA', images: [socialImage] },
+  twitter: { card: 'summary_large_image', images: [socialImage.url] },
+  // The WATFlight mark on the site's near-black. One set serves light and dark browser themes. /favicon.ico (in
+  // public/) answers the browsers and crawlers that ask for it directly.
   icons: {
     icon: [
-      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
       { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: '/apple-icon.png',
   },

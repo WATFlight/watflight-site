@@ -21,7 +21,9 @@ export const joinHero = {
   ],
   // "APPLY NOW" goes to How to Apply, "LEARN MORE" to Subteams (both are sections of this page).
   apply: { label: "APPLY NOW", href: "#how-to-apply" },
-  learn: { label: "LEARN MORE", href: "#subteams" },
+  // `hiddenLabel` is read by screen readers after the visible label ("LEARN MORE about the subteams"), so the
+  // link's purpose is clear out of context. The visible copy is unchanged.
+  learn: { label: "LEARN MORE", href: "#subteams", hiddenLabel: "about the subteams" },
   image: {
     slot: "JOIN-HERO",
     alt: "Illustrative image of three students in dark hoodies working on a long metal aircraft wing in a workshop, under a WATFlight banner.",
@@ -31,7 +33,7 @@ export const joinHero = {
   title: string;
   intro: readonly string[];
   apply: { label: string; href: string };
-  learn: { label: string; href: string };
+  learn: { label: string; href: string; hiddenLabel: string };
   image: { slot: Extract<AssetSlotId, `JOIN-${string}`>; alt: string };
 };
 

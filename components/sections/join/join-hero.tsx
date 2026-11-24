@@ -42,6 +42,7 @@ export function JoinHero() {
             </Button>
             <Button href={joinHero.learn.href} variant="dark">
               {joinHero.learn.label}
+              <span className="sr-only"> {joinHero.learn.hiddenLabel}</span>
             </Button>
           </div>
         </div>

@@ -108,7 +108,9 @@ export const subteams = {
       descriptionMaxWidth: 352,
     },
   ] satisfies Subteam[],
-  link: { label: "Learn more", href: "/join" },
+  // `hiddenLabel` is read by screen readers after the visible label ("Learn more about joining the team"), so the
+  // link's purpose is clear out of context. The visible copy is unchanged.
+  link: { label: "Learn more", href: "/join", hiddenLabel: "about joining the team" },
 };
 
 export type FacultyAdvisor = {
