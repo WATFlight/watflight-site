@@ -15,7 +15,7 @@ export function HomeSponsors() {
         <SectionHeading id="home-sponsors-heading" title={sponsors.title} />
       </PageContainer>
 
-      <div className="mt-14 md:mt-16 xl:mt-20">
+      <div data-reveal="fade" className="mt-14 md:mt-16 xl:mt-20">
         <SponsorMarquee logos={sponsors.logos} copies={sponsors.marqueeCopies} labelledBy="home-sponsors-heading" />
       </div>
     </section>

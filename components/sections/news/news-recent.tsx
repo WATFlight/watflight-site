@@ -15,13 +15,13 @@ export function NewsRecent() {
   return (
     <section aria-labelledby="news-recent-heading">
       <PageContainer className="py-14 md:py-16 xl:pt-[84px] xl:pb-12">
-        <span aria-hidden="true" className="block h-0.5 w-10 bg-blue" />
-        <h2 id="news-recent-heading" className={cn(sectionTitleClass, "mt-5 text-ink")}>
+        <span aria-hidden="true" data-reveal="rule" className="block h-0.5 w-10 bg-blue" />
+        <h2 id="news-recent-heading" data-reveal="" className={cn(sectionTitleClass, "mt-5 text-ink")}>
           {newsRecent.title}
         </h2>
         <ul role="list" className="mt-10 grid gap-6 md:mt-12 md:grid-cols-2 md:gap-7">
           {newsRecent.stories.map((story) => (
-            <li key={story.title} className="flex">
+            <li key={story.title} data-reveal="" className="flex">
               <NewsCard story={story} sizes="(min-width: 1440px) 594px, (min-width: 768px) 45vw, 100vw" />
             </li>
           ))}

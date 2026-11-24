@@ -24,14 +24,16 @@ export function SponsorshipWays() {
       <PageContainer className="pt-14 pb-14 md:pt-20 md:pb-20 xl:pt-[85px] xl:pb-[66px]">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_41.6%] lg:gap-14">
           <div>
-            <h2 id="sponsorship-ways-heading" className={cn(h2Class, "text-ink")}>
+            <h2 id="sponsorship-ways-heading" data-reveal="" className={cn(h2Class, "text-ink")}>
               {sponsorshipWays.title}
             </h2>
-            <p className="type-body-lg mt-5 max-w-[700px] text-ink-2">{sponsorshipWays.description}</p>
+            <p data-reveal="" className="type-body-lg mt-5 max-w-[700px] text-ink-2">
+              {sponsorshipWays.description}
+            </p>
 
             <ul role="list" className="mt-10 max-w-[642px] xl:mt-[57px]">
               {sponsorshipWays.items.map((item, index) => (
-                <li key={item.title} className={cn(index > 0 && "pt-7 xl:pt-[30px]")}>
+                <li key={item.title} data-reveal="" className={cn(index > 0 && "pt-7 xl:pt-[30px]")}>
                   <article className="grid grid-cols-[56px_minmax(0,1fr)] md:grid-cols-[108px_minmax(0,1fr)]">
                     <div className="pt-0.5 pl-1 text-ink md:pl-7">
                       <SponsorshipIcon name={item.icon} className="size-7 md:size-10" />

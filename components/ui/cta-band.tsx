@@ -71,12 +71,17 @@ export function CtaBand({
             fullViewport ? "xl:py-24" : (contentClassName ?? "xl:min-h-[550px] xl:py-0"),
           )}
         >
-          <h2 id={`${id}-heading`} className={cn("type-display-page text-canvas", titleClassName)}>
+          <h2 id={`${id}-heading`} data-reveal="" className={cn("type-display-page text-canvas", titleClassName)}>
             {title}
           </h2>
-          {subtitle ? <p className="type-h2 mt-[9px] text-canvas">{subtitle}</p> : null}
+          {subtitle ? (
+            <p data-reveal="" className="type-h2 mt-[9px] text-canvas">
+              {subtitle}
+            </p>
+          ) : null}
           {description ? (
             <p
+              data-reveal=""
               className="type-band-body mt-[27px] max-w-[536px] text-surface"
               style={descriptionGap ? { marginTop: descriptionGap } : undefined}
             >
@@ -85,6 +90,7 @@ export function CtaBand({
           ) : null}
           {children ? (
             <div
+              data-reveal=""
               className="mt-[38px] flex flex-wrap items-center justify-center gap-4 md:gap-[38px]"
               style={actionsGap ? { marginTop: actionsGap } : undefined}
             >

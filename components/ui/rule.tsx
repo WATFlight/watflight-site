@@ -18,6 +18,7 @@ export function Rule({ orientation = "horizontal", className }: RuleProps) {
   return (
     <div
       aria-hidden="true"
+      data-reveal={orientation === "horizontal" ? "rule" : "rule-y"}
       className={cn(
         "relative z-10 bg-rule",
         orientation === "horizontal" ? "h-px w-full" : "h-full w-px",

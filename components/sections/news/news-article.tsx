@@ -39,7 +39,7 @@ export function NewsArticle({ story, next }: { story: NewsStory; next?: NewsStor
 
   return (
     <PageContainer className="pt-8 pb-16 md:pt-10 xl:pt-12 xl:pb-24">
-      <nav aria-label={newsArticleText.breadcrumbLabel}>
+      <nav aria-label={newsArticleText.breadcrumbLabel} data-enter="fade">
         <ol className="type-body-sm flex flex-wrap items-baseline gap-x-2 text-ink-2">
           <li>
             <Link
@@ -60,7 +60,7 @@ export function NewsArticle({ story, next }: { story: NewsStory; next?: NewsStor
 
       <article aria-labelledby="news-article-title" className="mt-10 break-words md:mt-12">
         <header className="grid grid-cols-[minmax(0,1fr)] gap-x-16 gap-y-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] xl:gap-x-24">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-3 lg:col-span-2">
+          <div data-enter="rise" data-step="1" className="flex flex-wrap items-center gap-x-4 gap-y-3 lg:col-span-2">
             <p className="type-eyebrow text-ink-2">
               {category ? (
                 <>
@@ -74,10 +74,10 @@ export function NewsArticle({ story, next }: { story: NewsStory; next?: NewsStor
               <p className="type-eyebrow border border-rule-strong px-2.5 py-1 text-ink">{newsArticleText.sampleLabel}</p>
             ) : null}
           </div>
-          <h1 id="news-article-title" className={articleTitleClass}>
+          <h1 id="news-article-title" data-enter="rise" data-step="2" className={articleTitleClass}>
             {title}
           </h1>
-          <div>
+          <div data-enter="rise" data-step="3">
             <p className={cn(articleDeckClass, "max-w-[560px]")}>{summary}</p>
             {newsSampleMode ? (
               <p role="note" className="type-body-sm mt-6 max-w-[560px] border-l-2 border-rule-strong pl-4 text-ink-2">

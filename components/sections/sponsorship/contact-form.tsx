@@ -159,7 +159,7 @@ export function ContactForm() {
                 <input {...common} type={field.type} className={cn(controlClass, "h-12")} />
               )}
               {error ? (
-                <p id={errorId} className="type-body-sm mt-2 text-ink">
+                <p id={errorId} className="motion-status type-body-sm mt-2 text-ink">
                   {error}
                 </p>
               ) : null}
@@ -192,7 +192,7 @@ export function ContactForm() {
       <p
         role={status === "error" ? "alert" : "status"}
         aria-live="polite"
-        className={cn("type-body-sm text-ink", statusMessage && "mt-2")}
+        className={cn("motion-status type-body-sm text-ink", statusMessage && "mt-2")}
       >
         {statusMessage}
       </p>

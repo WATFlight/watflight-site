@@ -122,7 +122,7 @@ export function JoinApplicationForm() {
             className={cn(controlClass, "h-12")}
           />
           {errors.name ? (
-            <p id={errorId("name")} className="type-body-sm mt-2 text-ink">
+            <p id={errorId("name")} className="motion-status type-body-sm mt-2 text-ink">
               {errors.name}
             </p>
           ) : null}
@@ -145,7 +145,7 @@ export function JoinApplicationForm() {
             className={cn(controlClass, "h-12")}
           />
           {errors.email ? (
-            <p id={errorId("email")} className="type-body-sm mt-2 text-ink">
+            <p id={errorId("email")} className="motion-status type-body-sm mt-2 text-ink">
               {errors.email}
             </p>
           ) : null}
@@ -175,7 +175,7 @@ export function JoinApplicationForm() {
             ))}
           </select>
           {errors.subteam ? (
-            <p id={errorId("subteam")} className="type-body-sm mt-2 text-ink">
+            <p id={errorId("subteam")} className="motion-status type-body-sm mt-2 text-ink">
               {errors.subteam}
             </p>
           ) : null}
@@ -221,7 +221,7 @@ export function JoinApplicationForm() {
             {joinApply.form.resumeHelp}
           </p>
           {errors.resume ? (
-            <p id={errorId("resume")} className="type-body-sm mt-2 text-ink">
+            <p id={errorId("resume")} className="motion-status type-body-sm mt-2 text-ink">
               {errors.resume}
             </p>
           ) : null}
@@ -242,7 +242,7 @@ export function JoinApplicationForm() {
       <p
         role={status === "error" ? "alert" : "status"}
         aria-live="polite"
-        className={cn("type-body-sm text-ink", statusMessage && "mt-3")}
+        className={cn("motion-status type-body-sm text-ink", statusMessage && "mt-3")}
       >
         {statusMessage}
       </p>

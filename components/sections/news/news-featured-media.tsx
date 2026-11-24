@@ -18,7 +18,15 @@ type NewsFeaturedMediaProps = {
 
 // The frame's corner marks and overlay gridline are interface decoration, so they are rebuilt here in CSS
 // (never baked into the pictures, which are cropped inside them) and hidden from assistive technology.
-const bracket = "pointer-events-none absolute size-5 border-ink/45 md:size-[26px]";
+const bracket = "pointer-events-none absolute z-[3] size-5 border-ink/45 md:size-[26px]";
+
+// Motion (app/motion.css): the picture develops with the calibration sweep and the brackets lock in. The
+// featured picture is the page's opening image, so this plays on first paint. Slide changes are untouched.
+const corner = (position: "tl" | "tr" | "bl" | "br", step: number) => ({
+  "data-bracket": position,
+  "data-enter": "bracket",
+  "data-step": step,
+});
 
 function Arrow({ direction }: { direction: "left" | "right" }) {
   return (
@@ -57,7 +65,13 @@ export function NewsFeaturedMedia({ slides, width, height, sizes, priority = fal
   const slide = slides[Math.min(index, total - 1)];
 
   const frame = (
-    <div className="relative overflow-hidden border border-rule bg-surface" style={{ aspectRatio: `${width} / ${height}` }}>
+    <div
+      data-frame=""
+      data-scan=""
+      data-enter="media"
+      className="relative overflow-hidden border border-rule bg-surface"
+      style={{ aspectRatio: `${width} / ${height}` }}
+    >
       {slide?.src ? (
         <Image
           key={slide.src}
@@ -70,10 +84,10 @@ export function NewsFeaturedMedia({ slides, width, height, sizes, priority = fal
         />
       ) : null}
       <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-[51%] w-px bg-ink/10" />
-      <span aria-hidden="true" className={cn(bracket, "top-3 left-3 border-t-[1.5px] border-l-[1.5px] md:top-[18px] md:left-[18px]")} />
-      <span aria-hidden="true" className={cn(bracket, "top-3 right-3 border-t-[1.5px] border-r-[1.5px] md:top-[18px] md:right-[18px]")} />
-      <span aria-hidden="true" className={cn(bracket, "bottom-3 left-3 border-b-[1.5px] border-l-[1.5px] md:bottom-[18px] md:left-[18px]")} />
-      <span aria-hidden="true" className={cn(bracket, "right-3 bottom-3 border-r-[1.5px] border-b-[1.5px] md:right-[18px] md:bottom-[18px]")} />
+      <span aria-hidden="true" {...corner("tl", 0)} className={cn(bracket, "top-3 left-3 border-t-[1.5px] border-l-[1.5px] md:top-[18px] md:left-[18px]")} />
+      <span aria-hidden="true" {...corner("tr", 1)} className={cn(bracket, "top-3 right-3 border-t-[1.5px] border-r-[1.5px] md:top-[18px] md:right-[18px]")} />
+      <span aria-hidden="true" {...corner("bl", 1)} className={cn(bracket, "bottom-3 left-3 border-b-[1.5px] border-l-[1.5px] md:bottom-[18px] md:left-[18px]")} />
+      <span aria-hidden="true" {...corner("br", 2)} className={cn(bracket, "right-3 bottom-3 border-r-[1.5px] border-b-[1.5px] md:right-[18px] md:bottom-[18px]")} />
     </div>
   );
 

@@ -37,11 +37,13 @@ export function ProjectSystem() {
         <div className="grid lg:grid-cols-2">
           <div className="lg:pr-8">
             <SectionHeading as="h2" size="h2" id="project-system-heading" title={projectSystem.title} />
-            <p className="type-body mt-1.5 max-w-[577px] text-ink-2 xl:min-h-[51px]">{projectSystem.description}</p>
+            <p data-reveal="" className="type-body mt-1.5 max-w-[577px] text-ink-2 xl:min-h-[51px]">
+              {projectSystem.description}
+            </p>
 
             <ul role="list" className="mt-8 flex flex-col gap-10 xl:mt-[45px] xl:gap-[47px]">
               {projectSystem.components.map((component) => (
-                <li key={component.name}>
+                <li key={component.name} data-reveal="">
                   <article className="flex flex-col gap-4 md:flex-row md:items-start md:gap-8 xl:grid xl:grid-cols-[181px_minmax(0,1fr)] xl:gap-x-[clamp(2rem,calc(2rem_+_(100vw_-_80rem)_*_0.30625),5.0625rem)]">
                     <div className="max-w-full md:flex md:w-[181px] md:shrink-0 md:justify-center xl:w-auto">
                       <div className="max-w-full" style={{ width: component.imageWidth }}>
@@ -49,6 +51,7 @@ export function ProjectSystem() {
                           slot={component.slot}
                           alt=""
                           sizes={`${component.imageWidth}px`}
+                          motion="none"
                           className="w-full bg-transparent!"
                         />
                       </div>
@@ -76,12 +79,15 @@ export function ProjectSystem() {
               title={projectSpecs.title}
               className="xl:mt-2"
             />
-            <p className="type-body mt-1.5 max-w-[577px] text-ink-2 xl:min-h-[51px]">{projectSpecs.description}</p>
+            <p data-reveal="" className="type-body mt-1.5 max-w-[577px] text-ink-2 xl:min-h-[51px]">
+              {projectSpecs.description}
+            </p>
 
             <dl className="mt-8 xl:mt-[44px]">
               {projectSpecs.rows.map((row, index) => (
                 <div
                   key={row.term}
+                  data-reveal=""
                   className={cn(
                     "relative pl-14 xl:h-(--row-h) xl:pl-0",
                     index === 0
@@ -130,7 +136,11 @@ export function ProjectSystem() {
           </div>
         </div>
 
-        <span aria-hidden="true" className="absolute top-[79px] bottom-[71px] left-1/2 hidden w-px bg-rule lg:block" />
+        <span
+          aria-hidden="true"
+          data-reveal="rule-y"
+          className="absolute top-[79px] bottom-[71px] left-1/2 hidden w-px bg-rule lg:block"
+        />
       </PageContainer>
     </section>
   );

@@ -29,13 +29,16 @@ export function AboutJourney() {
       <PageContainer className="pt-16 md:pt-20 xl:pt-[65px]">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)] lg:items-start xl:pr-5">
           <SectionHeading id="about-journey-heading" title={journey.title} className="lg:mt-[3px]" />
-          <p className="type-body text-ink-2">{journey.intro}</p>
+          <p data-reveal="" className="type-body text-ink-2">
+            {journey.intro}
+          </p>
         </div>
       </PageContainer>
 
-      <div className="relative mt-12 pb-20 md:mt-16 md:pb-24 xl:mt-[112px] xl:pb-[129px]">
+      <div data-progress="" className="relative mt-12 pb-20 md:mt-16 md:pb-24 xl:mt-[112px] xl:pb-[129px]">
         <span
           aria-hidden="true"
+          data-draw="x"
           className="absolute top-0 hidden h-px bg-ink-2 md:block"
           style={{ left: `calc(${railEdge} + 1px)`, right: `calc(${railEdge} + 1px)` }}
         />
@@ -44,6 +47,7 @@ export function AboutJourney() {
             {journey.stages.map((stage) => (
               <li
                 key={`${stage.label}-${stage.title}`}
+                data-at=""
                 className="group/stage relative pb-10 pl-[44px] last:pb-0 md:pb-0 md:pl-0 md:pt-[29px]"
               >
                 <Image
@@ -51,6 +55,7 @@ export function AboutJourney() {
                   alt=""
                   width={22}
                   height={22}
+                  data-node=""
                   className="absolute top-0 left-0 z-10 md:-top-[10px] md:-left-[11px]"
                 />
                 {/* Vertical line between markers (phones only; the last stage has none). */}

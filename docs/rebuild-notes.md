@@ -731,3 +731,71 @@ No design or content was changed to fix any of these.
 - Screen-reader testing (NVDA, VoiceOver).
 - Lighthouse / performance budgets, and production-hosting behaviour (Vercel analytics, headers).
 - Actual 200% / 400% browser zoom (the width equivalents were tested), and no-JavaScript rendering.
+
+## Motion system
+
+A single, shared motion layer added on top of the finished pages. It changes no layout, copy, route, form behaviour, Turnstile, API or content; at rest every page is pixel-identical to the pre-motion build (verified, see below).
+
+**Concept.** Aircraft instrumentation: things come online with controlled acceleration and deceleration, lines are drawn and then lock, photographs "develop" out of the dark with one calibration sweep. No bounce, spin, blur, constant glow, cursor-following or scroll-jacking.
+
+**Where it lives**
+- `app/motion.css`: tokens (`--dur-fast/ui/reveal/cinematic`, `--stagger`, `--ease-out/instrument/exit`, `--move-xs/sm/md/lg`) and every effect. Imported by `app/layout.tsx` after `globals.css`.
+- `components/motion/motion-boot.tsx`: tiny inline script in `<head>`. Arms the system (`<html data-motion="armed">`) only when the visitor allows motion, and removes the attribute after 4 s if the controller never starts (a failed bundle can never leave content hidden). `<html>` carries `suppressHydrationWarning` for this.
+- `components/motion/motion-controller.tsx`: the one client component (renders nothing). Smooth scroll (Lenis, loaded on demand), ONE IntersectionObserver for reveals, one observer that stops the sponsor marquee off screen, and ONE shared scroll subscription (`lib/scroll-store.ts`) for connector progress and the slow image push.
+- Markup carries data attributes; shared components take them as props: `SectionHeading` (`motion`, `step`), `MediaFrame` (`motion`, `scan`, `parallax`), `Eyebrow`, `SurfaceCard`, `Rule`, `RuleStack`, `CtaBand`, `Button` (`data-button`), `GridRails`, header and footer.
+
+**Vocabulary**
+- `data-enter` (+ `data-step`): CSS keyframes on first paint, no JavaScript. Page entrances (hero sequence, header, rails).
+- `data-reveal`: plays once when it scrolls into view; siblings entering in the same frame stagger (70 ms steps, capped at 5). Kinds: default rise, `fade`, `rule` / `rule-y` (a line draws), `frame`, `bracket`.
+- `data-progress` + `data-draw` + `data-at`: a connector drawn by scroll progress (never retracts) and the steps along it that come online as it reaches them. Used by the Current Project roadmap, the About timeline, the Join application steps and the Home progress track.
+- `data-parallax`: Home hero "push" and Home mission "settle". The picture carries no transform until it is actually displaced.
+- Rule: reveals go on non-interactive wrappers, never on buttons, links or hover cards. The unlayered motion rules would otherwise replace a control's own transitions.
+
+**Smooth scrolling.** Lenis (`lenis@1.3.27`, the version used on the portfolio, `lerp: 0.16`) smooths the mouse wheel and trackpad only. Touch, keyboard, the scrollbar and `window.scrollTo` stay native; native scrolling semantics, Back/Forward and Page Up/Down/Home/End/Space are unchanged. Nested scrollers and text fields opt out (`textarea, select, [data-lenis-prevent]`). It is driven on demand (wakes on the first wheel event, sleeps when settled), not by a permanent frame loop. It is not started under `prefers-reduced-motion` and stops if the preference changes mid-session. In-page links (`#how-to-apply`, `#subteams`, `#contact`, `#leadership`) are handled by the controller: one eased glide that lands below the sticky header (Lenis reads each target's `scroll-margin-top`), the URL and history entry as for a normal anchor, and keyboard focus moves to the section so the next Tab continues from it (this also fixes the earlier finding that the shared Button's hash links left focus on the hero button). Instant jump when reduced motion is on.
+
+**Reduced motion.** Every hidden state sits inside `(prefers-reduced-motion: no-preference)`: the finished page is shown at once, nothing is armed, Lenis never starts, no animation or transition runs (the global 0.01 ms rule in `globals.css` still keeps functional state changes instant), the marquee keeps its static layout. Without JavaScript nothing is ever hidden.
+
+**Performance.** Only `opacity` and `transform` animate. No scroll listener per element. Everything is torn down on route change. The sponsor marquee is paused while off screen or while the tab is hidden (`data-offscreen`, `data-page-hidden`), on top of its existing hover / focus / checkbox pause. Cost: Lenis 5.4 KB gz as its own chunk after hydration, controller + boot about 2.2 KB gz, motion CSS about 2.0 KB gz.
+
+**Decisions worth knowing**
+- The entrance never scales or transforms a photograph (a scale animation leaves stale compositor tiles on fractional-size pictures: measured, 1,278 px differing on Projects at 390). The "develop" is a canvas-coloured panel that lifts; at rest the panel is transparent, has no transform and no layer.
+- The mobile menu animates with `@starting-style` plus a discrete `display` transition because Tailwind's layered `[hidden] { display: none !important }` cannot be overridden; older browsers open and close it instantly.
+- The article lead image has no parallax (reading comfort first).
+- `lenis` was added to `package.json` / `pnpm-lock.yaml`; nothing else changed in dependencies or config.
+
+**Verified** (clean production build, headless Chromium, 2026-11-22; the harness is in the working session's scratchpad, not in the repo):
+- Lint, typecheck and a clean `next build` pass.
+- 70 of 70 page x width combinations at 1920, 1440, 1280, 1024, 768, 720 (1440 at 200%), 390, 375, 360 (1440 at 400%) and 320 (1280 at 400%): no horizontal overflow, layout shift 0, nothing left hidden, header 74 px and sticky, no console errors.
+- Pixel parity with the pre-motion build: full motion at the top of every page, 14 of 14 identical (bottom 12% of the viewport masked, where reveals wait for scroll by design). Reduced motion, full page: identical except occasional 9 to 44 pixel flickers that did not repeat on re-run (image decode timing). Settled state after all reveals: identical on About, Projects, News and the article; Home and Sponsorship differ only where the sponsor marquee moves and where the Home hero image is pushed in by design; Join differs by 6 pixels (at most 37/255) on the edges of the three step icons.
+- Reduced motion, JavaScript off, a failed bundle (the 4 s failsafe removes `data-motion`) and blocked images; switching reduced motion on and off mid-session.
+- Wheel, trackpad-style deltas, keyboard (Page Up/Down, Space, Home, End), touch, textarea, anchors (`#how-to-apply`, `#subteams`, `#contact`, and `/about#leadership` from Home, which is unchanged), Back/Forward and route changes at 1440 and 390.
+- The marquee's hover, focus, checkbox, off-screen and hidden-tab pausing; field validation messages (no request is made).
+- Scroll frames during wheel scrolling: p95 16.8 ms, no frame over 33 ms (baseline had one 50 ms frame).
+
+**Not covered:** real Safari and Firefox (`@starting-style`, `allow-discrete` and Lenis behave differently on old engines; the fallbacks are instant), physical touch devices and real trackpads, screen readers, Lighthouse and real-device frame rates.
+
+### Home hero: "hangar awakening" (motion refinement, second pass)
+
+The first Home hero pass ("flight systems startup") was technically strong but read as a fast dashboard powering on: the headline began at 90 ms, the aircraft finished at about 1.1 s, several details fired at once, and the decoration retired before it could register. This pass re-choreographs it as one grand entrance with anticipation, scale and a single climax: a large aircraft emerging from darkness in a hangar. Everything lives in `app/motion.css` (section "Home hero"), `components/sections/home/hero-motif.tsx`, `components/motion/` (boot script, controller) and `MediaFrame scan="hangar"`. No layout, copy or content changed.
+
+**Arc and measured timeline** (desktop, from navigation start; 5 hard reloads varied by at most 53 ms; the CSS starts about 100 ms after navigation)
+1. Darkness and scale, 0 to 0.6 s: the hero already has its final layout under a dark exposure veil (88% canvas colour), so the aircraft reads as a faint silhouette; a closed vignette and a faint horizon light plane hold the dark; the rails emerge slowly (2.2 s); the header is untouched.
+2. The light, 0.6 s to 3.0 s: one broad volume of light crosses the picture on a 23.9 degree wing angle. It reaches the aircraft at about 1.25 s, the aircraft is substantially visible at about 2.2 s and fully lit at 2.75 s. The vignette opens as it passes.
+3. The headline, 0.55 s to 2.0 s: the same slanted edge, easing (`--ease-hangar`) and start as the light, so one force reveals both. It begins dim and comes to full weight; 70% exposed at 1.55 s. The title's text node is untouched.
+4. The copy and the actions settle upward from 3.1 s and 3.5 s (12 px, 1.1 s); the primary action is last.
+5. Confirmation, 2.8 s to 5.0 s: the headline rule, the brackets one pair at a time (2.7 s and 3.05 s after their start offsets), the trace drawn slowly (done 4.1 s), one blue node and one confirmation pulse, and the one-time hairline around the primary action (armed at 5.0 s).
+6. The decoration fades slowly (gone at 5.4 s). Composition settled about 3.5 s. Phones: title first (0.3 s), light on the stacked picture 1.0 to 2.6 s, settled about 2.6 s, tail gone by 4.0 s; the trace is simplified (no ticks, no extension).
+
+**How the light is built.** Two decorative pseudo-elements of the picture frame, moved by `transform` only: a 300%-wide veil whose left side is a soft eight-stop ramp (so the silhouette lifts first and the detail later) and a 66%-wide light body (neutral, with a restrained cool leading edge, masked to fade toward the top and bottom of the frame so it reads as a volume, not a rectangle). Both are skewed to the wing angle and are transparent and untransformed at rest; the photograph is never scaled, tinted or filtered. Layers inside the hero motif: the vignette (opacity), the horizon plane, the trace on its own plane, the brackets.
+
+**Interaction never holds the visitor.** The first wheel, touch, key (Tab included), pointer press, focus in the hero or scroll fast-forwards every running hero animation (and the rails) through the Web Animations API (`playbackRate` 9), so the opening settles in about 0.5 s instead of being cut. An intent that happens before the bundle loads is recorded by the boot script (`window.__heroIntent`) and applied when the controller starts. Controls are clickable throughout (clicking "Contact us" at 1.5 s works while its row is at opacity 0).
+
+**Repeat behaviour.** A fresh load plays the grand entrance; arriving by in-app link or Back/Forward plays the same choreography at 0.4 speed (`html[data-nav="soft"]`, nothing stored); it never replays on scroll.
+
+**After the reveal.** No loop and no ambient animation (nothing runs offscreen or in a hidden tab because nothing runs). The only atmosphere is scroll-linked: a faint horizon plane (at most 9% opaque, nothing at the top of the page, rising 16 px over the first 320 px of scroll) and the hand-off line from the first pass. A time-based drift was rejected: to be perceptible it would change the resting photograph.
+
+**Reduced motion, no JS, failed bundle.** Reduced motion shows the finished hero immediately (no veil, light, trace, brackets, vignette, horizon, hand-off or arming). With JavaScript off or a failed bundle the sequence is pure CSS and finishes with nothing covering the content; the 4 s failsafe is unchanged.
+
+**Removed from the first pass:** the narrow blue calibration edge and the quick 1 s sweep, the 90 ms headline start, the simultaneous trace/bracket/arming burst, the retirement at 1.9 s, the 0.45 soft speed (now 0.4 of the new arc). Pointer depth and a magnetic CTA remain unbuilt (overscan would alter the crop; wrapping the label would change Button markup).
+
+**Verified** (production build, headless Chromium, real-time screencast contact sheets for pacing): the settled hero is pixel-identical to the approved Home at 1920, 1440, 1280, 1024, 768, 390, 375 and 320; the reduced-motion page is geometry-identical (the only pixels that differ are the Home project image's four brackets); all five interruptions settle within about 0.5 s; an early key press is honoured when the bundle loads; frame pacing during the opening equals the pre-hangar page on desktop and on a phone with a 4x CPU slowdown. I could not literally watch the page at human speed; pacing was judged from timestamped real-time frames and measured milestones, and should be confirmed by eye on :3000.

@@ -29,7 +29,9 @@ export function ProjectGallery() {
     <section aria-labelledby="project-gallery-heading">
       <PageContainer className="pb-16 md:pb-20 xl:pb-[123px]">
         <SectionHeading as="h2" size="display-page" id="project-gallery-heading" title={projectGallery.title} />
-        <p className="type-body-lg mt-3 max-w-[761px] text-ink-2">{projectGallery.description}</p>
+        <p data-reveal="" className="type-body-lg mt-3 max-w-[761px] text-ink-2">
+          {projectGallery.description}
+        </p>
 
         <ul
           role="list"

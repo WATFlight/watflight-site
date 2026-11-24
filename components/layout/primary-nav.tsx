@@ -27,7 +27,7 @@ function isActive(segments: string[], href: string): boolean {
 }
 
 const linkClasses =
-  "type-nav hover:text-[var(--hdr-link-hover)] active:text-blue-dark";
+  "nav-link type-nav hover:text-[var(--hdr-link-hover)] active:text-blue-dark";
 
 /**
  * Primary navigation, the only Client Component in the shell. It needs the current pathname for the
@@ -70,7 +70,7 @@ export function PrimaryNav() {
           between News and the button, so it runs from the header's top edge to its bottom rule.
           The button is centered in the cell with 32px on each side; the negative right margin keeps
           the button's right edge on the page margin, as in Figma. */}
-      <nav aria-label="Primary" className="hidden lg:block">
+      <nav aria-label="Primary" data-enter="fade" data-step="1" className="hidden lg:block">
         <ul className="flex h-full items-stretch gap-8 xl:gap-10">
           {navLinks.map(({ href, label }) => {
             const active = isActive(segments, href);
@@ -90,7 +90,7 @@ export function PrimaryNav() {
                 {active ? (
                   <span
                     aria-hidden="true"
-                    className="absolute bottom-0 left-1/2 z-10 h-[2px] w-[47px] -translate-x-1/2 bg-blue"
+                    className="motion-underline absolute bottom-0 left-1/2 z-10 h-[2px] w-[47px] -translate-x-1/2 bg-blue"
                   />
                 ) : null}
               </li>
@@ -103,7 +103,7 @@ export function PrimaryNav() {
             {joinActive ? (
               <span
                 aria-hidden="true"
-                className="absolute bottom-0 left-1/2 z-10 h-[2px] w-[131px] -translate-x-1/2 bg-blue"
+                className="motion-underline absolute bottom-0 left-1/2 z-10 h-[2px] w-[131px] -translate-x-1/2 bg-blue"
               />
             ) : null}
           </li>
@@ -111,7 +111,7 @@ export function PrimaryNav() {
       </nav>
 
       {/* Mobile and tablet: disclosure menu below 1024px. */}
-      <div className="flex items-center lg:hidden">
+      <div data-enter="fade" data-step="1" className="flex items-center lg:hidden">
         <button
           ref={toggleRef}
           type="button"

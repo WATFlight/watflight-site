@@ -25,11 +25,13 @@ export function JoinSubteams() {
         <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between xl:gap-12">
           <div>
             <JoinEyebrow>{joinSubteams.eyebrow}</JoinEyebrow>
-            <h2 id="join-subteams-heading" className={cn(sectionTitleClass, "mt-4 text-ink")}>
+            <h2 id="join-subteams-heading" data-reveal="" className={cn(sectionTitleClass, "mt-4 text-ink")}>
               {joinSubteams.title}
             </h2>
           </div>
-          <p className="type-body max-w-[460px] text-ink-2 xl:max-w-[384px]">{joinSubteams.description}</p>
+          <p data-reveal="" className="type-body max-w-[460px] text-ink-2 xl:max-w-[384px]">
+            {joinSubteams.description}
+          </p>
         </div>
 
         <ul role="list" className="mt-10 grid gap-14 md:mt-12 md:gap-16 xl:mt-[73px] xl:grid-cols-3 xl:gap-x-[52px] xl:gap-y-0">
@@ -52,7 +54,7 @@ export function JoinSubteams() {
                   frame="sm"
                   tone="neutral"
                 />
-                <div>
+                <div data-reveal="">
                   {/* Every icon sits in the same 40px-tall box so the three names line up across the columns. */}
                   <div className="mt-8 flex h-10 items-center md:mt-0 xl:mt-9">
                     <SubteamGlyph name={team.icon} className="text-ink" />

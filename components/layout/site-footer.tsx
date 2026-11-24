@@ -30,9 +30,13 @@ export function SiteFooter() {
 
   return (
     <footer className="relative z-content bg-canvas">
-      <div aria-hidden="true" className="site-footer__top-rule pointer-events-none absolute inset-x-0 top-0 h-px bg-rule" />
+      <div
+        aria-hidden="true"
+        data-reveal="rule"
+        className="site-footer__top-rule pointer-events-none absolute inset-x-0 top-0 h-px bg-rule"
+      />
       <PageContainer className="grid gap-12 py-12 md:pt-14 md:pb-[54px] lg:grid-cols-[minmax(0,1fr)_1px_auto] lg:gap-0 frame:grid-cols-[557px_1px_auto]">
-        <div className="flex flex-col gap-6 lg:pr-12">
+        <div data-reveal="" className="flex flex-col gap-6 lg:pr-12">
           <Link href="/" aria-label="WATFlight home" className="w-full max-w-[429px]">
             <Logo size="footer" />
           </Link>
@@ -41,11 +45,12 @@ export function SiteFooter() {
 
         <div
           aria-hidden="true"
+          data-reveal="rule-y"
           className="hidden bg-rule lg:-mt-14 lg:-mb-[54px] lg:block"
         />
 
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:flex lg:gap-x-12 lg:pl-12 frame:gap-x-[116px] frame:pl-[115px]">
-          <nav aria-label="Footer">
+          <nav aria-label="Footer" data-reveal="">
             <h2 className="type-meta mb-3.5 text-ink-2">Navigation</h2>
             <ul className="type-body-sm space-y-1">
               {footerNavLinks.map(({ href, label }) => (
@@ -58,7 +63,7 @@ export function SiteFooter() {
             </ul>
           </nav>
 
-          <div>
+          <div data-reveal="">
             <h2 className="type-meta mb-3.5 text-ink-2">Contact</h2>
             <ul className="type-body-sm space-y-1">
               <li>
@@ -78,7 +83,7 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          <div>
+          <div data-reveal="">
             <h2 className="type-meta mb-3.5 text-ink-2">Connect</h2>
             <ul className="type-body-sm space-y-2.5">
               {socialLinks.map(({ href, label, icon, iconSize }) => (

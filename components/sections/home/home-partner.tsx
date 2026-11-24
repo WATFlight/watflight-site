@@ -23,8 +23,10 @@ export function HomePartner() {
       <PageContainer className="grid gap-16 xl:grid-cols-[minmax(0,1fr)_minmax(0,520px)] xl:gap-x-16 xl:gap-y-0">
         <div>
           <SectionHeading id="home-partner-heading" title={partner.title} titleClassName="text-balance" />
-          <p className="type-body mt-4 max-w-[533px] text-ink-2 xl:mt-[17px]">{partner.body}</p>
-          <div className="mt-6 xl:mt-[25px]">
+          <p data-reveal="" className="type-body mt-4 max-w-[533px] text-ink-2 xl:mt-[17px]">
+            {partner.body}
+          </p>
+          <div data-reveal="" className="mt-6 xl:mt-[25px]">
             <Button href={partner.action.href} variant={partner.action.variant}>
               {partner.action.label}
             </Button>
@@ -38,6 +40,7 @@ export function HomePartner() {
             alt=""
             width={partner.arrow.size}
             height={partner.arrow.size}
+            data-reveal="fade"
             className="shrink-0 rotate-90 md:mt-[52px] md:rotate-0"
           />
           <ExchangeItem item={impact} className="max-w-[230px]" />
@@ -55,7 +58,7 @@ function ExchangeItem({
   className?: string;
 }) {
   return (
-    <div className={cn("flex w-full flex-col items-center text-center", className)}>
+    <div data-reveal="" className={cn("flex w-full flex-col items-center text-center", className)}>
       <div className="flex h-[53px] items-start justify-center">
         <Image src={item.icon} alt="" width={item.iconWidth} height={item.iconHeight} />
       </div>

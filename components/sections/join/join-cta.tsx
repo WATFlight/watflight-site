@@ -22,10 +22,14 @@ export function JoinCta() {
       <PageContainer className="grid items-center gap-10 py-12 md:py-16 lg:grid-cols-[minmax(0,500fr)_minmax(0,812fr)] lg:gap-0 xl:py-6">
         <div>
           <JoinEyebrow>{joinProjectCta.eyebrow}</JoinEyebrow>
-          <h2 id="join-cta-heading" className={cn(sectionTitleClass, "mt-4 max-w-[500px] text-ink text-balance")}>
+          <h2
+            id="join-cta-heading"
+            data-reveal=""
+            className={cn(sectionTitleClass, "mt-4 max-w-[500px] text-ink text-balance")}
+          >
             {joinProjectCta.title}
           </h2>
-          <div className="mt-8">
+          <div data-reveal="" className="mt-8">
             <Button href={joinProjectCta.action.href} variant="dark" wrap>
               {joinProjectCta.action.label}
               <span aria-hidden="true">→</span>

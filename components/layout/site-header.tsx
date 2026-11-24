@@ -24,7 +24,7 @@ export function SiteHeader() {
     >
       <HeaderTheme />
       <div className="mx-auto flex h-full max-w-[1440px] items-stretch justify-between px-5 md:px-8 lg:px-12 xl:px-16 frame:pr-16 frame:pl-[76px]">
-        <Link href="/" aria-label="WATFlight home" className="flex items-center">
+        <Link href="/" aria-label="WATFlight home" data-enter="fade" className="flex items-center">
           <Logo size="header" themed />
         </Link>
         <PrimaryNav />

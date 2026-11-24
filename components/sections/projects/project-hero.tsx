@@ -33,19 +33,28 @@ export function ProjectHero() {
   return (
     <section aria-labelledby="project-hero-heading" className="relative isolate">
       <PageContainer className="relative flex flex-col items-center pt-12 pb-16 text-center md:pt-16 md:pb-20 xl:block xl:h-[745px] xl:p-0 xl:text-left">
-        <Eyebrow className="relative z-10 xl:absolute xl:top-[79px] xl:left-1/2 xl:-translate-x-1/2">
+        <Eyebrow
+          data-enter="rise"
+          className="relative z-10 xl:absolute xl:top-[79px] xl:left-1/2 xl:-translate-x-1/2"
+        >
           {projectHero.eyebrow}
         </Eyebrow>
 
         <h1
           id="project-hero-heading"
+          data-enter="headline"
+          data-step="1"
           className="type-display-page relative z-10 mt-6 text-blue xl:absolute xl:top-[107px] xl:left-[calc(50%+5.5px)] xl:mt-0 xl:-translate-x-1/2 xl:text-center xl:whitespace-pre"
         >
           <span className="block">{`${projectHero.titleLines[0]} `}</span>
           <span className="block">{projectHero.titleLines[1]}</span>
         </h1>
 
-        <p className="type-body-lg relative z-10 mt-8 max-w-[536px] text-ink-2 xl:absolute xl:top-[263px] xl:left-[126px] xl:mt-0 xl:w-[306px] xl:max-w-none">
+        <p
+          data-enter="rise"
+          data-step="3"
+          className="type-body-lg relative z-10 mt-8 max-w-[536px] text-ink-2 xl:absolute xl:top-[263px] xl:left-[126px] xl:mt-0 xl:w-[306px] xl:max-w-none"
+        >
           {projectHero.intro}
         </p>
 
@@ -55,12 +64,17 @@ export function ProjectHero() {
             alt={projectHero.imageAlt}
             sizes="(min-width: 1440px) 1260px, (min-width: 1280px) calc(100vw - 180px), 100vw"
             priority
+            scan
             className="w-full bg-transparent!"
             overlayClassName={heroOverlay}
           />
         </div>
 
-        <p className="type-body-lg relative z-10 mt-8 max-w-[536px] text-ink-2 xl:absolute xl:top-[560px] xl:right-[155px] xl:mt-0 xl:w-[366px] xl:max-w-none xl:text-right">
+        <p
+          data-enter="rise"
+          data-step="4"
+          className="type-body-lg relative z-10 mt-8 max-w-[536px] text-ink-2 xl:absolute xl:top-[560px] xl:right-[155px] xl:mt-0 xl:w-[366px] xl:max-w-none xl:text-right"
+        >
           {projectHero.goal}
         </p>
       </PageContainer>

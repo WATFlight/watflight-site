@@ -7,7 +7,10 @@ import { SkipLink } from '@/components/layout/skip-link'
 import { SiteHeader } from '@/components/layout/site-header'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { GridRails } from '@/components/ui/grid-rails'
+import { MotionBoot } from '@/components/motion/motion-boot'
+import { MotionController } from '@/components/motion/motion-controller'
 import './globals.css'
+import './motion.css'
 
 // Geist covers navigation, buttons and body text (decision D17).
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' })
@@ -55,7 +58,11 @@ export default function RootLayout({
   children: ReactNode
 }>) {
   return (
-    <html lang="en" className={`dark ${geist.variable} ${bunkenSC.variable} ${bunkenStd.variable}`}>
+    // suppressHydrationWarning: MotionBoot sets <html data-motion> before React hydrates (see components/motion).
+    <html lang="en" suppressHydrationWarning className={`dark ${geist.variable} ${bunkenSC.variable} ${bunkenStd.variable}`}>
+      <head>
+        <MotionBoot />
+      </head>
       <body className="font-sans antialiased">
         {/* Stacking layers (documented in app/globals.css): content < grid rails < sticky header. */}
         <div className="relative isolate flex min-h-dvh flex-col">
@@ -67,6 +74,7 @@ export default function RootLayout({
           </main>
           <SiteFooter />
         </div>
+        <MotionController />
         <Analytics />
       </body>
     </html>

@@ -32,16 +32,22 @@ export function ProjectRoadmap() {
     <section aria-labelledby="project-roadmap-heading">
       <PageContainer className="pt-12 pb-16 md:pt-16 md:pb-20 xl:pt-[61px] xl:pb-[79px]">
         <SectionHeading as="h2" size="display-page" id="project-roadmap-heading" title={projectRoadmap.title} />
-        <p className="type-body-lg mt-3 max-w-[761px] text-ink-2">{projectRoadmap.description}</p>
+        <p data-reveal="" className="type-body-lg mt-3 max-w-[761px] text-ink-2">
+          {projectRoadmap.description}
+        </p>
 
-        <div className="relative mt-10 md:mt-12 xl:mt-12">
+        {/* Motion (app/motion.css): the line is drawn by scroll progress and each phase comes online as the
+            line reaches it (data-progress / data-draw / data-at). Everything is plain content without it. */}
+        <div data-progress="" className="relative mt-10 md:mt-12 xl:mt-12">
           {/* Decorative connecting line and terminal arrow: vertical below 1280px, horizontal from 1280px. */}
           <span
             aria-hidden="true"
+            data-draw="y-xl-x"
             className="absolute top-2 bottom-3 left-[6px] w-px bg-blue-dark/35 xl:top-[34px] xl:right-[8px] xl:bottom-auto xl:h-px xl:w-auto"
           />
           <svg
             aria-hidden="true"
+            data-draw-end=""
             focusable="false"
             width="9"
             height="15"
@@ -66,10 +72,12 @@ export function ProjectRoadmap() {
               return (
                 <li
                   key={stage.label}
+                  data-at=""
                   className="relative pl-9 md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-x-8 md:gap-y-5 md:pl-12 xl:block xl:pl-0"
                 >
                   <span
                     aria-hidden="true"
+                    data-node=""
                     className={cn(
                       "absolute top-0.5 left-0 size-[13px] rounded-full xl:top-7",
                       stage.node === "filled" ? "bg-blue" : "border-2 border-blue bg-canvas",
@@ -79,7 +87,7 @@ export function ProjectRoadmap() {
                   <p className={cn("type-eyebrow md:col-span-2 xl:col-auto", labelTone[index])}>{stage.label}</p>
 
                   {path ? (
-                    <div className="mt-5 md:mt-0 xl:mt-[49px] xl:flex xl:aspect-[2/1] xl:items-end">
+                    <div data-wipe="" className="mt-5 md:mt-0 xl:mt-[49px] xl:flex xl:aspect-[2/1] xl:items-end">
                       <Image
                         src={path}
                         alt={stage.illustration.alt}

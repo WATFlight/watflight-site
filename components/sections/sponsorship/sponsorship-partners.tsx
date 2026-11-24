@@ -24,13 +24,15 @@ export function SponsorshipPartners() {
     <section aria-labelledby="sponsorship-partners-heading">
       <div className="pt-14 pb-16 md:pt-20 md:pb-20 xl:pt-[62px] xl:pb-[80px]">
         <PageContainer>
-          <h2 id="sponsorship-partners-heading" className={cn(h2Class, "text-ink")}>
+          <h2 id="sponsorship-partners-heading" data-reveal="" className={cn(h2Class, "text-ink")}>
             {sponsorshipPartners.title}
           </h2>
-          <p className="type-body-lg mt-4 max-w-[760px] text-ink-2 xl:mt-2.5">{sponsorshipPartners.description}</p>
+          <p data-reveal="" className="type-body-lg mt-4 max-w-[760px] text-ink-2 xl:mt-2.5">
+            {sponsorshipPartners.description}
+          </p>
         </PageContainer>
 
-        <div className="mt-12 md:mt-14 xl:mt-[56px]">
+        <div data-reveal="fade" className="mt-12 md:mt-14 xl:mt-[56px]">
           <SponsorMarqueeRows
             rows={sponsorMarqueeRows}
             copies={MARQUEE_COPIES}

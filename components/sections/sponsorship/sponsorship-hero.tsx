@@ -18,11 +18,16 @@ export function SponsorshipHero() {
     <section aria-labelledby="sponsorship-hero-heading">
       <PageContainer className="grid items-center gap-10 py-12 md:gap-12 md:py-16 lg:grid-cols-2 lg:gap-12 xl:py-20">
         <div>
-          <p className="type-eyebrow flex items-center gap-3 text-blue">
-            <span aria-hidden="true" className="block h-0.5 w-9 bg-blue" />
+          <p data-enter="rise" className="type-eyebrow flex items-center gap-3 text-blue">
+            <span aria-hidden="true" data-enter="rule" data-step="1" className="block h-0.5 w-9 bg-blue" />
             {sponsorshipHero.eyebrow}
           </p>
-          <h1 id="sponsorship-hero-heading" className={cn(h1Class, "mt-6 text-ink")}>
+          <h1
+            id="sponsorship-hero-heading"
+            data-enter="headline"
+            data-step="1"
+            className={cn(h1Class, "mt-6 text-ink")}
+          >
             {sponsorshipHero.titleLines.map((line, index) => (
               <span key={line}>
                 {index > 0 ? " " : null}
@@ -30,8 +35,10 @@ export function SponsorshipHero() {
               </span>
             ))}
           </h1>
-          <p className="type-body-lg mt-7 max-w-[480px] text-ink-2">{sponsorshipHero.intro}</p>
-          <div className="mt-7">
+          <p data-enter="rise" data-step="2" className="type-body-lg mt-7 max-w-[480px] text-ink-2">
+            {sponsorshipHero.intro}
+          </p>
+          <div data-enter="rise" data-step="3" className="mt-7">
             <Button href={sponsorshipHero.action.href} variant="light">
               {sponsorshipHero.action.label}
               <span aria-hidden="true">→</span>

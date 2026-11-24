@@ -22,12 +22,14 @@ export function SponsorshipContact() {
   return (
     <section id={sponsorshipContact.id} aria-labelledby="sponsorship-contact-heading">
       <PageContainer className="pt-14 pb-14 md:pt-16 md:pb-16 xl:pt-[72px] xl:pb-[72px]">
-        <h2 id="sponsorship-contact-heading" className={cn(h2Class, "text-balance text-ink")}>
+        <h2 id="sponsorship-contact-heading" data-reveal="" className={cn(h2Class, "text-balance text-ink")}>
           {sponsorshipContact.title}
         </h2>
-        <p className="type-body-lg mt-6 max-w-[800px] text-pretty text-ink-2 xl:mt-7">{sponsorshipContact.description}</p>
+        <p data-reveal="" className="type-body-lg mt-6 max-w-[800px] text-pretty text-ink-2 xl:mt-7">
+          {sponsorshipContact.description}
+        </p>
 
-        <div className="mt-8 md:mt-10 xl:mt-12">
+        <div data-reveal="" className="mt-8 md:mt-10 xl:mt-12">
           <ContactForm />
         </div>
       </PageContainer>

@@ -59,7 +59,7 @@ export const AboutSubteams: FC<AboutSubteamsProps> = () => {
           className="mt-8 grid gap-5 min-[768px]:mt-10 min-[768px]:gap-6 min-[1200px]:mt-12 min-[1200px]:grid-cols-3"
         >
           {subteams.items.map((item) => (
-            <li key={item.name} className="flex">
+            <li key={item.name} data-reveal="" className="flex">
               <article className="flex w-full min-w-0 flex-col border border-rule-strong bg-surface p-5 min-[768px]:min-h-[160px] min-[768px]:p-6 min-[1200px]:min-h-[220px] min-[1200px]:p-8">
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="type-h4 text-ink">{item.name}</h3>

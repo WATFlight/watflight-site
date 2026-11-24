@@ -31,8 +31,8 @@ export function HomeJoinBand() {
       subtitle={joinBand.subtitle}
       description={joinBand.description}
     >
-      {joinBand.actions.map(({ label, href, variant }) => (
-        <Button key={label} href={href} variant={variant}>
+      {joinBand.actions.map(({ label, href, variant }, index) => (
+        <Button key={label} href={href} variant={variant} data-arm={index === 0 ? "reveal" : undefined}>
           {label}
         </Button>
       ))}

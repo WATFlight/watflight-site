@@ -1,0 +1,1117 @@
+/* ==========================================================================
+   WATFlight motion system
+
+   Concept: aircraft instrumentation. Things come online with controlled acceleration and
+   deceleration, lines are drawn and then lock, and photographs develop out of the dark with one
+   calibration sweep. No bounce, no spin, no blur, no constant glow.
+
+   Three layers, all declarative (markup carries data attributes; one small client controller,
+   components/motion/motion-controller.tsx, only flips attributes and writes CSS variables):
+
+   1. data-enter      CSS keyframes on first paint. No JavaScript. Hero sequences, header, rails.
+   2. data-reveal     Plays once when the element scrolls into view (IntersectionObserver).
+   3. data-progress   A line that draws as the section scrolls past, and the steps along it that
+                      come online as the line reaches them (data-draw, data-at).
+
+   Safeguards
+   - Nothing is hidden unless <html data-motion="armed|live"> is set, which only the inline boot
+     script (components/motion/motion-boot.tsx) does, and only when the visitor allows motion. The
+     boot script removes it again after 4 s if the controller never starts, so a failed bundle can
+     not leave content invisible. No JavaScript means no attribute and nothing is ever hidden.
+   - Every hidden state sits inside (prefers-reduced-motion: no-preference), so reduced motion shows
+     the finished page at once. Functional state changes keep their instant (0.01ms) transitions from
+     the global reduced-motion rule in globals.css.
+   - Only opacity and transform are animated. Nothing changes layout, tab order or the accessibility
+     tree (the mobile menu panel also uses a discrete `display` transition, so `hidden` keeps doing the
+     hiding).
+   - The rules are unlayered on purpose: they must beat Tailwind's layered utilities. For that
+     reason reveals go on non-interactive wrappers, never on buttons, links or hover cards, so a
+     reveal transition can never replace a control's own colour transition.
+   ========================================================================== */
+
+:root {
+  /* Durations */
+  --dur-fast: 150ms; /* hover, press, focus colour changes */
+  --dur-ui: 240ms; /* nav underline, menu panel, arrow nudge, status messages */
+  --dur-reveal: 640ms; /* standard reveal */
+  --dur-cinematic: 1100ms; /* hero imagery, line draws */
+  --ease-hangar: cubic-bezier(0.42, 0, 0.18, 1); /* the Home hero's light and title: slow start, confident middle, gentle settle */
+  --hs: 1; /* Home hero speed: 1 on a fresh load, shorter when arriving by in-app navigation (below) */
+
+  /* Rhythm */
+  --stagger: 70ms; /* step between siblings revealed together */
+  --enter-base: 60ms; /* first beat of a load sequence */
+
+  /* Easing */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* primary: quick start, long controlled settle */
+  --ease-instrument: cubic-bezier(0.65, 0, 0.35, 1); /* sweeps and line draws: accelerate, then brake */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1); /* exits leave quickly */
+
+  /* Travel distances */
+  --move-xs: 4px; /* arrow nudge */
+  --move-sm: 10px; /* small items, brackets, menu panel */
+  --move-md: 18px; /* text and cards */
+  --move-lg: 28px; /* headline entrance */
+}
+
+/* Arriving at Home through in-app navigation or Back/Forward (the controller sets data-nav before the
+   page mounts) plays a shorter, settled version of the opening sequence. A fresh load plays it in full. */
+html[data-nav="soft"] {
+  --hs: 0.4;
+}
+
+/* Lenis (smooth wheel scrolling). Native scrolling stays in charge: the page is the scroller, touch
+   and keyboard are untouched. These are the library's own recommended rules. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* A cross-origin iframe (the spam check widget) swallows wheel events; while a smooth scroll is
+   running the page keeps them. */
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Programmatic anchor targets receive focus (so the next Tab continues from there) but show no ring. */
+[data-motion-focus]:focus {
+  outline: none;
+}
+
+/* Step indices for authored sequences. */
+[data-step="1"] { --i: 1; }
+[data-step="2"] { --i: 2; }
+[data-step="3"] { --i: 3; }
+[data-step="4"] { --i: 4; }
+[data-step="5"] { --i: 5; }
+[data-step="6"] { --i: 6; }
+[data-step="7"] { --i: 7; }
+
+/* Corner brackets lock in from just outside their corner. */
+[data-bracket="tl"] { --bx: calc(var(--move-sm) * -1); --by: calc(var(--move-sm) * -1); }
+[data-bracket="tr"] { --bx: var(--move-sm); --by: calc(var(--move-sm) * -1); }
+[data-bracket="bl"] { --bx: calc(var(--move-sm) * -1); --by: var(--move-sm); }
+[data-bracket="br"] { --bx: var(--move-sm); --by: var(--move-sm); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ------------------------------------------------------------------------
+     1. ENTER: runs on first paint, no JavaScript. The sequence is authored with data-step.
+     ------------------------------------------------------------------------ */
+  [data-enter] {
+    animation-name: motion-rise;
+    animation-duration: var(--dur-reveal);
+    animation-timing-function: var(--ease-out);
+    animation-fill-mode: backwards;
+    animation-delay: calc(var(--enter-base) + var(--i, 0) * var(--stagger) * 1.5);
+  }
+
+  [data-enter="fade"] {
+    animation-name: motion-fade;
+  }
+
+  [data-enter="headline"] {
+    animation-name: motion-headline;
+    animation-duration: var(--dur-cinematic);
+  }
+
+  [data-enter="rule"] {
+    animation-name: motion-draw-x;
+    animation-duration: var(--dur-cinematic);
+    animation-timing-function: var(--ease-instrument);
+    transform-origin: left center;
+  }
+
+  [data-enter="bracket"] {
+    animation-name: motion-lock;
+    animation-duration: var(--dur-cinematic);
+    animation-delay: calc(var(--enter-base) + var(--dur-cinematic) * 0.55 + var(--i, 0) * 60ms);
+  }
+
+  @keyframes motion-rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, var(--move-md), 0);
+    }
+  }
+
+  @keyframes motion-headline {
+    from {
+      opacity: 0;
+      transform: translate3d(0, var(--move-lg), 0);
+    }
+  }
+
+  @keyframes motion-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes motion-draw-x {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  @keyframes motion-lock {
+    from {
+      opacity: 0;
+      transform: translate3d(var(--bx, 0), var(--by, 0), 0);
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     Media frames (MediaFrame sets data-frame). The photograph "develops": a canvas-coloured
+     panel covers it, then lifts. With data-scan the panel leaves downward and its leading edge is a
+     1px calibration line; without it the panel simply fades. The picture itself is never hidden, so
+     the largest-contentful-paint element is unaffected, and nothing changes layout. The picture is
+     never scaled or transformed by the entrance (a scale animation leaves stale compositor tiles on
+     fractional-size pictures), so at rest every frame is pixel-identical to the designed crop.
+     ------------------------------------------------------------------------ */
+  [data-frame]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: var(--color-canvas);
+    opacity: 0;
+  }
+
+  /* At rest the panel is transparent and has no transform, so it is never painted and never gets a
+     compositing layer: the frame renders exactly as without this system. It is only ever visible while
+     the sweep plays. */
+  [data-frame][data-scan]::after {
+    background:
+      linear-gradient(90deg, transparent, rgb(102 152 255 / 0.7) 18%, rgb(102 152 255 / 0.7) 82%, transparent) top / 100% 1px no-repeat,
+      var(--color-canvas);
+  }
+
+  /* data-enter="media": plays on first paint. */
+  [data-frame][data-enter="media"] {
+    animation: none;
+  }
+
+  [data-frame][data-enter="media"]::after {
+    opacity: 0;
+    animation: motion-develop var(--dur-cinematic) var(--ease-out) var(--enter-base) backwards;
+  }
+
+  [data-frame][data-enter="media"][data-scan]::after {
+    animation: motion-sweep var(--dur-cinematic) var(--ease-instrument) var(--enter-base) backwards;
+  }
+
+  @keyframes motion-develop {
+    from {
+      opacity: 1;
+    }
+  }
+
+  /* The panel leaves a hair further than its own height so its leading line never rests on the edge. */
+  @keyframes motion-sweep {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(101%);
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     2. REVEAL: hidden only while armed, shown once when the controller marks it data-inview.
+        --i (set by the controller for siblings revealed in the same frame) staggers the start.
+     ------------------------------------------------------------------------ */
+  html[data-motion] [data-reveal] {
+    transition:
+      opacity var(--dur-reveal) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+      transform var(--dur-reveal) var(--ease-out) calc(var(--i, 0) * var(--stagger));
+  }
+
+  html[data-motion] [data-reveal]:not([data-inview]) {
+    opacity: 0;
+    transform: translate3d(0, var(--move-md), 0);
+  }
+
+  html[data-motion] [data-reveal="fade"]:not([data-inview]) {
+    transform: none;
+  }
+
+  html[data-motion] [data-reveal="fade"] {
+    transition-duration: var(--dur-cinematic);
+  }
+
+  /* Rules draw from their start edge. */
+  html[data-motion] [data-reveal="rule"] {
+    transform-origin: left center;
+    transition-duration: 0s, var(--dur-cinematic);
+    transition-timing-function: var(--ease-out), var(--ease-instrument);
+  }
+
+  html[data-motion] [data-reveal="rule"]:not([data-inview]) {
+    opacity: 1;
+    transform: scaleX(0);
+  }
+
+  html[data-motion] [data-reveal="rule-y"] {
+    transform-origin: center top;
+    transition-duration: 0s, var(--dur-cinematic);
+    transition-timing-function: var(--ease-out), var(--ease-instrument);
+  }
+
+  html[data-motion] [data-reveal="rule-y"]:not([data-inview]) {
+    opacity: 1;
+    transform: scaleY(0);
+  }
+
+  /* Frames reveal through their ::after panel, not by hiding the frame. */
+  html[data-motion] [data-reveal="frame"] {
+    transition: none;
+  }
+
+  html[data-motion] [data-reveal="frame"]:not([data-inview]) {
+    opacity: 1;
+    transform: none;
+  }
+
+  html[data-motion] [data-frame][data-reveal]::after {
+    opacity: 1;
+    transition: opacity var(--dur-cinematic) var(--ease-out) calc(var(--i, 0) * var(--stagger));
+  }
+
+  html[data-motion] [data-frame][data-reveal][data-inview]::after {
+    opacity: 0;
+  }
+
+  html[data-motion] [data-frame][data-reveal][data-scan]::after {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      transform var(--dur-cinematic) var(--ease-instrument) calc(var(--i, 0) * var(--stagger)),
+      opacity 0s linear 0s;
+  }
+
+  /* After the sweep the panel turns transparent again (the opacity step lands as the sweep ends). */
+  html[data-motion] [data-frame][data-reveal][data-scan][data-inview]::after {
+    opacity: 0;
+    transform: translateY(101%);
+    transition:
+      transform var(--dur-cinematic) var(--ease-instrument) calc(var(--i, 0) * var(--stagger)),
+      opacity 0s linear calc(var(--dur-cinematic) + var(--i, 0) * var(--stagger));
+  }
+
+  /* Corner brackets (frames, featured media). */
+  html[data-motion] [data-reveal="bracket"] {
+    transition-delay: calc(var(--dur-cinematic) * 0.35 + var(--i, 0) * 60ms);
+  }
+
+  html[data-motion] [data-reveal="bracket"]:not([data-inview]) {
+    transform: translate3d(var(--bx, 0), var(--by, 0), 0);
+  }
+
+  /* ------------------------------------------------------------------------
+     3. PROGRESS: a connector draws as its section scrolls past, steps come online along it.
+        The controller writes --p (0 to 1, never decreasing) and sets data-reached on each
+        [data-at] step once the line has arrived. Orientation follows the layout.
+     ------------------------------------------------------------------------ */
+  html[data-motion] [data-progress] {
+    --p: 0;
+  }
+
+  html[data-motion] [data-draw="x"] {
+    transform: scaleX(var(--p, 1));
+    transform-origin: left center;
+  }
+
+  html[data-motion] [data-draw="y"] {
+    transform: scaleY(var(--p, 1));
+    transform-origin: center top;
+  }
+
+  html[data-motion] [data-draw="y-md-x"],
+  html[data-motion] [data-draw="y-xl-x"] {
+    transform: scaleY(var(--p, 1));
+    transform-origin: center top;
+  }
+
+  @media (min-width: 48rem) {
+    html[data-motion] [data-draw="y-md-x"] {
+      transform: scaleX(var(--p, 1));
+      transform-origin: left center;
+    }
+  }
+
+  @media (min-width: 80rem) {
+    html[data-motion] [data-draw="y-xl-x"] {
+      transform: scaleX(var(--p, 1));
+      transform-origin: left center;
+    }
+  }
+
+  /* A terminal arrow fades in as the line reaches the end of its run. */
+  html[data-motion] [data-draw-end] {
+    opacity: clamp(0, calc((var(--p, 1) - 0.92) * 12.5), 1);
+  }
+
+  html[data-motion] [data-at] > * {
+    transition:
+      opacity var(--dur-reveal) var(--ease-out) calc(var(--k, 0) * 70ms),
+      transform var(--dur-reveal) var(--ease-out) calc(var(--k, 0) * 70ms);
+  }
+
+  html[data-motion] [data-at] > :nth-child(2) { --k: 1; }
+  html[data-motion] [data-at] > :nth-child(3) { --k: 2; }
+  html[data-motion] [data-at] > :nth-child(4) { --k: 3; }
+  html[data-motion] [data-at] > :nth-child(5) { --k: 4; }
+  html[data-motion] [data-at] > :nth-child(n + 6) { --k: 5; }
+
+  html[data-motion] [data-at]:not([data-reached]) > * {
+    opacity: 0;
+    transform: translate3d(0, var(--move-sm), 0);
+  }
+
+  /* A diagram comes online left to right (a wipe, never a scale, so artwork stays sharp). */
+  html[data-motion] [data-at] > [data-wipe] {
+    transition:
+      clip-path 900ms var(--ease-instrument) calc(var(--k, 0) * 70ms),
+      opacity var(--dur-reveal) var(--ease-out) calc(var(--k, 0) * 70ms);
+  }
+
+  html[data-motion] [data-at]:not([data-reached]) > [data-wipe] {
+    transform: none;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  html[data-motion] [data-at][data-reached] > [data-wipe] {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* A timeline node ticks on rather than fading. */
+  html[data-motion] [data-at]:not([data-reached]) > [data-node] {
+    transform: none;
+    scale: 0.5;
+  }
+
+  html[data-motion] [data-at] > [data-node] {
+    transition:
+      opacity var(--dur-ui) var(--ease-out),
+      scale var(--dur-ui) var(--ease-out);
+  }
+
+  /* Pseudo-element connectors on a step (the Home progress list on phones). */
+  html[data-motion] [data-at]::before {
+    transition: opacity var(--dur-reveal) var(--ease-out);
+  }
+
+  html[data-motion] [data-at]:not([data-reached])::before {
+    opacity: 0;
+  }
+
+  /* ------------------------------------------------------------------------
+     Scroll-linked image movement. --pp (0 to 1) is written by the controller only while the frame
+     is in view. "settle": slightly large while it enters, neutral once it is centred. "push": neutral
+     at the top of the page, a slow push-in as the hero leaves. At rest the crop is the designed one.
+     ------------------------------------------------------------------------ */
+  /* The picture carries no transform at all until it is actually moving (data-pp), so at rest, and for
+     everyone who does not scroll, it is rendered exactly as without this system. */
+  [data-parallax][data-pp] img {
+    transform-origin: var(--pp-origin, 50% 50%);
+    transform: scale(calc(1 + var(--pp, 0) * var(--pp-max, 0.05)));
+    will-change: transform;
+  }
+
+  /* ------------------------------------------------------------------------
+     Header, interaction details and feedback
+     ------------------------------------------------------------------------ */
+
+  /* Active page underline draws in from its centre on arrival. */
+  .motion-underline {
+    transform-origin: center;
+    animation: motion-draw-x var(--dur-reveal) var(--ease-instrument) 120ms backwards;
+  }
+
+  /* Inactive navigation links get a hairline underline on hover. */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -4px;
+    height: 1px;
+    background: var(--hdr-link-hover);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--dur-ui) var(--ease-out);
+    pointer-events: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+  }
+
+  .nav-link[aria-current="page"]::after {
+    display: none;
+  }
+
+  /* Button and link arrows nudge toward the direction of travel. The button itself never moves. */
+  [data-button] > span[aria-hidden="true"] {
+    display: inline-block;
+    transition: transform var(--dur-ui) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    [data-button]:hover > span[aria-hidden="true"] {
+      transform: translate3d(var(--move-xs), 0, 0);
+    }
+  }
+
+  [data-button]:focus-visible > span[aria-hidden="true"] {
+    transform: translate3d(var(--move-xs), 0, 0);
+  }
+
+  /* Story cards: the photograph eases in slowly under the pointer. The card does not move. */
+  [data-card] img {
+    transition: scale 1500ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    [data-card]:hover img {
+      scale: 1.03;
+    }
+  }
+
+  /* Form feedback: messages arrive instead of snapping in. Field errors mount with the message;
+     the status line is always present, so it animates whenever it gains text or turns into an alert. */
+  .motion-status:not(:empty) {
+    animation: motion-status-in var(--dur-ui) var(--ease-out) backwards;
+  }
+
+  .motion-status[role="alert"]:not(:empty) {
+    animation-name: motion-alert-in;
+  }
+
+  @keyframes motion-status-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, calc(var(--move-xs) * -1), 0);
+    }
+  }
+
+  @keyframes motion-alert-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, calc(var(--move-xs) * -1), 0);
+    }
+  }
+}
+
+/* Mobile menu panel: fades and settles down on open, leaves quickly on close. Tailwind's preflight hides
+   [hidden] with `display: none !important` (in a layer, so it beats any override here); the panel is
+   therefore animated with @starting-style (entry) and a discrete `display` transition (exit), which
+   keep `hidden` doing the hiding, so focus order and the accessibility tree are exactly as before. Where
+   those features are missing the menu simply opens and closes instantly. Scoped below the 1024px
+   breakpoint where the panel exists. */
+@media (max-width: 63.999rem) and (prefers-reduced-motion: no-preference) {
+  #mobile-nav {
+    transition:
+      opacity var(--dur-ui) var(--ease-out),
+      transform var(--dur-ui) var(--ease-out),
+      display var(--dur-ui) allow-discrete;
+  }
+
+  #mobile-nav[hidden] {
+    opacity: 0;
+    transform: translate3d(0, calc(var(--move-sm) * -1), 0);
+    transition-duration: var(--dur-fast);
+    transition-timing-function: var(--ease-exit);
+  }
+
+  @starting-style {
+    #mobile-nav:not([hidden]) {
+      opacity: 0;
+      transform: translate3d(0, calc(var(--move-sm) * -1), 0);
+    }
+  }
+}
+
+/* Sponsor marquee: stop the loop while it is off screen or the tab is hidden (the controller sets
+   data-offscreen and data-page-hidden). Its own pause rules (hover, focus, the pause checkbox) and
+   its reduced-motion static layout in globals.css are untouched. */
+.sponsor-marquee[data-offscreen] .sponsor-marquee__track,
+html[data-page-hidden] .sponsor-marquee[data-motion] .sponsor-marquee__track {
+  animation-play-state: paused;
+}
+
+
+/* ==========================================================================
+   Home hero: "hangar awakening"
+
+   A large aircraft emerging from darkness in a hangar, as one composed entrance (see components/sections/
+   home/hero-motif.tsx for the decorative layers).
+
+   Act 1  darkness and scale: the hero is already in its final layout under a dark exposure veil, so the
+          aircraft reads as a silhouette; a faint horizon light plane and a closed vignette hold the dark;
+          the grid rails emerge slowly
+   Act 2  one broad volume of light crosses the aircraft on a shallow wing angle (neutral body, restrained
+          cool edge), lifting the veil in stages: silhouette first, then detail, while the vignette opens
+   Act 3  the headline is exposed by the same slanted edge, with the same easing and start, so one force
+          reveals both (the title's text node is untouched)
+   Act 4  the copy and the actions settle upward; the primary action last
+   Act 5  confirmation, kept sparse: brackets lock one pair at a time, the trace draws slowly to one blue
+          node, one confirmation pulse, the action arms once
+   Act 6  everything decorative fades slowly; scroll then draws the hand-off line and a faint horizon
+
+   Every layer is transparent and untransformed at rest, so the finished hero is the designed page. The
+   photograph is never scaled, tinted or filtered. Times are in the timeline variables below, multiplied by
+   --hs (1 on a fresh load, 0.4 when arriving by in-app navigation). Interaction fast-forwards all of it
+   (components/motion/motion-controller.tsx). Everything animated sits inside no-preference.
+   ========================================================================== */
+
+[data-hero] {
+  /* Timeline, desktop layout (ms from first paint). */
+  --l-start: 450ms; /* light pass */
+  --l-dur: 2500ms;
+  --t-start: 450ms; /* headline exposure */
+  --t-dur: 1500ms;
+  --c1: 2100ms; /* introduction */
+  --c2: 2450ms; /* actions */
+  --r-rule: 2500ms; /* headline rule */
+  --k1: 2700ms; /* first pair of brackets */
+  --k2: 3050ms; /* second pair */
+  --p-start: 2900ms; /* trace */
+  --p-dur: 1200ms;
+  --x-start: 4500ms; /* decoration begins to fade */
+  --x-dur: 900ms;
+}
+
+/* Phones and tablets: the title establishes the scale first, then the stacked picture takes the same light;
+   a simpler trace and a shorter arc (about three seconds). */
+@media (max-width: 79.999rem) {
+  [data-hero] {
+    --t-start: 200ms;
+    --t-dur: 1300ms;
+    --l-start: 900ms;
+    --l-dur: 1700ms;
+    --c1: 1300ms;
+    --c2: 1600ms;
+    --k1: 2000ms;
+    --k2: 2250ms;
+    --p-start: 1950ms;
+    --p-dur: 900ms;
+    --x-start: 3300ms;
+    --x-dur: 700ms;
+  }
+
+  .hm-tick,
+  .hm-ext {
+    display: none;
+  }
+}
+
+/* Layers that exist at rest only as transparent boxes. */
+.hm-bracket {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: rgb(244 244 240 / 0.6);
+  opacity: 0;
+}
+
+@media (min-width: 48rem) {
+  .hm-bracket {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.hm-bracket[data-bracket="tl"],
+.hm-bracket[data-bracket="br"] {
+  --kd: var(--k1);
+}
+
+.hm-bracket[data-bracket="tr"],
+.hm-bracket[data-bracket="bl"] {
+  --kd: var(--k2);
+}
+
+.hm-vignette {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(ellipse 78% 88% at 66% 52%, rgb(5 5 5 / 0) 36%, rgb(5 5 5 / 0.8) 100%);
+}
+
+.hm-horizon {
+  position: absolute;
+  top: 61%;
+  right: 0;
+  left: 0;
+  height: 1px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgb(244 244 240 / 0.34) 26%, rgb(244 244 240 / 0.34) 74%, transparent);
+}
+
+.hm-svg {
+  opacity: 0;
+}
+
+.hm-line {
+  stroke: rgb(244 244 240 / 0.5);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+}
+
+.hm-ext {
+  stroke: rgb(244 244 240 / 0.28);
+}
+
+.hm-blue {
+  stroke: var(--color-blue-light);
+  stroke-width: 1.5;
+}
+
+.hm-node {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.hm-node-start {
+  fill: rgb(244 244 240 / 0.7);
+}
+
+.hm-node-ring {
+  stroke: rgb(244 244 240 / 0.55);
+  stroke-width: 1;
+}
+
+.hm-node-dot {
+  fill: var(--color-blue-light);
+}
+
+.hm-node-pulse {
+  stroke: var(--color-blue-light);
+  stroke-width: 1;
+  opacity: 0;
+}
+
+.hm-handoff,
+.hm-handoff-node {
+  display: none;
+}
+
+/* Pressed: a precise inset line on the control itself. The control never moves. */
+[data-button]:active {
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.22);
+}
+
+/* The primary action arms: a hairline draws around it once. */
+[data-arm] {
+  position: relative;
+}
+
+[data-arm]::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1px solid rgb(102 152 255 / 0.85);
+  pointer-events: none;
+  opacity: 0;
+}
+
+@media (hover: none) {
+  [data-button]:active {
+    box-shadow: inset 0 0 0 2px rgb(0 0 0 / 0.18);
+  }
+}
+
+@media (max-width: 79.999rem) {
+  .hm-xl {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Act 1. The grid emerges slowly (the right rail a beat later); the header does not animate on Home. */
+  body:has([data-hero]) header [data-enter] {
+    animation: none;
+  }
+
+  body:has([data-hero]) [data-rail] {
+    transform-origin: center top;
+    animation: hero-rail calc(var(--hs) * 2200ms) var(--ease-hangar) backwards;
+  }
+
+  body:has([data-hero]) [data-rail][data-step="2"] {
+    animation-delay: calc(var(--hs) * 180ms);
+  }
+
+  @keyframes hero-rail {
+    from {
+      transform: scaleY(0);
+    }
+  }
+
+  /* A faint horizon light plane and a closed vignette hold the dark, then dissolve as the light passes. */
+  .hm-vignette {
+    animation: hm-vignette calc(var(--hs) * (var(--l-start) + var(--l-dur) + 400ms)) linear backwards;
+  }
+
+  @keyframes hm-vignette {
+    0%,
+    20% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* At rest, and with scroll, the horizon follows --hp (written by the controller): nothing at the top of the
+     page, a very faint plane that rises slightly as you scroll away. The intro animation only adds to it. */
+  .hm-horizon {
+    opacity: calc(var(--hp, 0) * 0.09);
+    transform: translate3d(0, calc(var(--hp, 0) * -16px), 0);
+    animation: hm-horizon calc(var(--hs) * 2900ms) linear calc(var(--hs) * 120ms) backwards;
+  }
+
+  @keyframes hm-horizon {
+    0% {
+      opacity: 0;
+    }
+
+    24% {
+      opacity: 1;
+    }
+
+    66% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* Act 2. The light: a broad veil ramp (silhouette first, then detail) and a soft body with a cool leading
+     edge travel across the picture together, by transform only, on a shallow wing angle. The photograph is
+     never touched: the veil and the body are decorative layers that are transparent and untransformed at rest. */
+  [data-frame][data-scan="hangar"]::after {
+    right: auto;
+    width: 300%;
+    transform-origin: 0 0;
+    background: linear-gradient(
+      90deg,
+      rgb(5 5 5 / 0) 0,
+      rgb(5 5 5 / 0.06) 2%,
+      rgb(5 5 5 / 0.3) 5.5%,
+      rgb(5 5 5 / 0.62) 9.5%,
+      rgb(5 5 5 / 0.86) 13.3%,
+      rgb(5 5 5 / 0.86)
+    );
+  }
+
+  [data-frame][data-scan="hangar"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    width: 66%;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: 0 0;
+    /* A volume of light, not a rectangle: it fades toward the top and bottom of the frame. */
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 26%, #000 70%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 26%, #000 70%, transparent 100%);
+    background: linear-gradient(
+      90deg,
+      rgb(170 195 230 / 0) 0,
+      rgb(170 195 230 / 0.03) 26%,
+      rgb(170 195 230 / 0.07) 58%,
+      rgb(130 170 240 / 0.1) 82%,
+      rgb(102 152 255 / 0.05) 94%,
+      rgb(102 152 255 / 0) 100%
+    );
+  }
+
+  [data-frame][data-enter="media"][data-scan="hangar"]::after {
+    animation: hero-veil calc(var(--hs) * var(--l-dur)) var(--ease-hangar) calc(var(--hs) * var(--l-start)) backwards;
+  }
+
+  [data-frame][data-enter="media"][data-scan="hangar"]::before {
+    animation:
+      hero-light calc(var(--hs) * var(--l-dur)) var(--ease-hangar) calc(var(--hs) * var(--l-start)) backwards,
+      hero-light-fade calc(var(--hs) * var(--l-dur)) linear calc(var(--hs) * var(--l-start)) backwards;
+  }
+
+  @keyframes hero-veil {
+    from {
+      opacity: 1;
+      transform: translateX(-14%) skewX(-23.9deg);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(44%) skewX(-23.9deg);
+    }
+  }
+
+  @keyframes hero-light {
+    from {
+      transform: translateX(-84%) skewX(-23.9deg);
+    }
+
+    to {
+      transform: translateX(188%) skewX(-23.9deg);
+    }
+  }
+
+  @keyframes hero-light-fade {
+    0% {
+      opacity: 0;
+    }
+
+    12%,
+    84% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* Act 3. The headline: the same slanted edge, easing and start as the light, as one large composition. It
+     begins dim (a silhouette of letters) and comes to full weight; the clip and the small settling shift exist
+     only while it plays, so the heading ends exactly as it was. */
+  #home-hero-heading {
+    animation: hero-title calc(var(--hs) * var(--t-dur)) var(--ease-hangar) calc(var(--hs) * var(--t-start)) backwards;
+  }
+
+  @keyframes hero-title {
+    from {
+      clip-path: polygon(-4% -22%, -4% -22%, -4% 122%, -4% 122%);
+      transform: translate3d(-22px, 0, 0);
+      opacity: 0.3;
+    }
+
+    to {
+      clip-path: polygon(-4% -22%, 128% -22%, 114% 122%, -4% 122%);
+      transform: none;
+      opacity: 1;
+    }
+  }
+
+  /* Act 4. The introduction and the actions settle upward, slowly; the primary action is last. */
+  [data-hero] [data-enter="rise"] {
+    animation: hero-copy calc(var(--hs) * 1100ms) var(--ease-out) calc(var(--hs) * var(--c1)) backwards;
+  }
+
+  [data-hero] [data-enter="rise"][data-step="5"] {
+    animation-delay: calc(var(--hs) * var(--c2));
+  }
+
+  @keyframes hero-copy {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 12px, 0);
+    }
+  }
+
+  /* Act 5. Confirmation: brackets lock one pair at a time, hold, then fade with the rest. */
+  .hm-bracket {
+    animation: hm-bracket calc(var(--hs) * (var(--x-start) + var(--x-dur) - var(--kd))) linear calc(var(--hs) * var(--kd)) backwards;
+  }
+
+  @keyframes hm-bracket {
+    0% {
+      opacity: 0;
+      transform: translate(var(--bx), var(--by));
+    }
+
+    25% {
+      opacity: 1;
+      transform: none;
+      animation-timing-function: var(--ease-out);
+    }
+
+    74% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* The trace draws slowly and sits on its own plane; one blue node confirms, with one pulse. */
+  .hm-svg {
+    animation: hm-life calc(var(--hs) * (var(--x-start) + var(--x-dur))) linear backwards;
+  }
+
+  @keyframes hm-life {
+    0%,
+    82% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .hm-line {
+    animation: hm-draw calc(var(--hs) * var(--p-dur)) var(--ease-hangar) calc(var(--hs) * var(--p-start)) backwards;
+  }
+
+  .hm-headline-rule {
+    animation-duration: calc(var(--hs) * 800ms);
+    animation-delay: calc(var(--hs) * var(--r-rule));
+  }
+
+  .hm-headline-tick {
+    animation-duration: calc(var(--hs) * 250ms);
+    animation-delay: calc(var(--hs) * (var(--r-rule) + 700ms));
+  }
+
+  .hm-tick {
+    animation-duration: calc(var(--hs) * 350ms);
+    animation-timing-function: var(--ease-out);
+    animation-delay: calc(var(--hs) * (var(--p-start) + 250ms));
+  }
+
+  .hm-tick-2 {
+    animation-delay: calc(var(--hs) * (var(--p-start) + 380ms));
+  }
+
+  .hm-blue {
+    animation-duration: calc(var(--hs) * 320ms);
+    animation-delay: calc(var(--hs) * (var(--p-start) + var(--p-dur) - 220ms));
+  }
+
+  .hm-ext {
+    animation-duration: calc(var(--hs) * 650ms);
+    animation-delay: calc(var(--hs) * (var(--p-start) + var(--p-dur) - 350ms));
+  }
+
+  @keyframes hm-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  .hm-node {
+    animation: hm-pop calc(var(--hs) * 400ms) var(--ease-out) calc(var(--hs) * (var(--p-start) - 100ms)) backwards;
+  }
+
+  .hm-node-ring {
+    animation-delay: calc(var(--hs) * (var(--p-start) + var(--p-dur) + 20ms));
+  }
+
+  .hm-node-dot {
+    animation-delay: calc(var(--hs) * (var(--p-start) + var(--p-dur) + 130ms));
+  }
+
+  .hm-node-pulse {
+    animation: hm-pulse calc(var(--hs) * 1000ms) var(--ease-out) calc(var(--hs) * (var(--p-start) + var(--p-dur) + 320ms)) backwards;
+  }
+
+  @keyframes hm-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+  }
+
+  @keyframes hm-pulse {
+    from {
+      opacity: 0.7;
+      transform: scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: scale(3.2);
+    }
+  }
+
+  /* The primary action arms once, after it has arrived. The same hairline draws around the closing action
+     when it scrolls in. */
+  [data-arm="enter"]::before {
+    animation: hm-arm calc(var(--hs) * 1500ms) var(--ease-instrument) calc(var(--hs) * (var(--c2) + 1000ms)) backwards;
+  }
+
+  html[data-motion] [data-inview] [data-arm="reveal"]::before {
+    animation: hm-arm 1000ms var(--ease-instrument) 480ms backwards;
+  }
+
+  @keyframes hm-arm {
+    0% {
+      opacity: 1;
+      clip-path: inset(0 100% 100% 0);
+    }
+
+    45% {
+      opacity: 1;
+      clip-path: inset(0 0 100% 0);
+    }
+
+    75% {
+      opacity: 1;
+      clip-path: inset(0);
+    }
+
+    100% {
+      opacity: 0;
+      clip-path: inset(0);
+    }
+  }
+
+  /* Act 6. Scroll hand-off: --hp (0 to 1 over the first 320px of scroll) draws a line from the trace's start
+     point down into the rule that closes the hero. It is nothing until you scroll. */
+  .hm-handoff {
+    display: block;
+    position: absolute;
+    top: 67.65%;
+    bottom: 0;
+    left: 29.86%;
+    width: 1px;
+    background: linear-gradient(180deg, rgb(244 244 240 / 0.4), rgb(102 152 255 / 0.75));
+    transform-origin: center top;
+    transform: scaleY(var(--hp, 0));
+  }
+
+  .hm-handoff-node {
+    display: block;
+    position: absolute;
+    bottom: -3px;
+    left: calc(29.86% - 3px);
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--color-blue-light);
+    border-radius: 9999px;
+    background: var(--color-canvas);
+    opacity: clamp(0, calc((var(--hp, 0) - 0.88) * 8), 1);
+  }
+}

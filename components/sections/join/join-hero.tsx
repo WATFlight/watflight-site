@@ -19,18 +19,23 @@ export function JoinHero() {
     <section aria-labelledby="join-hero-heading">
       <PageContainer className="grid items-center gap-10 py-12 md:gap-12 md:py-16 lg:grid-cols-[minmax(0,48fr)_minmax(0,52fr)] lg:gap-x-8 xl:gap-x-0 xl:py-24">
         <div>
-          <JoinEyebrow>{joinHero.eyebrow}</JoinEyebrow>
-          <h1 id="join-hero-heading" className="type-display-page mt-6 max-w-[560px] text-ink">
+          <JoinEyebrow motion="enter">{joinHero.eyebrow}</JoinEyebrow>
+          <h1
+            id="join-hero-heading"
+            data-enter="headline"
+            data-step="1"
+            className="type-display-page mt-6 max-w-[560px] text-ink"
+          >
             {joinHero.title}
           </h1>
-          <div className="mt-8 flex max-w-[540px] flex-col gap-6">
+          <div data-enter="rise" data-step="3" className="mt-8 flex max-w-[540px] flex-col gap-6">
             {joinHero.intro.map((paragraph) => (
               <p key={paragraph} className="type-body-lg text-ink text-pretty">
                 {paragraph}
               </p>
             ))}
           </div>
-          <div className="mt-9 flex flex-wrap gap-4">
+          <div data-enter="rise" data-step="4" className="mt-9 flex flex-wrap gap-4">
             <Button href={joinHero.apply.href} variant="light">
               {joinHero.apply.label}
               <span aria-hidden="true">→</span>

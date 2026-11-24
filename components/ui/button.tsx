@@ -68,20 +68,20 @@ export function Button({ variant = "light", wrap = false, className, children, .
     // Internal routes and in-page anchors use next/link; mailto:, tel: and external URLs use <a>.
     if (href.startsWith("/") || href.startsWith("#")) {
       return (
-        <Link href={href} className={classes} {...anchorProps}>
+        <Link href={href} className={classes} data-button="" {...anchorProps}>
           {children}
         </Link>
       );
     }
     return (
-      <a href={href} className={classes} {...anchorProps}>
+      <a href={href} className={classes} data-button="" {...anchorProps}>
         {children}
       </a>
     );
   }
 
   return (
-    <button type="button" className={classes} {...props}>
+    <button type="button" className={classes} data-button="" {...props}>
       {children}
     </button>
   );

@@ -17,8 +17,11 @@ export function NewsCard({ story, sizes }: { story: NewsStory; sizes: string }) 
   const { category, date, dateTime, title, summary, image } = story;
 
   return (
-    <article className="group relative flex w-full flex-col border border-rule p-5 transition-colors duration-150 hover:border-rule-strong has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 motion-reduce:transition-none md:p-6">
-      <MediaFrame slot={image.slot} alt={image.alt} sizes={sizes} bordered className="w-full" />
+    <article
+      data-card=""
+      className="group relative flex w-full flex-col border border-rule p-5 transition-colors duration-150 hover:border-rule-strong has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 motion-reduce:transition-none md:p-6"
+    >
+      <MediaFrame slot={image.slot} alt={image.alt} sizes={sizes} bordered motion="none" className="w-full" />
       <div className="mt-6 flex flex-1 flex-col">
         <p className="type-eyebrow text-ink-2">
           {category ? (

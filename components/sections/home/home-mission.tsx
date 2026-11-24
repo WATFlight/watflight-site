@@ -27,6 +27,7 @@ export function HomeMission() {
           alt=""
           sizes="100vw"
           fluid
+          parallax="settle"
           className="h-full w-full"
           imageClassName="object-[100%_30%]"
           overlayClassName="earth-overlay"
@@ -36,8 +37,10 @@ export function HomeMission() {
       <PageContainer className="relative z-10 pt-12 pb-[220px] md:pb-[260px] xl:pt-[93px] xl:pb-[114px]">
         <div className="flex max-w-[695px] flex-col gap-6 xl:gap-[49px]">
           <SectionHeading id="home-mission-heading" title={mission.title} />
-          <p className="type-body-lg max-w-[586px] text-ink-2">{mission.body}</p>
-          <div className="flex">
+          <p data-reveal="" className="type-body-lg max-w-[586px] text-ink-2">
+            {mission.body}
+          </p>
+          <div data-reveal="" className="flex">
             <TextLink href={mission.link.href}>{mission.link.label}</TextLink>
           </div>
         </div>

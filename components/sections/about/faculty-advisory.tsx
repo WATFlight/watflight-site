@@ -31,7 +31,7 @@ export function FacultyAdvisory({ title, advisors }: FacultyAdvisoryProps) {
         <SectionHeading as="h2" size="h2" id="about-faculty-heading" title={title} />
         <ul role="list" className="mt-8 grid gap-6 lg:grid-cols-2 xl:mt-[54px] xl:gap-x-[51px]">
           {advisors.map((advisor) => (
-            <li key={advisor.name} className="flex">
+            <li key={advisor.name} data-reveal="" className="flex">
               <article className="flex min-h-[124px] w-full items-stretch gap-5 border border-rule-strong bg-surface p-[19px] pl-[23px] sm:gap-[29px]">
                 <div className="relative size-[83px] shrink-0 self-start border border-ink-2 bg-rule">
                   {advisor.image ? (

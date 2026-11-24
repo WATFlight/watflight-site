@@ -33,8 +33,11 @@ export function AboutHero() {
                 <span className="block">{line}</span>
               </span>
             ))}
+            motion="enter"
           />
-          <p className="type-body-lg text-ink-2">{aboutHero.intro}</p>
+          <p data-enter="rise" data-step="2" className="type-body-lg text-ink-2">
+            {aboutHero.intro}
+          </p>
         </div>
       </PageContainer>
 
@@ -45,6 +48,7 @@ export function AboutHero() {
             alt={aboutHero.imageAlt}
             sizes="(min-width: 1440px) 729px, (min-width: 1280px) 51vw, 100vw"
             priority
+            scan
             className="w-full"
             overlayClassName={heroOverlay}
           />

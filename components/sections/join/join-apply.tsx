@@ -7,10 +7,11 @@ import { sectionTitleClass, stepTitleClass } from "@/components/sections/join/st
 import { joinApply } from "@/content/join";
 
 /** A decorative connector chevron, in the grey secondary-text color (the accent blue is kept sparing on this page). */
-function Chevron({ className }: { className?: string }) {
+function Chevron({ className, ...props }: { className?: string; "data-draw-end"?: string }) {
   return (
     <svg
       aria-hidden="true"
+      {...props}
       focusable="false"
       width="8"
       height="12"
@@ -46,20 +47,32 @@ export function JoinApply() {
     <section id={joinApply.id} aria-labelledby="join-apply-heading">
       <PageContainer className="py-14 md:py-16 xl:pt-[55px] xl:pb-[38px]">
         <JoinEyebrow>{joinApply.eyebrow}</JoinEyebrow>
-        <h2 id="join-apply-heading" className={cn(sectionTitleClass, "mt-4 text-ink")}>
+        <h2 id="join-apply-heading" data-reveal="" className={cn(sectionTitleClass, "mt-4 text-ink")}>
           {joinApply.title}
         </h2>
-        <p className="type-body-lg mt-4 text-ink">{joinApply.description}</p>
+        <p data-reveal="" className="type-body-lg mt-4 text-ink">
+          {joinApply.description}
+        </p>
 
-        <div className="relative mt-10 md:mt-8 xl:mt-7">
+        {/* Motion (app/motion.css): the connector is drawn by scroll progress and each step comes online as it
+            reaches it (data-progress / data-draw / data-at). Everything is plain content without it. */}
+        <div data-progress="" className="relative mt-10 md:mt-8 xl:mt-7">
           {/* Decorative vertical line and chevron through the steps (below 768px). */}
-          <span aria-hidden="true" className="absolute top-8 bottom-0 left-[22px] w-px bg-ink-2/50 md:hidden" />
-          <Chevron className="absolute bottom-0 left-[22px] -translate-x-1/2 rotate-90 md:hidden" />
+          <span
+            aria-hidden="true"
+            data-draw="y"
+            className="absolute top-8 bottom-0 left-[22px] w-px bg-ink-2/50 md:hidden"
+          />
+          <Chevron
+            data-draw-end=""
+            className="absolute bottom-0 left-[22px] -translate-x-1/2 rotate-90 md:hidden"
+          />
 
           <ol role="list" className="grid gap-y-12 pb-8 md:grid-cols-3 md:gap-y-0 md:pb-0">
             {steps.map((step, index) => (
               <li
                 key={step.title}
+                data-at=""
                 className="relative grid grid-cols-[44px_minmax(0,1fr)] gap-x-5 md:flex md:flex-col md:items-center md:text-center"
               >
                 <span
@@ -88,6 +101,7 @@ export function JoinApply() {
                 {index < steps.length - 1 ? (
                   <span
                     aria-hidden="true"
+                    data-wipe=""
                     className="absolute top-8 right-0 hidden w-[min(137px,calc(100%-150px))] translate-x-1/2 items-center md:flex"
                   >
                     <span className="h-px flex-1 bg-ink-2/60" />
@@ -99,7 +113,7 @@ export function JoinApply() {
           </ol>
         </div>
 
-        <div className="mt-12 md:mt-14">
+        <div data-reveal="" className="mt-12 md:mt-14">
           <JoinApplicationForm />
         </div>
       </PageContainer>

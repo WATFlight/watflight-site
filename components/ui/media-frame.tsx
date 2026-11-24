@@ -20,6 +20,20 @@ type MediaFrameProps = {
   overlayClassName?: string;
   className?: string;
   imageClassName?: string;
+  /**
+   * Motion (app/motion.css): the photograph "develops" out of the dark. `enter` plays on first paint
+   * (the default for `priority` pictures, so the largest image never waits for JavaScript), `reveal`
+   * plays once as the frame scrolls into view (the default otherwise), `none` is static (use it inside
+   * a parent that already reveals).
+   */
+  motion?: "enter" | "reveal" | "none";
+  /**
+   * Adds the one-pixel calibration line that leads the develop sweep. Reserved for hero pictures.
+   * `"hangar"` uses the Home hero's broad, wing-angled light pass instead of the vertical one.
+   */
+  scan?: boolean | "hangar";
+  /** Slow scroll-linked image movement: "push" (hero leaves) or "settle" (frame enters). Rest state is the designed crop. */
+  parallax?: "push" | "settle";
 };
 
 /**
@@ -37,11 +51,19 @@ export function MediaFrame({
   overlayClassName,
   className,
   imageClassName,
+  motion,
+  scan = false,
+  parallax,
 }: MediaFrameProps) {
   const { path, width, height } = assetSlots[slot];
+  const mode = motion ?? (priority ? "enter" : "reveal");
 
   return (
     <div
+      data-frame=""
+      data-scan={scan === "hangar" ? "hangar" : scan ? "" : undefined}
+      data-parallax={parallax}
+      {...(mode === "enter" ? { "data-enter": "media" } : mode === "reveal" ? { "data-reveal": "frame" } : {})}
       className={cn("relative overflow-hidden bg-surface", bordered && "border border-rule", className)}
       style={fluid ? undefined : { aspectRatio: `${width} / ${height}` }}
     >

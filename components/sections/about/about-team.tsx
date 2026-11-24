@@ -27,7 +27,7 @@ export function AboutTeam() {
           className="mt-8 grid gap-x-6 gap-y-12 md:mt-10 md:grid-cols-2 lg:grid-cols-4 xl:mt-[42px] xl:gap-x-[53px]"
         >
           {team.members.map((member) => (
-            <li key={member.name}>
+            <li key={member.name} data-reveal="">
               <article>
                 {/* 288.5:255, the mean of the frame's 289 and 288px wide cards, all 255px tall at 1440px. */}
                 <div aria-hidden="true" className="aspect-[288.5/255] border border-rule-strong" />

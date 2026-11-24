@@ -29,13 +29,20 @@ export function NewsHero() {
         <div className="contents lg:flex lg:flex-col lg:gap-16 xl:gap-20">
           <div className="order-1">
             <NewsEyebrow>{newsHero.eyebrow}</NewsEyebrow>
-            <h1 id="news-heading" className="type-display-page mt-6 max-w-[600px] text-ink xl:text-[56px] xl:leading-[66px]">
+            <h1
+              id="news-heading"
+              data-enter="headline"
+              data-step="1"
+              className="type-display-page mt-6 max-w-[600px] text-ink xl:text-[56px] xl:leading-[66px]"
+            >
               {newsHero.title}
             </h1>
-            <p className="type-body-lg mt-8 max-w-[480px] text-ink-2">{newsHero.intro}</p>
+            <p data-enter="rise" data-step="2" className="type-body-lg mt-8 max-w-[480px] text-ink-2">
+              {newsHero.intro}
+            </p>
           </div>
 
-          <article aria-labelledby="news-featured-title" className="order-3">
+          <article aria-labelledby="news-featured-title" data-enter="rise" data-step="4" className="order-3">
             <p className="type-eyebrow text-ink-2">
               <time dateTime={story.dateTime}>{story.date}</time>
             </p>
